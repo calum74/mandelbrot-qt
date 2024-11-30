@@ -9,6 +9,12 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+add_subdirectory(mandelbrot)
+include_directories(mandelbrot)
+link_libraries(mandelbrot)
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
@@ -23,6 +29,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(mandelbrot-qt
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        ViewerWidget.h ViewerWidget.cpp
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET mandelbrot-qt APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
