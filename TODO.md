@@ -1,0 +1,263 @@
+# Task list
+
+Smooth zoom
+- When shifting centerpoint, we get black borders
+  - Zooming in
+  - Zooming out
+- When an image has been shifted, we seem to get a permanent black border.
+
+Improvements to fast mode:
+- Auto iterations, based on histogram of iterations, and iterations in previous calculation.
+- Use threads, but calculate each layer separately.
+
+Heuristic:
+- Look at the 99th percentile
+- Set max iterations = 99th percentile * 1.3 or something.
+
+How to calculate a percentile?
+
+
+
+Bugs that need fixing:
+
+
+We need to ensure that we always calculate using powers of 2.
+Recalculate the centerpoint of the zoom correctly. It's not just (cx,cy).
+Don't glitch the zoom to the current layer, but use the available layers to render.
+
+
+
+Recalculate zoom if the centerpoint moves.
+Render missing pixels from other planes, not just black.
+Smooth interpolation.
+
+Implementation:
+We keep a list of fractals we have computed. In version 1, all fractals are fully computed. When we zoom, we'll try to anticipate where the zoom will go, and precompute the region to display.
+
+
+
+
+- [ ] Look at `screen.devicePixelRatio`
+
+
+Minecraft:
+- Breed the villages
+- More fields
+- Get more
+ - iron
+ - diamonds
+ - fields
+ - villagers
+ - books
+ - obsidian
+
+
+
+
+- [ ] Start next layer calculation on initial zoom (not wait until we reach resolution)
+  - Lock in the zoom coordinates
+- [ ] Animate the zoom
+- [ ] Avoid computing lumps of black - use the original rendering sequence maybe.  
+- [ ] Make sure to smooth the pixels
+
+- [ ] Use a QActionGroup::setExclusive(true) to enable exclusive options for
+
+- [ ] Distribution build on Mac
+- [ ] Open source mandelbrot-qt
+  - Squash the history
+- code tidy
+- docs
+- doc comments
+
+- [ ] Implement general Taylor series expansion
+
+```c++
+template<typename Complex, int S>
+std::array<Complex, S> next_taylor_series(const Complex &z, const std::array<Complex, S> &previous)
+{
+
+}
+
+```
+
+- Mandelbrot - list the classes and document them
+- mandelbrot tutorial
+  - Give examples of the algorithms and how to use them
+
+# Log term tasks
+
+High quality zoom
+1. Wait for the image to be fully computed.
+2. When you zoom in, you actually just display the outer image, zoomed.
+3. When you zoom in, you commit to a place to zoom to, and calculate the zoomed-in image.
+4. When you reach the inner image
+5. We'll keep a cache of saved images to zoom out to.
+- Each layer stores the time taken to render it.
+- Implement an auto-zoom mode which follows the cursor
+- Store the images as a "depth" (using just a `float`) and compute the colour on the fly.
+
+- When you zoom in, you pick actually on
+
+
+
+- benchmarks
+- tests
+- Tidy up the installer text and license
+- [ ] Progress bar
+
+- [ ] Code tidy
+  - Unit test tidy up!
+
+MVP tasks:
+- [x] Application icon
+- [ ] Build tasks
+
+High precision tidy:
+- Express size in bits
+- Configure integer size as well
+
+Less important tasks:
+- [ ] Smooth zoom
+- [ ] Errorsin pixels affect the output, so store them in a separate array
+
+Coding tasks:
+- General code tidy
+- Unit tests
+- Still a double-free somewhere (test in debug-mode)
+
+Bugs:
+- Around 1e-30, the view goto logic is buggy
+- You should be able to go-to the same location without moving anywhere
+- When opening 'Go to' window, ensure focus is on the ok button
+
+Testing:
+- [ ] Orbits tests
+- [ ] High precision tests
+
+
+Deep zoom:
+-0.0783482369601075163944917383105858335241253043551250774434430019003988613925771644508614315385856473190257091171514
+-0.8803719416978159046998812464618718478458961652747324614061208825350523554491456624151328674083981171488871367377287
+0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001363
+97000-255000 deep
+Rendered in 61s
+
+-0.0783482369601075163944917383105858335241253043551250774434430019003988613925771644508614315385856473190257091170931003505751963709736852727420937202
+-0.8803719416978159046998812464618718478458961652747324614061208825350523554491456624151328674083981171488871367376885952916902381147409350757625323242
+0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004393
+Depth 152943
+
+-0.078348236960107516394491738310585833524125304355125077443443001900398861392577164450861431538585647319025709117093100350575196370973685272742093904416
+-0.880371941697815904699881246461871847845896165274732461406120882535052355449145662415132867408398117148887136737688595291690238114740935075762532448902
+0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000689
+Depth 190401
+
+-0.07834823696010751639449173831058583352412530435512507744344300190039886139257716445086143153858564731902570911709310035057519637097368527274209390461305382820814619859
+-0.88037194169781590469988124646187184784589616527473246140612088253505235544914566241513286740839811714888713673768859529169023811474093507576253244895594476005015065827
+0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003293
+
+Green eye:
+-0.07834823696010751639449173831058583352412530435512507744344300190039886139257716445086143153858564731902570911709310035057519637097368527274209390461305382820814620277871363
+-0.88037194169781590469988124646187184784589616527473246140612088253505235544914566241513286740839811714888713673768859529169023811474093507576253244895594476005015065453003407
+0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002576
+Depth 275000
+
+-0.07834823696010751639449173831058583352412530435512507744344300190039886139257716445086143153858564731902570911709310035057519637097368527274209390461305382820814620277872026900435584392778638423935058
+-0.88037194169781590469988124646187184784589616527473246140612088253505235544914566241513286740839811714888713673768859529169023811474093507576253244895594476005015065453003666757091311552608438908921414
+0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003736
+
+-0.0783482369601075163944917383105858335241253043551250774434430019003988613925771644508614315385856473190257091170931003505751963709736852727420939046130538282081462027787202690043558439277863842393506643
+-0.8803719416978159046998812464618718478458961652747324614061208825350523554491456624151328674083981171488871367376885952916902381147409350757625324489559447600501506545300366675709131155260843890892213320
+0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007975
+
+-0.0783482369601075163944917383105858335241253043551250774434430019003988613925771644508614315385856473190257091170931003505751963709736852727420939046130538282081462027787202690043558439277863842393507128
+-0.8803719416978159046998812464618718478458961652747324614061208825350523554491456624151328674083981171488871367376885952916902381147409350757625324489559447600501506545300366675709131155260843890892214782
+0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003025
+
+-0.0783482369601075163944917383105858335241253043551250774434430019003988613925771644508614315385856473190257091170931003505751963709736852727420939046130538282081462027787202690043558439277863842393507403938957
+-0.8803719416978159046998812464618718478458961652747324614061208825350523554491456624151328674083981171488871367376885952916902381147409350757625324489559447600501506545300366675709131155260843890892215664088828
+0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000081
+
+Refactoring:
+- [ ] Ability to iterate all points simultaneously so that the black can shrink.
+- [ ] Unit-test orbits - see how far they diverge from a reference orbit.
+- [ ] Still some glitches with epsilon
+
+Core work:
+
+Algorithm improvements:
+- [x] Fix up the colour palette.
+- [ ] Shadows
+- [ ] Auto-depth
+- [ ] Turn rendering_sequence into an iterator
+
+UI improvements:
+- [ ] Tweak options, e.g. speed or precision
+- [ ] Ensure we render image at the highest resolution  
+- [ ] Get an app icon
+- [ ] Create an installer package
+
+Observation:
+- Around minibrots, you have local rotation symmetry of order 2
+
+Version 2.0:
+- [ ] Tidy up logic for smooth navigation
+- [ ] High quality smooth zooming
+- [ ] Center finding
+
+Version 3.0:
+- [ ] Load/save position
+- [ ] Export to image
+- [ ] Generate movie
+- [ ] Auto-iterations
+- [ ] Smooth navigation
+- [ ] Edit colour palette
+
+# Notes
+
+# Smooth zoom
+
+Rendering logic:
+
+Zoom in:
+- Pick a central point to zoom in to. Render the new data into a new view buffer, which is 2x the resolution of the old buffer. Meanwhile, zoom slowly towards the new view taking the expected time = the time to render the previous frame.
+
+During the zoom, the outer frame is the frame that is rendered at all times, and only when we have reached the inner frame will we render the frame using its pixels.
+
+Zoom out:
+Determine the outside frame region, and calculate it fully. 
+Then zoom out smoothly, using just the pixels from the outside frame.
+Zoom out, at a rate such that we'll expect to be completely rendered 
+
+Summary:
+When zooming in or out, we have a fully computed outside window, which we'll project to an "inner window" in a smooth manner. The animation 
+
+
+
+
+Center-finding:
+
+Algothim:
+1. Decide the length of a line
+
+Locate a line in the top half of the screen.
+
+Locate the same line in the bottom half of the screen. Create a rolling hash of length n, creating a window. However, we'd like to sum the differences - a permutation/FFT would be a good choice but my maths isn't good enough.
+
+To match a line:
+- Compare 2 points. Create a different-squared measure of the lines originating at those points.
+- Each point needs an "index" and we only compare points with similar indexes.
+
+To generate the index for a point:
+  Create 4 numbers: The average of the lines above, below, left and right N pixels.
+  We can implement this as a rolling average in 4 directions.
+
+To find potential matches:
+Sort all points by index, creating 4 arrays.
+In each array, compare points that are extremely close. Ensure that they compare in all 4 directions (flipping for symmetry). This generates candidate pairs.
+Validate each candidate pair?
+Find the center-point of the candidate pair and add 1 to the "center points found" on this pixel.
+The center-points are the pixels with the most votes.
+
+
+

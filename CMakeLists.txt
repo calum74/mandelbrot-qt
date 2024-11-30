@@ -1,13 +1,20 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.21)
 
-project(mandelbrot-qt VERSION 0.1 LANGUAGES CXX)
+project(mandelbrot-qt VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+enable_testing()
+add_subdirectory(mandelbrot)
+include_directories(mandelbrot)
+link_libraries(mandelbrot extra_fractals)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
@@ -17,12 +24,30 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        Renderer.hpp
+        Renderer.cpp
+        RenderingSequence.hpp
+        RenderingSequence.cpp
+        ColourMapImpl.cpp
+        ColourMap.hpp
+        ColourMapImpl.hpp
+        ViewerWidget.h
+        ViewerWidget.cpp
+        Fractals.cpp
+        gotodialog.h
+        gotodialog.cpp
+        registry.hpp
+        registry.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(mandelbrot-qt
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        ViewerWidget.h ViewerWidget.cpp
+        gotodialog.h gotodialog.cpp gotodialog.ui
+        resources.qrc
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET mandelbrot-qt APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -68,3 +93,21 @@ install(TARGETS mandelbrot-qt
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(mandelbrot-qt)
 endif()
+
+qt_generate_deploy_app_script(
+    TARGET mandelbrot-qt
+    OUTPUT_SCRIPT deploy_script
+    NO_UNSUPPORTED_PLATFORM_ERROR
+)
+
+install(SCRIPT ${deploy_script})
+
+include(CPack)
+set(CPACK_PACKAGE_NAME "mandelbrot-qt")
+set(CPACK_PACKAGE_VENDOR "github.com/calum74")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "MyLib - CPack Component Installation Example")
+set(CPACK_PACKAGE_VERSION "1.0.0")
+set(CPACK_PACKAGE_VERSION_MAJOR "1")
+set(CPACK_PACKAGE_VERSION_MINOR "0")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "MandelbrotQt")
