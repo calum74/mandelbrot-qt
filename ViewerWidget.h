@@ -9,7 +9,12 @@
 class ViewerWidget : public QWidget {
   Q_OBJECT
   QImage image;
-  fractals::Viewport viewport;
+
+  struct MyViewport : public fractals::Viewport {
+    ViewerWidget *widget;
+    void region_updated(int x, int y, int w, int h) override;
+  } viewport;
+
   std::unique_ptr<fractals::Fractal> mandelbrot;
 
   int press_x, press_y;

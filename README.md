@@ -10,3 +10,8 @@
   Ensure correct aspect ratio on resize
 2. Rendering
   Cancellable rendering
+  Show rendering time in seconds/the framerate
+
+Async rendering
+- cancellable.
+- api?
