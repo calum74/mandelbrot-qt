@@ -11,7 +11,8 @@
 #include <iostream>
 
 ViewerWidget::ViewerWidget(QWidget *parent)
-    : QWidget{parent}, mandelbrot{fractals::make_naive_mandelbrot()} {}
+    : QWidget{parent}, mandelbrot{fractals::make_mandelbrot(
+                           fractals::Algorithm::CoherentRegions)} {}
 
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
 
@@ -66,8 +67,7 @@ void ViewerWidget::mousePressEvent(QMouseEvent *event) {
   }
 }
 
-void ViewerWidget::dragMoveEvent(QDragMoveEvent *event) {}
-
 void ViewerWidget::MyViewport::region_updated(int x, int y, int w, int h) {
+  // !! Can specify which region to repaint
   widget->repaint();
 }

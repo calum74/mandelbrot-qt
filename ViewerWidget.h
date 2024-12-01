@@ -17,6 +17,7 @@ class ViewerWidget : public QWidget {
 
   std::unique_ptr<fractals::Fractal> mandelbrot;
 
+  // Track the previous position of the mouse cursor
   int press_x, press_y;
 
   void calculate();
@@ -30,7 +31,6 @@ public:
 
   void wheelEvent(QWheelEvent *event) override;
   void mouseMoveEvent(QMouseEvent *event) override;
-  void dragMoveEvent(QDragMoveEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
 
 signals:
