@@ -11,8 +11,8 @@
 #include <iostream>
 
 ViewerWidget::ViewerWidget(QWidget *parent)
-    : QWidget{parent}, mandelbrot{fractals::make_mandelbrot(
-                           fractals::Algorithm::CoherentRegions)} {}
+    : QWidget{parent},
+      mandelbrot{fractals::make_mandelbrot(fractals::Algorithm::Default)} {}
 
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
 
