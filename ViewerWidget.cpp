@@ -35,6 +35,13 @@ void ViewerWidget::draw() {
 
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
   image = QImage(event->size(), QImage::Format_RGB32);
+
+  viewport.widget = this;
+  viewport.data = (fractals::RGB *)image.bits();
+  viewport.width = image.width();
+  viewport.height = image.height();
+  mandelbrot->set_aspect_ratio(viewport); // Tweak width and height
+
   calculate();
 }
 

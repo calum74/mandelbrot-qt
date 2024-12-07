@@ -2,6 +2,12 @@
 
 # Task list
 
+- [ ] Window resizing
+  - Don't crash
+  - Maintain correct aspect ratio
+- Ensure we render at the highest resolution  
+- Prevent zooming out too far
+- Logarithmic and smooth shading
 - [x] Report on render times and other stats on each frame.
 - [ ] Incremental rendering - when we zoom in, we'll also update the viewport already.
 - [ ] Implement high precision numbers in various ways
