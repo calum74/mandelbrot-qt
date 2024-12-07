@@ -13,6 +13,8 @@ class ViewerWidget : public QWidget {
   struct MyViewport : public fractals::Viewport {
     ViewerWidget *widget;
     void region_updated(int x, int y, int w, int h) override;
+    void finished(double width, int avg_iterations,
+                  double render_time) override;
   } viewport;
 
   std::unique_ptr<fractals::Fractal> mandelbrot;

@@ -71,3 +71,9 @@ void ViewerWidget::MyViewport::region_updated(int x, int y, int w, int h) {
   // !! Can specify which region to repaint
   widget->repaint();
 }
+
+void ViewerWidget::MyViewport::finished(double width, int avg_iterations,
+                                        double render_time) {
+  std::cout << "Width = " << width << ", average depth = " << avg_iterations
+            << ", time = " << render_time << "s\n";
+}
