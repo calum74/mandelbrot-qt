@@ -45,15 +45,14 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
     r = 2.0;
   if (r < 0.5)
     r = 0.5;
-  mandelbrot->zoom(r, event->position().x(), event->position().y(),
-                   image.width(), image.height());
+  mandelbrot->zoom(r, event->position().x(), event->position().y(), viewport);
   calculate();
 }
 
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
   if (event->buttons() & Qt::LeftButton) {
     mandelbrot->scroll(press_x - event->pos().x(), press_y - event->pos().y(),
-                       image.width(), image.height());
+                       viewport);
     calculate();
     press_x = event->pos().x();
     press_y = event->pos().y();

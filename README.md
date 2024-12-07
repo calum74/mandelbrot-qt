@@ -7,6 +7,7 @@
 - [ ] Implement high precision numbers in various ways
   Including, a high-precision array.
 
+- [ ] Efficient scrolling, rather than recalculating the entire window
 
 1. Get the UI elements working correctly
   - [x] Drag to move
