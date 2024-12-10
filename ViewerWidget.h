@@ -13,7 +13,7 @@ class ViewerWidget : public QWidget {
   struct MyViewport : public fractals::Viewport {
     ViewerWidget *widget;
     void region_updated(int x, int y, int w, int h) override;
-    void finished(double width, int avg_iterations,
+    void finished(double width, int min_depth, int max_depth,
                   double render_time) override;
   } viewport;
 
@@ -39,7 +39,7 @@ public:
 
 signals:
   void zoomChanged(double newZoom);
-  void completed(double zoom, int depth, double time);
+  void completed(double zoom, int min_depth, int max_depth, double time);
 };
 
 #endif // VIEWERWIDGET_H

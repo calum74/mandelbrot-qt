@@ -83,11 +83,9 @@ void ViewerWidget::MyViewport::region_updated(int x, int y, int w, int h) {
   widget->update();
 }
 
-void ViewerWidget::MyViewport::finished(double width, int avg_iterations,
-                                        double render_time) {
-  std::cout << "Width = " << width << ", average depth = " << avg_iterations
-            << ", time = " << render_time << "s\n";
-  widget->completed(width, avg_iterations, render_time);
+void ViewerWidget::MyViewport::finished(double width, int min_depth,
+                                        int max_depth, double render_time) {
+  widget->completed(width, min_depth, max_depth, render_time);
 }
 
 void ViewerWidget::increaseIterations() {

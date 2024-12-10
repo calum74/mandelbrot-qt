@@ -26,9 +26,11 @@ void MainWindow::zoomChanged(double d) {
   ui->statusbar->showMessage(ss.str().c_str());
 }
 
-void MainWindow::completed(double d, int depth, double time) {
+void MainWindow::completed(double d, int min_depth, int max_depth,
+                           double time) {
   std::stringstream ss;
-  ss << "Width = " << d << " completed in " << time << " seconds";
+  ss << "Width = " << d << " completed in " << time << " seconds, depth "
+     << min_depth << "-" << max_depth;
 
   ui->statusbar->showMessage(ss.str().c_str());
 }

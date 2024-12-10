@@ -1,5 +1,8 @@
 # Task list
 
+- [ ] Log minimum depth
+- [ ] set max_iterations based on min-iterations
+
 - [ ] Notify when complete (and the time)
 - [ ] Multi-resolution algorithms - go to the next algorithm/depth when limit is reached.
   - [ ] Idea of an "evaluation strategy" which encompasses various options.
