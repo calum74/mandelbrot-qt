@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     connect(ui->centralwidget, &ViewerWidget::zoomChanged, this,
             &MainWindow::zoomChanged);
+    connect(ui->centralwidget, &ViewerWidget::completed, this,
+            &MainWindow::completed);
 }
 
 MainWindow::~MainWindow()
@@ -24,8 +26,19 @@ void MainWindow::zoomChanged(double d) {
   ui->statusbar->showMessage(ss.str().c_str());
 }
 
+void MainWindow::completed(double d, int depth, double time) {
+  std::stringstream ss;
+  ss << "Width = " << d << " completed in " << time << " seconds";
+
+  ui->statusbar->showMessage(ss.str().c_str());
+}
+
 void MainWindow::keyPressEvent(QKeyEvent *event) {
-  if (event->key() == Qt::Key_Q) {
+  switch (event->key()) {
+  case Qt::Key_Q:
     QApplication::instance()->exit(0);
+    break;
+  case Qt::Key_I:
+    ui->centralwidget->increaseIterations();
   }
 }

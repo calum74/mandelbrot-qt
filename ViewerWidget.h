@@ -35,8 +35,11 @@ public:
   void mouseMoveEvent(QMouseEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
 
+  void increaseIterations();
+
 signals:
   void zoomChanged(double newZoom);
+  void completed(double zoom, int depth, double time);
 };
 
 #endif // VIEWERWIDGET_H

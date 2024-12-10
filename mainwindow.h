@@ -21,6 +21,7 @@ public:
 
   public slots:
     void zoomChanged(double d);
+    void completed(double zoom, int depth, double time);
 
   private:
     Ui::MainWindow *ui;

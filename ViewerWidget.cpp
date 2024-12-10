@@ -87,4 +87,10 @@ void ViewerWidget::MyViewport::finished(double width, int avg_iterations,
                                         double render_time) {
   std::cout << "Width = " << width << ", average depth = " << avg_iterations
             << ", time = " << render_time << "s\n";
+  widget->completed(width, avg_iterations, render_time);
+}
+
+void ViewerWidget::increaseIterations() {
+  mandelbrot->increase_iterations();
+  calculate();
 }

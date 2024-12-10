@@ -1,14 +1,26 @@
 # Task list
 
+- [ ] Notify when complete (and the time)
+- [ ] Multi-resolution algorithms - go to the next algorithm/depth when limit is reached.
+  - [ ] Idea of an "evaluation strategy" which encompasses various options.
+- [ ] Adaptive depth?
+- [x] Higher precision using relative orbits
+
+Base orbit is at high precision
+Epsilons are calculated relatively.
+
+
+
 - [x] 'q' to quit
 - [x] When initializing and resizing the viewport, ensure that we clear the extra pixels.
 - Resize window -> extend or contract the view, don't zoom it.
-- [ ] Current interpolation seems a bit sketchy
-- [ ] Correctly log the width and number of iterations
-- [ ] Show stats in the status bar
-- [ ] Update width always (not just on completion)
+- [x] Current interpolation seems a bit sketchy
+- [x] Correctly log the width and number of iterations
+- [x] Show stats in the status bar
+- [x] Update width always (not just on completion)
 
-- [ ] Multi-resolution algorithms - go to the next algorithm/depth when limit is reached.
+- [ ] Random zoom in
+
 
 
 - Calculation strategies
