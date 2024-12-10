@@ -1,9 +1,13 @@
 # Task list
 
-- [ ] 'q' to quit
-- [ ] When initializing and resizing the viewport, ensure that we clear the extra pixels.
+- [x] 'q' to quit
+- [x] When initializing and resizing the viewport, ensure that we clear the extra pixels.
 - Resize window -> extend or contract the view, don't zoom it.
 - [ ] Current interpolation seems a bit sketchy
+- [ ] Correctly log the width and number of iterations
+
+
+
 
 - Look at the state of a pixel:
   - The state encodes the error.

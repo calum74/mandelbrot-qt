@@ -17,7 +17,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private:
+    void keyPressEvent(QKeyEvent *event) override;
+
+  private:
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

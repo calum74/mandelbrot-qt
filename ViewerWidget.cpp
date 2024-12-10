@@ -1,5 +1,6 @@
 #include "ViewerWidget.h"
 
+#include <QApplication>
 #include <QImage>
 #include <QMoveEvent>
 #include <QPainter>
@@ -34,6 +35,10 @@ void ViewerWidget::draw() {
 }
 
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
+
+  // auto old_width = viewport.width;
+  // auto old_height = viewport.height;
+
   image = QImage(event->size(), QImage::Format_RGB32);
 
   viewport.widget = this;
