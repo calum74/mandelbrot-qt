@@ -19,6 +19,9 @@ public:
 
     void keyPressEvent(QKeyEvent *event) override;
 
+  public slots:
+    void zoomChanged(double d);
+
   private:
     Ui::MainWindow *ui;
 };

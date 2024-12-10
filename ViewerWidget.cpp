@@ -51,13 +51,13 @@ void ViewerWidget::resizeEvent(QResizeEvent *event) {
 }
 
 void ViewerWidget::wheelEvent(QWheelEvent *event) {
-  auto dy = event->pixelDelta().y();
   double r = 1.0 - event->pixelDelta().y() / 100.0;
   if (r > 2.0)
     r = 2.0;
   if (r < 0.5)
     r = 0.5;
   mandelbrot->zoom(r, event->position().x(), event->position().y(), viewport);
+  zoomChanged(mandelbrot->width());
   calculate();
 }
 
@@ -79,8 +79,6 @@ void ViewerWidget::mousePressEvent(QMouseEvent *event) {
 }
 
 void ViewerWidget::MyViewport::region_updated(int x, int y, int w, int h) {
-  // !! Can specify which region to repaint
-  // widget->repaint();
   // Note will be called on different threads
   widget->update();
 }

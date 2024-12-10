@@ -36,6 +36,7 @@ public:
   void mousePressEvent(QMouseEvent *event) override;
 
 signals:
+  void zoomChanged(double newZoom);
 };
 
 #endif // VIEWERWIDGET_H
