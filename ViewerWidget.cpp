@@ -91,6 +91,6 @@ void ViewerWidget::MyViewport::finished(double width, int avg_iterations,
 }
 
 void ViewerWidget::increaseIterations() {
-  mandelbrot->increase_iterations();
+  mandelbrot->increase_iterations(viewport);
   calculate();
 }
