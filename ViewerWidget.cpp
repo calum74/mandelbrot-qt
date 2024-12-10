@@ -75,7 +75,9 @@ void ViewerWidget::mousePressEvent(QMouseEvent *event) {
 
 void ViewerWidget::MyViewport::region_updated(int x, int y, int w, int h) {
   // !! Can specify which region to repaint
-  widget->repaint();
+  // widget->repaint();
+  // Note will be called on different threads
+  widget->update();
 }
 
 void ViewerWidget::MyViewport::finished(double width, int avg_iterations,
