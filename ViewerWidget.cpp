@@ -12,8 +12,8 @@
 #include <iostream>
 
 ViewerWidget::ViewerWidget(QWidget *parent)
-    : QWidget{parent},
-      mandelbrot{fractals::make_mandelbrot(fractals::Algorithm::Default)} {}
+    : QWidget{parent}, colourMap{fractals::make_colourmap()},
+      mandelbrot{fractals::make_mandelbrot()} {}
 
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
 
@@ -25,7 +25,7 @@ void ViewerWidget::calculate() {
   viewport.width = image.width();
   viewport.height = image.height();
 
-  mandelbrot->calculate_async(viewport);
+  mandelbrot->calculate_async(viewport, *colourMap);
 }
 
 void ViewerWidget::draw() {
