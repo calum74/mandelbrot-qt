@@ -1,12 +1,10 @@
 # Task list
 
-- `o` to zoom out
-- Heuristics on iteration count
-
+- [ ] Fix the crash at high zoom
 - [ ] Auto zoom in based on cursor
 - [ ] Multiresolution magic
 - [ ] CPack
-- [ ] Open-source mandelbrot repo?
+- [ ] Open-source mandelbrot repo
 
 Core work:
 - [x] Use binary search to locate the starting point better (1)
@@ -14,10 +12,10 @@ Core work:
 - [ ] Build on Actions if possible & upload artefacts (3)
 - [ ] Create a `class Algorithm` which is different to `Fractal` (4)
 - [x] Refactor orbit.hpp (5)
-- [ ] Figure out epsilon
+- [x] Figure out epsilon
 - [ ] Multi-resolution rendering/switch algorithm at different resolutions
-- [ ] Multithreading
-- [ ] Fix precision issues/glitches. Maybe check that the low epsilon was just a fluke and we need to validate all values.
+- [x] Multithreading
+- [x] Fix precision issues/glitches. Maybe check that the low epsilon was just a fluke and we need to validate all values.
 
 Algorithm improvements:
 - [x] Fix up the colour palette.
@@ -31,12 +29,11 @@ UI improvements:
 - [ ] Reset back to start
 - [ ] Tweak iterations
 - [ ] Tweak options, e.g. speed or precision
-- [ ] Tweak colour palette
-- [ ] Shift colour palette
 - [ ] Random explore
 - [ ] Ensure we render image at the highest resolution  
 - [ ] Prevent zooming out too far
-
+- [ ] Initial position should be in the center
+- [ ] Window resizing correctly
 
 Random:
 - [ ] set max_iterations based on min-iterations
@@ -48,24 +45,19 @@ Version 2.0:
 - [ ] Export to image
 - [ ] Generate movie
 - [ ] Smooth shading
+- [ ] Auto-iterations
+- [ ] Smooth navigation
+- [ ] Tweak colour palette
+- [ ] Shift colour palette
 
 
 # Notes
 
-Rendering & threading:
-- Problem with async updates is that drawing directly to the view is a bad idea.
-- Solution is for each thread to render every nth pixel
-- Each thread gets assigned every nth 16x16 region and only renders those
-- However this could race between threads, so each thread owns a 16x16 pixel
+Multiresolution design
+When zooming in or out, a fractal can report on whether it has reached its limit.
+? How to hand over the coordinates from one fractal to another?
 
-- Only update the display once each stage is completed
+E.g.
 
 
-  - How to detect?
-  - When a thread finishes a stage, it subtracts the stage from the total.
-  - On round number
-
-- How to sync threads
-
-Algorithm?
-1) 
+A fractal can report on its 
