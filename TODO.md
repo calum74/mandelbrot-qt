@@ -1,10 +1,14 @@
 # Task list
 
-- [ ] Fix the crash at high zoom
+- [ ] Fix the crash at high zoom (I think it's just too small)
 - [ ] Auto zoom in based on cursor
 - [ ] Multiresolution magic
 - [ ] CPack
 - [ ] Open-source mandelbrot repo
+- [ ] Smooth rendering.
+  We'll need two viewports.
+  We'll need to limit the zoom speed to equal the frame rate.
+
 
 Core work:
 - [x] Use binary search to locate the starting point better (1)
@@ -53,6 +57,24 @@ Version 2.0:
 
 # Notes
 
+Problem:
+How to transfer the coordinates of one fractal to another?
+
+```c++
+class Real
+{
+public:
+  bool negative;
+  std::vector<std::uint64_t> parts;
+
+  double to_double() const;
+};
+
+void Fractal::initialize(const Real &r1, const Real &r2, const Real &w, const Real &h);
+```
+
+
+
 Multiresolution design
 When zooming in or out, a fractal can report on whether it has reached its limit.
 ? How to hand over the coordinates from one fractal to another?
@@ -61,3 +83,16 @@ E.g.
 
 
 A fractal can report on its 
+
+## Smooth zooming
+
+In quality mode, we only allow zooming when we have fi
+
+
+
+The current viewport scaling idea is quick and ugly. It's made worse by threading.
+
+When we zoom, we need to smoothly project pixels onto the plane.
+
+We need to create a sense of total immersion.
+

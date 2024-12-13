@@ -46,5 +46,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
   case Qt::Key_O:
     ui->centralwidget->decreaseIterations();
     break;
+  case Qt::Key_A:
+    ui->centralwidget->toggleAutoMode();
+    break;
   }
 }

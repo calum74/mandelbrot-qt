@@ -13,7 +13,9 @@
 
 ViewerWidget::ViewerWidget(QWidget *parent)
     : QWidget{parent}, colourMap{fractals::make_colourmap()},
-      mandelbrot{fractals::make_mandelbrot()} {}
+      mandelbrot{fractals::make_mandelbrot()} {
+  connect(&timer, &QTimer::timeout, this, &ViewerWidget::timer2);
+}
 
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
 
@@ -70,6 +72,8 @@ void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
     press_x = event->pos().x();
     press_y = event->pos().y();
   }
+  move_x = event->pos().x();
+  move_y = event->pos().y();
 }
 
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
@@ -101,3 +105,20 @@ void ViewerWidget::decreaseIterations() {
   mandelbrot->decrease_iterations(viewport);
   calculate();
 }
+
+void ViewerWidget::toggleAutoMode() {
+
+  if (timer.isActive())
+    timer.stop();
+  else
+    timer.start(100);
+}
+
+void ViewerWidget::timer2() {
+  // std::cout << "Timer called!\n";
+  mandelbrot->zoom(0.99, move_x, move_y, viewport);
+  zoomChanged(mandelbrot->width());
+  calculate();
+}
+
+void ViewerWidget::timerEvent(QTimerEvent *evt) {}

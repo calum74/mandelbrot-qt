@@ -2,6 +2,7 @@
 #define VIEWERWIDGET_H
 
 #include <QImage>
+#include <QTimer>
 #include <QWidget>
 
 #include "fractal.hpp"
@@ -21,12 +22,14 @@ class ViewerWidget : public QWidget {
   std::unique_ptr<fractals::Fractal> mandelbrot;
 
   // Track the previous position of the mouse cursor
-  int press_x, press_y;
+  int press_x, press_y, move_x, move_y;
 
   void calculate();
   void draw();
 
   std::atomic<int> pending_redraw;
+
+  QTimer timer;
 
 public:
   explicit ViewerWidget(QWidget *parent = nullptr);
@@ -37,9 +40,14 @@ public:
   void wheelEvent(QWheelEvent *event) override;
   void mouseMoveEvent(QMouseEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
+  void timerEvent(QTimerEvent *event) override;
 
   void increaseIterations();
   void decreaseIterations();
+  void toggleAutoMode();
+
+private slots:
+  void timer2();
 
 signals:
   void zoomChanged(double newZoom);
