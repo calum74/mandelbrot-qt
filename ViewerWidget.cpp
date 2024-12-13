@@ -29,6 +29,7 @@ void ViewerWidget::calculate() {
 }
 
 void ViewerWidget::draw() {
+  pending_redraw = 0;
   QPainter painter(this);
 
   painter.drawImage(this->rect(), image);
@@ -80,7 +81,10 @@ void ViewerWidget::mousePressEvent(QMouseEvent *event) {
 
 void ViewerWidget::MyViewport::region_updated(int x, int y, int w, int h) {
   // Note will be called on different threads
-  widget->update();
+  if (!widget->pending_redraw) {
+    ++widget->pending_redraw;
+    widget->update();
+  }
 }
 
 void ViewerWidget::MyViewport::finished(double width, int min_depth,

@@ -26,6 +26,8 @@ class ViewerWidget : public QWidget {
   void calculate();
   void draw();
 
+  std::atomic<int> pending_redraw;
+
 public:
   explicit ViewerWidget(QWidget *parent = nullptr);
 
@@ -40,7 +42,7 @@ public:
 
 signals:
   void zoomChanged(double newZoom);
-  void completed(double zoom, int min_depth, int max_depth, double time);
+  void completed(double width, int min_depth, int max_depth, double time);
 };
 
 #endif // VIEWERWIDGET_H
