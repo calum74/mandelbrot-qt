@@ -39,6 +39,7 @@ public:
   void mousePressEvent(QMouseEvent *event) override;
 
   void increaseIterations();
+  void decreaseIterations();
 
 signals:
   void zoomChanged(double newZoom);

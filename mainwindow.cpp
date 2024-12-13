@@ -42,5 +42,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
     break;
   case Qt::Key_I:
     ui->centralwidget->increaseIterations();
+    break;
+  case Qt::Key_O:
+    ui->centralwidget->decreaseIterations();
+    break;
   }
 }

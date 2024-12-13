@@ -96,3 +96,8 @@ void ViewerWidget::increaseIterations() {
   mandelbrot->increase_iterations(viewport);
   calculate();
 }
+
+void ViewerWidget::decreaseIterations() {
+  mandelbrot->decrease_iterations(viewport);
+  calculate();
+}

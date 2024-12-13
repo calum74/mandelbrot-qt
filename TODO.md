@@ -1,15 +1,12 @@
 # Task list
 
-Next up:
-- [ ] Threading
-  - UI freeze sometimes
-    Problem with the mouse??
-  - Rendering glitches
+- `o` to zoom out
+- Heuristics on iteration count
 
 - [ ] Auto zoom in based on cursor
 - [ ] Multiresolution magic
 - [ ] CPack
-- [ ] Open-source mandelbrot algorithms?
+- [ ] Open-source mandelbrot repo?
 
 Core work:
 - [x] Use binary search to locate the starting point better (1)
@@ -23,10 +20,11 @@ Core work:
 - [ ] Fix precision issues/glitches. Maybe check that the low epsilon was just a fluke and we need to validate all values.
 
 Algorithm improvements:
-- [ ] Fix up the colour palette.
+- [x] Fix up the colour palette.
 - [ ] Smooth shading
 - [ ] Shadows
 - [ ] Auto-depth
+- [ ] Turn rendering_sequence into an iterator
 
 UI improvements:
 - [ ] Ability to add new fractals (1,2,3...)
