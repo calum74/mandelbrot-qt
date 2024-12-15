@@ -12,7 +12,10 @@ MainWindow::MainWindow(QWidget *parent)
             &MainWindow::zoomChanged);
     connect(ui->centralwidget, &ViewerWidget::completed, this,
             &MainWindow::completed);
-    connect(ui->actionCopy_coords, &QAction::triggered, ui->centralwidget, &ViewerWidget::copyCoords);
+    connect(ui->actionCopy, &QAction::triggered, ui->centralwidget,
+            &ViewerWidget::copyCoords);
+
+    ui->actionCopy->setShortcut(QKeySequence::Copy);
 }
 
 MainWindow::~MainWindow()
@@ -51,4 +54,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
     ui->centralwidget->toggleAutoMode();
     break;
   }
+
+  QMainWindow::keyPressEvent(event);
 }

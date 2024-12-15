@@ -44,9 +44,8 @@
     <addaction name="actionOpen"/>
     <addaction name="actionSave_position"/>
     <addaction name="actionExport_image"/>
-    <addaction name="actionCopy_image"/>
     <addaction name="separator"/>
-    <addaction name="actionCopy_coords"/>
+    <addaction name="actionCopy"/>
     <addaction name="actionPaste_coords"/>
     <addaction name="separator"/>
     <addaction name="actionMake_movie"/>
@@ -112,9 +111,12 @@
     <string>Save...</string>
    </property>
   </action>
-  <action name="actionCopy_coords">
+  <action name="actionCopy">
    <property name="text">
-    <string>Copy coords</string>
+    <string>Copy</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C, Meta+C</string>
    </property>
   </action>
   <action name="actionPaste_coords">
@@ -125,6 +127,9 @@
   <action name="actionCopy_image">
    <property name="text">
     <string>Copy image</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+C</string>
    </property>
   </action>
   <action name="actionMandelbrot">
