@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+enable_testing()
 add_subdirectory(mandelbrot)
 include_directories(mandelbrot)
 link_libraries(mandelbrot)

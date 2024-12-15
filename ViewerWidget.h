@@ -46,8 +46,10 @@ public:
   void decreaseIterations();
   void toggleAutoMode();
 
-private slots:
+
+public slots:
   void timer2();
+  void copyCoords();
 
 signals:
   void zoomChanged(double newZoom);

@@ -1,14 +1,41 @@
 # Task list
 
-- [ ] Fix the crash at high zoom (I think it's just too small)
-- [ ] Auto zoom in based on cursor
-- [ ] Multiresolution magic
-- [ ] CPack
+MVP tasks:
+- [ ] Copy coords as text
+- [x] Menu bar
 - [ ] Open-source mandelbrot repo
-- [ ] Smooth rendering.
-  We'll need two viewports.
-  We'll need to limit the zoom speed to equal the frame rate.
+- [ ] CPack
+- [ ] Copy/Paste coords
 
+
+Output decimal:
+1) Multiply number by 1000000000
+2) Write the decimal part
+
+Parse decimal:
+1) Represent a tenth
+2) Read a digit
+3) Multiply by one tenth
+4) Carry on
+
+View management logic should be abstract
+
+When we zoom out, we should also reduce the iteration count
+
+Testing:
+- [ ] Orbits tests
+- [ ] High precision tests
+
+
+Refactoring:
+- [ ] Abstract the idea of a view/algorithm and reference orbit
+
+- [ ] Smooth rendering.
+- [ ] Unit-test orbits - see how far they diverge from a reference orbit.
+
+- Zoom out to use a slower algorithm?
+- [ ] Still some glitches with epsilon
+- Load a coord (in decimal form)
 
 Core work:
 - [x] Use binary search to locate the starting point better (1)
@@ -17,7 +44,7 @@ Core work:
 - [ ] Create a `class Algorithm` which is different to `Fractal` (4)
 - [x] Refactor orbit.hpp (5)
 - [x] Figure out epsilon
-- [ ] Multi-resolution rendering/switch algorithm at different resolutions
+- [x] Multi-resolution rendering/switch algorithm at different resolutions
 - [x] Multithreading
 - [x] Fix precision issues/glitches. Maybe check that the low epsilon was just a fluke and we need to validate all values.
 
@@ -35,13 +62,15 @@ UI improvements:
 - [ ] Tweak options, e.g. speed or precision
 - [ ] Random explore
 - [ ] Ensure we render image at the highest resolution  
-- [ ] Prevent zooming out too far
-- [ ] Initial position should be in the center
-- [ ] Window resizing correctly
+- [x] Prevent zooming out too far
+- [x] Initial position should be in the center
+- [x] Window resizing correctly
+- [ ] Get an app icon
+- [ ] Create an installer package
 
 Random:
-- [ ] set max_iterations based on min-iterations
-- [ ] Multi-resolution algorithms - go to the next algorithm/depth when limit is reached.
+- [x] set max_iterations based on min-iterations
+- [x] Multi-resolution algorithms - go to the next algorithm/depth when limit is reached.
   - [ ] Idea of an "evaluation strategy" which encompasses various options.
 
 Version 2.0:
@@ -57,34 +86,10 @@ Version 2.0:
 
 # Notes
 
-Problem:
-How to transfer the coordinates of one fractal to another?
-
-```c++
-class Real
-{
-public:
-  bool negative;
-  std::vector<std::uint64_t> parts;
-
-  double to_double() const;
-};
-
-void Fractal::initialize(const Real &r1, const Real &r2, const Real &w, const Real &h);
-```
-
-
-
-Multiresolution design
-When zooming in or out, a fractal can report on whether it has reached its limit.
-? How to hand over the coordinates from one fractal to another?
-
-E.g.
-
-
-A fractal can report on its 
 
 ## Smooth zooming
+
+
 
 In quality mode, we only allow zooming when we have fi
 

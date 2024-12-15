@@ -10,6 +10,7 @@
 
 // Only for debugging
 #include <iostream>
+#include "ViewCoords.hpp"
 
 ViewerWidget::ViewerWidget(QWidget *parent)
     : QWidget{parent}, colourMap{fractals::make_colourmap()},
@@ -122,3 +123,12 @@ void ViewerWidget::timer2() {
 }
 
 void ViewerWidget::timerEvent(QTimerEvent *evt) {}
+
+void ViewerWidget::copyCoords()
+{
+    auto c = mandelbrot->get_coords();
+    std::cout << c.x0 << std::endl;
+    std::cout << c.y0 << std::endl;
+    std::cout << c.w << std::endl;
+    std::cout << c.h << std::endl;
+}

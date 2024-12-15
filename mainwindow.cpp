@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
             &MainWindow::zoomChanged);
     connect(ui->centralwidget, &ViewerWidget::completed, this,
             &MainWindow::completed);
+    connect(ui->actionCopy_coords, &QAction::triggered, ui->centralwidget, &ViewerWidget::copyCoords);
 }
 
 MainWindow::~MainWindow()

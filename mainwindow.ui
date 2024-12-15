@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>MandelbrotQt</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../Desktop/mbqticon.png</normaloff>../../Desktop/mbqticon.png</iconset>
+  </property>
   <widget class="ViewerWidget" name="centralwidget">
    <property name="mouseTracking">
     <bool>true</bool>
@@ -35,12 +39,144 @@
    </property>
    <widget class="QMenu" name="menuExample">
     <property name="title">
-     <string>Example</string>
+     <string>File</string>
     </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave_position"/>
+    <addaction name="actionExport_image"/>
+    <addaction name="actionCopy_image"/>
+    <addaction name="separator"/>
+    <addaction name="actionCopy_coords"/>
+    <addaction name="actionPaste_coords"/>
+    <addaction name="separator"/>
+    <addaction name="actionMake_movie"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuOptions">
+    <property name="title">
+     <string>Rendering</string>
+    </property>
+    <addaction name="actionSpeed"/>
+    <addaction name="actionQuality"/>
+    <addaction name="actionThreads"/>
+    <addaction name="separator"/>
+    <addaction name="actionIncrease_iterations"/>
+    <addaction name="actionDecrease_iterations"/>
+    <addaction name="separator"/>
+    <addaction name="actionColours"/>
+    <addaction name="actionRandomize_palette"/>
+   </widget>
+   <widget class="QMenu" name="menuFractal">
+    <property name="title">
+     <string>Fractal</string>
+    </property>
+    <addaction name="actionMandelbrot"/>
+   </widget>
+   <widget class="QMenu" name="menuBookmarks">
+    <property name="title">
+     <string>Bookmarks</string>
+    </property>
+    <addaction name="actionHome"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave"/>
    </widget>
    <addaction name="menuExample"/>
+   <addaction name="menuOptions"/>
+   <addaction name="menuFractal"/>
+   <addaction name="menuBookmarks"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open...</string>
+   </property>
+  </action>
+  <action name="actionSpeed">
+   <property name="text">
+    <string>Speed</string>
+   </property>
+  </action>
+  <action name="actionQuality">
+   <property name="text">
+    <string>Quality</string>
+   </property>
+  </action>
+  <action name="actionExport_image">
+   <property name="text">
+    <string>Export image</string>
+   </property>
+  </action>
+  <action name="actionSave_position">
+   <property name="text">
+    <string>Save...</string>
+   </property>
+  </action>
+  <action name="actionCopy_coords">
+   <property name="text">
+    <string>Copy coords</string>
+   </property>
+  </action>
+  <action name="actionPaste_coords">
+   <property name="text">
+    <string>Paste coords</string>
+   </property>
+  </action>
+  <action name="actionCopy_image">
+   <property name="text">
+    <string>Copy image</string>
+   </property>
+  </action>
+  <action name="actionMandelbrot">
+   <property name="text">
+    <string>Mandelbrot</string>
+   </property>
+  </action>
+  <action name="actionIncrease_iterations">
+   <property name="text">
+    <string>Increase iterations</string>
+   </property>
+  </action>
+  <action name="actionDecrease_iterations">
+   <property name="text">
+    <string>Decrease iterations</string>
+   </property>
+  </action>
+  <action name="actionMake_movie">
+   <property name="text">
+    <string>Make movie...</string>
+   </property>
+  </action>
+  <action name="actionColours">
+   <property name="text">
+    <string>Colours...</string>
+   </property>
+  </action>
+  <action name="actionRandomize_palette">
+   <property name="text">
+    <string>Randomize palette</string>
+   </property>
+  </action>
+  <action name="actionThreads">
+   <property name="text">
+    <string>Threads</string>
+   </property>
+  </action>
+  <action name="actionHome">
+   <property name="text">
+    <string>Home</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

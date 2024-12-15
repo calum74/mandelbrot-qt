@@ -19,6 +19,12 @@ To install binaries for your plaform, just go to the relevant [releases] page. M
 ## Contributions
 
 
+# What is the Mandelbrot set?
+
+
+
+
+
 ## Technical info
 
 This is a straightforward implementation of well known Mandelbrot algorithms, using multi-threading, perturbation and Taylor series to accelerate deep rendering. There is also a simple high-precision fixed-point implementation. None of this is new, it is just a simple and solid implementation for people to enjoy.
