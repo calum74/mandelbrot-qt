@@ -149,3 +149,66 @@ void ViewerWidget::copyCoords()
     data->setText(ss.str().c_str());
     clipboard->setMimeData(data);
 }
+
+void ViewerWidget::getCoords(QString &x, QString &y, QString &r) const {
+  auto c = mandelbrot->get_coords();
+
+  auto cx = c.x0 + c.w / 2;
+  auto cy = c.y0 + c.h / 2;
+  auto cr = c.w / 2;
+
+  int zeros = fractals::count_zeros(c.w);
+  int width = 10 + zeros * 0.30103;
+
+  {
+    std::stringstream ss;
+    ss << std::setprecision(width) << cx << std::endl;
+    x = ss.str().c_str();
+  }
+
+  {
+    std::stringstream ss;
+    ss << std::setprecision(width) << cy << std::endl;
+    y = ss.str().c_str();
+  }
+
+  {
+    std::stringstream ss;
+    ss << std::setprecision(width) << cr << std::endl;
+    r = ss.str().c_str();
+  }
+}
+
+bool ViewerWidget::setCoords(const QString &x, const QString &y,
+                             const QString &r) {
+  fractals::ViewCoords coords;
+
+  fractals::ViewCoords::value_type cx;
+  fractals::ViewCoords::value_type cy;
+  fractals::ViewCoords::value_type cr;
+
+  {
+    std::istringstream ss(x.toStdString());
+    ss >> cx;
+  }
+
+  {
+    std::istringstream ss(y.toStdString());
+    ss >> cy;
+  }
+  {
+    std::istringstream ss(r.toStdString());
+    ss >> cr;
+  }
+
+  coords.x0 = cx - cr;
+  coords.y0 = cy - cr;
+  coords.w = 2 * cr;
+  coords.h = coords.w;
+  coords.max_iterations = 500; // This is wrong!
+
+  mandelbrot->set_coords(coords);
+  mandelbrot->set_aspect_ratio(viewport);
+  calculate();
+  return true;
+}

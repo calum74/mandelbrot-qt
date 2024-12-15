@@ -1,9 +1,8 @@
 # Task list
 
 MVP tasks:
-- [ ] Copy coords as text
-- [ ] Copy image to clipboard
 - [x] Menu bar
+- [ ] Go to coords
 - [ ] Open-source mandelbrot repo
 - [ ] CPack
 - [ ] Copy/Paste coords

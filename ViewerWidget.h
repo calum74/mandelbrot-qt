@@ -46,6 +46,8 @@ public:
   void decreaseIterations();
   void toggleAutoMode();
 
+  void getCoords(QString &x, QString &y, QString &r) const;
+  bool setCoords(const QString &x, const QString &y, const QString &r);
 
 public slots:
   void timer2();

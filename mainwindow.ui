@@ -43,14 +43,8 @@
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionSave_position"/>
-    <addaction name="actionExport_image"/>
     <addaction name="separator"/>
     <addaction name="actionCopy"/>
-    <addaction name="actionPaste_coords"/>
-    <addaction name="separator"/>
-    <addaction name="actionMake_movie"/>
-    <addaction name="separator"/>
-    <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
     <property name="title">
@@ -79,6 +73,7 @@
     <addaction name="actionHome"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
+    <addaction name="actionGoTo"/>
    </widget>
    <addaction name="menuExample"/>
    <addaction name="menuOptions"/>
@@ -180,6 +175,14 @@
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionGoTo">
+   <property name="text">
+    <string>Go to...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
    </property>
   </action>
  </widget>

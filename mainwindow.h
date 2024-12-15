@@ -22,6 +22,7 @@ public:
   public slots:
     void zoomChanged(double d);
     void completed(double zoom, int min_depth, int max_depth, double time);
+    void openGoToDialog();
 
   private:
     Ui::MainWindow *ui;

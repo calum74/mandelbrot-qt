@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "gotodialog.h"
 #include "ui_mainwindow.h"
 #include <QKeyEvent>
 #include <sstream>
@@ -14,8 +15,11 @@ MainWindow::MainWindow(QWidget *parent)
             &MainWindow::completed);
     connect(ui->actionCopy, &QAction::triggered, ui->centralwidget,
             &ViewerWidget::copyCoords);
+    connect(ui->actionGoTo, &QAction::triggered, this,
+            &MainWindow::openGoToDialog);
 
     ui->actionCopy->setShortcut(QKeySequence::Copy);
+    ui->actionQuit->setShortcut(QKeySequence::Quit);
 }
 
 MainWindow::~MainWindow()
@@ -40,6 +44,7 @@ void MainWindow::completed(double d, int min_depth, int max_depth,
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
+  // TODO: DO this using menu items
   switch (event->key()) {
   case Qt::Key_Q:
     QApplication::instance()->exit(0);
@@ -56,4 +61,16 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
   }
 
   QMainWindow::keyPressEvent(event);
+}
+
+void MainWindow::openGoToDialog() {
+  GoToDialog dialog;
+  // TODO: Populate current coords
+  QString x, y, r;
+  ui->centralwidget->getCoords(x, y, r);
+  dialog.setCoords(x, y, r);
+  if (dialog.exec()) {
+    dialog.getCoords(x, y, r);
+    ui->centralwidget->setCoords(x, y, r);
+  }
 }
