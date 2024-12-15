@@ -1,23 +1,26 @@
 # Task list
 
 MVP tasks:
-- [x] Menu bar
-- [ ] Open-source mandelbrot repo
-- [ ] CPack
-- [ ] Copy/Paste coords
+- [ ] Build tasks
+   - open-source
+   - CPack maybe
+- [ ] Set an icon
 
+Coding tasks:
+- Refactor view layout logic
+- General code tidy
+
+Bugs:
 - Around 1e-30, the view goto logic is buggy
 - You should be able to go-to the same location without moving anywhere
+- When increasing iterations should reset the status bar
 
-
-View management logic should be abstract
 
 When we zoom out, we should also reduce the iteration count
 
 Testing:
 - [ ] Orbits tests
 - [ ] High precision tests
-
 
 Refactoring:
 - [ ] Abstract the idea of a view/algorithm and reference orbit
@@ -27,7 +30,6 @@ Refactoring:
 
 - Zoom out to use a slower algorithm?
 - [ ] Still some glitches with epsilon
-- Load a coord (in decimal form)
 
 Core work:
 - [x] Use binary search to locate the starting point better (1)
@@ -65,6 +67,10 @@ Random:
 - [x] Multi-resolution algorithms - go to the next algorithm/depth when limit is reached.
   - [ ] Idea of an "evaluation strategy" which encompasses various options.
 
+Observation:
+- Around minibrots, you have local rotation symmetry of order 2
+
+
 Version 2.0:
 - [ ] Load/save position
 - [ ] Export to image
@@ -78,18 +84,4 @@ Version 2.0:
 
 # Notes
 
-
-## Smooth zooming
-
-
-
-In quality mode, we only allow zooming when we have fi
-
-
-
-The current viewport scaling idea is quick and ugly. It's made worse by threading.
-
-When we zoom, we need to smoothly project pixels onto the plane.
-
-We need to create a sense of total immersion.
 

@@ -32,6 +32,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         ViewerWidget.h ViewerWidget.cpp
         gotodialog.h gotodialog.cpp gotodialog.ui
+        resources.qrc
 
     )
 # Define target properties for Android with Qt 6 as:
