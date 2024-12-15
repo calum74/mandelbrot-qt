@@ -136,10 +136,16 @@
    <property name="text">
     <string>Increase iterations</string>
    </property>
+   <property name="shortcut">
+    <string>I</string>
+   </property>
   </action>
   <action name="actionDecrease_iterations">
    <property name="text">
     <string>Decrease iterations</string>
+   </property>
+   <property name="shortcut">
+    <string>O</string>
    </property>
   </action>
   <action name="actionMake_movie">

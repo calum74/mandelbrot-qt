@@ -2,15 +2,12 @@
 
 MVP tasks:
 - [x] Menu bar
-- [ ] Go to coords
 - [ ] Open-source mandelbrot repo
 - [ ] CPack
 - [ ] Copy/Paste coords
 
-
-Output decimal:
-1) Multiply number by 1000000000
-2) Write the decimal part
+- Around 1e-30, the view goto logic is buggy
+- You should be able to go-to the same location without moving anywhere
 
 
 View management logic should be abstract

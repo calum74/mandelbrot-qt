@@ -131,16 +131,16 @@ void ViewerWidget::copyCoords()
 {
     auto c = mandelbrot->get_coords();
 
-    auto cx = c.x0 + c.w / 2;
-    auto cy = c.y0 + c.h / 2;
+    auto cx = c.x;
+    auto cy = c.y;
 
-    int zeros = fractals::count_zeros(c.w);
-    int width = 10 + zeros * 0.30103;
+    int zeros = fractals::count_zeros(c.r);
+    int width = 4 + zeros * 0.30103;
 
     std::stringstream ss;
     ss << std::setprecision(width) << cx << std::endl;
     ss << cy << std::endl;
-    ss << c.w << std::endl;
+    ss << c.r << std::endl;
 
     QClipboard *clipboard = QApplication::clipboard();
 
@@ -154,28 +154,24 @@ void ViewerWidget::getCoords(QString &x, QString &y, QString &r,
                              QString &i) const {
   auto c = mandelbrot->get_coords();
 
-  auto cx = c.x0 + c.w / 2;
-  auto cy = c.y0 + c.h / 2;
-  auto cr = c.w / 2;
-
-  int zeros = fractals::count_zeros(c.w);
-  int width = 10 + zeros * 0.30103;
+  int zeros = fractals::count_zeros(c.r);
+  int width = 3 + zeros * 0.30103;
 
   {
     std::stringstream ss;
-    ss << std::setprecision(width) << cx << std::endl;
+    ss << std::setprecision(width) << c.x << std::endl;
     x = ss.str().c_str();
   }
 
   {
     std::stringstream ss;
-    ss << std::setprecision(width) << cy << std::endl;
+    ss << std::setprecision(width) << c.y << std::endl;
     y = ss.str().c_str();
   }
 
   {
     std::stringstream ss;
-    ss << std::setprecision(width) << cr << std::endl;
+    ss << std::setprecision(width) << c.r << std::endl;
     r = ss.str().c_str();
   }
 
@@ -194,22 +190,18 @@ bool ViewerWidget::setCoords(const QString &x, const QString &y,
   fractals::ViewCoords::value_type cy;
   fractals::ViewCoords::value_type cr;
 
-  std::cout << "Got coords to " << x.toStdString() << "," << y.toStdString()
-            << "," << r.toStdString() << std::endl;
-
   {
     std::istringstream ss(x.toStdString());
-    ss >> cx;
-    std::cout << "Parsed " << x.toStdString() << " as " << cx << std::endl;
+    ss >> coords.x;
   }
 
   {
     std::istringstream ss(y.toStdString());
-    ss >> cy;
+    ss >> coords.y;
   }
   {
     std::istringstream ss(r.toStdString());
-    ss >> cr;
+    ss >> coords.r;
   }
 
   {
@@ -217,16 +209,7 @@ bool ViewerWidget::setCoords(const QString &x, const QString &y,
     ss >> coords.max_iterations;
   }
 
-  coords.x0 = cx - cr;
-  coords.y0 = cy - cr;
-  coords.w = 2 * cr;
-  coords.h = coords.w;
-
-  std::cout << "Setting coords to " << coords.x0 << "," << coords.y0 << ","
-            << coords.w << std::endl;
-
-  mandelbrot->set_coords(coords);
-  mandelbrot->set_aspect_ratio(viewport);
+  mandelbrot->set_coords(coords, viewport);
   calculate();
   return true;
 }

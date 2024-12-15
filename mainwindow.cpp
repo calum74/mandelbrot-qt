@@ -18,6 +18,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionGoTo, &QAction::triggered, this,
             &MainWindow::openGoToDialog);
 
+    connect(ui->actionIncrease_iterations, &QAction::triggered, ui->centralwidget, &ViewerWidget::increaseIterations);
+    connect(ui->actionDecrease_iterations, &QAction::triggered, ui->centralwidget, &ViewerWidget::decreaseIterations);
+
     ui->actionCopy->setShortcut(QKeySequence::Copy);
     ui->actionQuit->setShortcut(QKeySequence::Quit);
 }
@@ -41,26 +44,6 @@ void MainWindow::completed(double d, int min_depth, int max_depth,
      << min_depth << "-" << max_depth;
 
   ui->statusbar->showMessage(ss.str().c_str());
-}
-
-void MainWindow::keyPressEvent(QKeyEvent *event) {
-  // TODO: DO this using menu items
-  switch (event->key()) {
-  case Qt::Key_Q:
-    QApplication::instance()->exit(0);
-    break;
-  case Qt::Key_I:
-    ui->centralwidget->increaseIterations();
-    break;
-  case Qt::Key_O:
-    ui->centralwidget->decreaseIterations();
-    break;
-  case Qt::Key_A:
-    ui->centralwidget->toggleAutoMode();
-    break;
-  }
-
-  QMainWindow::keyPressEvent(event);
 }
 
 void MainWindow::openGoToDialog() {

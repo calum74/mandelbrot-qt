@@ -17,8 +17,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void keyPressEvent(QKeyEvent *event) override;
-
   public slots:
     void zoomChanged(double d);
     void completed(double zoom, int min_depth, int max_depth, double time);
