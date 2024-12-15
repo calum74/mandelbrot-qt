@@ -1,7 +1,9 @@
 #include "ViewerWidget.h"
 
 #include <QApplication>
+#include <QClipboard>
 #include <QImage>
+#include <QMimeData>
 #include <QMoveEvent>
 #include <QPainter>
 #include <QPixmap>
@@ -9,8 +11,9 @@
 #include <QWheelEvent>
 
 // Only for debugging
-#include <iostream>
 #include "ViewCoords.hpp"
+#include <iomanip>
+#include <iostream>
 
 ViewerWidget::ViewerWidget(QWidget *parent)
     : QWidget{parent}, colourMap{fractals::make_colourmap()},
@@ -127,8 +130,22 @@ void ViewerWidget::timerEvent(QTimerEvent *evt) {}
 void ViewerWidget::copyCoords()
 {
     auto c = mandelbrot->get_coords();
-    std::cout << c.x0 << std::endl;
-    std::cout << c.y0 << std::endl;
-    std::cout << c.w << std::endl;
-    std::cout << c.h << std::endl;
+
+    auto cx = c.x0 + c.w / 2;
+    auto cy = c.y0 + c.h / 2;
+
+    int zeros = fractals::count_zeros(c.w);
+    int width = 10 + zeros * 0.30103;
+
+    std::stringstream ss;
+    ss << std::setprecision(width) << cx << std::endl;
+    ss << cy << std::endl;
+    ss << c.w << std::endl;
+
+    QClipboard *clipboard = QApplication::clipboard();
+
+    QMimeData *data = new QMimeData;
+    data->setImageData(image);
+    data->setText(ss.str().c_str());
+    clipboard->setMimeData(data);
 }

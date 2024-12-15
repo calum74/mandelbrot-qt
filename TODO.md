@@ -2,6 +2,7 @@
 
 MVP tasks:
 - [ ] Copy coords as text
+- [ ] Copy image to clipboard
 - [x] Menu bar
 - [ ] Open-source mandelbrot repo
 - [ ] CPack
@@ -12,11 +13,6 @@ Output decimal:
 1) Multiply number by 1000000000
 2) Write the decimal part
 
-Parse decimal:
-1) Represent a tenth
-2) Read a digit
-3) Multiply by one tenth
-4) Carry on
 
 View management logic should be abstract
 
