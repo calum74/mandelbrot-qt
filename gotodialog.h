@@ -14,8 +14,9 @@ public:
   explicit GoToDialog(QWidget *parent = nullptr);
   ~GoToDialog();
 
-  void getCoords(QString &x, QString &y, QString &r) const;
-  void setCoords(const QString &x, const QString &y, const QString &r);
+  void getCoords(QString &x, QString &y, QString &r, QString &i) const;
+  void setCoords(const QString &x, const QString &y, const QString &r,
+                 const QString &i);
 
 private:
   Ui::GoToDialog *ui;

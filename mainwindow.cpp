@@ -66,11 +66,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 void MainWindow::openGoToDialog() {
   GoToDialog dialog;
   // TODO: Populate current coords
-  QString x, y, r;
-  ui->centralwidget->getCoords(x, y, r);
-  dialog.setCoords(x, y, r);
+  QString x, y, r, i;
+  ui->centralwidget->getCoords(x, y, r, i);
+  dialog.setCoords(x, y, r, i);
   if (dialog.exec()) {
-    dialog.getCoords(x, y, r);
-    ui->centralwidget->setCoords(x, y, r);
+    dialog.getCoords(x, y, r, i);
+    ui->centralwidget->setCoords(x, y, r, i);
   }
 }

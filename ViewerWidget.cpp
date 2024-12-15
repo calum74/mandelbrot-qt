@@ -150,7 +150,8 @@ void ViewerWidget::copyCoords()
     clipboard->setMimeData(data);
 }
 
-void ViewerWidget::getCoords(QString &x, QString &y, QString &r) const {
+void ViewerWidget::getCoords(QString &x, QString &y, QString &r,
+                             QString &i) const {
   auto c = mandelbrot->get_coords();
 
   auto cx = c.x0 + c.w / 2;
@@ -177,19 +178,29 @@ void ViewerWidget::getCoords(QString &x, QString &y, QString &r) const {
     ss << std::setprecision(width) << cr << std::endl;
     r = ss.str().c_str();
   }
+
+  {
+    std::stringstream ss;
+    ss << c.max_iterations << std::endl;
+    i = ss.str().c_str();
+  }
 }
 
 bool ViewerWidget::setCoords(const QString &x, const QString &y,
-                             const QString &r) {
+                             const QString &r, const QString &i) {
   fractals::ViewCoords coords;
 
   fractals::ViewCoords::value_type cx;
   fractals::ViewCoords::value_type cy;
   fractals::ViewCoords::value_type cr;
 
+  std::cout << "Got coords to " << x.toStdString() << "," << y.toStdString()
+            << "," << r.toStdString() << std::endl;
+
   {
     std::istringstream ss(x.toStdString());
     ss >> cx;
+    std::cout << "Parsed " << x.toStdString() << " as " << cx << std::endl;
   }
 
   {
@@ -201,11 +212,18 @@ bool ViewerWidget::setCoords(const QString &x, const QString &y,
     ss >> cr;
   }
 
+  {
+    std::istringstream ss(i.toStdString());
+    ss >> coords.max_iterations;
+  }
+
   coords.x0 = cx - cr;
   coords.y0 = cy - cr;
   coords.w = 2 * cr;
   coords.h = coords.w;
-  coords.max_iterations = 500; // This is wrong!
+
+  std::cout << "Setting coords to " << coords.x0 << "," << coords.y0 << ","
+            << coords.w << std::endl;
 
   mandelbrot->set_coords(coords);
   mandelbrot->set_aspect_ratio(viewport);
