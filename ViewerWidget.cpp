@@ -219,3 +219,8 @@ void ViewerWidget::randomizePalette() {
   mandelbrot->redraw(viewport);
   calculate();
 }
+
+void ViewerWidget::resetCurrentFractal() {
+  mandelbrot->set_coords(mandelbrot->initial_coords(), viewport);
+  calculate();
+}

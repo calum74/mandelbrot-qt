@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionRandomize_palette, &QAction::triggered, ui->centralwidget,
             &ViewerWidget::randomizePalette);
+    connect(ui->actionHome, &QAction::triggered, ui->centralwidget,
+            &ViewerWidget::resetCurrentFractal);
 }
 
 MainWindow::~MainWindow()

@@ -1,7 +1,6 @@
 # Task list
 
 MVP tasks:
-- [ ] Randomize palette
 - [ ] Home button
 - [ ] Build tasks
    - open-source
@@ -12,8 +11,6 @@ MVP tasks:
 - [x] Tidy up menus. Remove unused icons etc.
 - [ ] Write some blurb
 - [ ] Select different fractals
-- [ ] When we set regular "width" window, Say "Rendering width = X, max iterations = Y"
-  - Make sure to display that each time we re-render
 
 Coding tasks:
 - Refactor view layout logic

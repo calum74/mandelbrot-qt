@@ -54,6 +54,7 @@ public slots:
   void timer2();
   void copyCoords();
   void randomizePalette();
+  void resetCurrentFractal();
 
 signals:
   void startCalculating(double width, int maxIterations);
