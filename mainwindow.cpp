@@ -2,6 +2,7 @@
 #include "gotodialog.h"
 #include "ui_mainwindow.h"
 #include <QKeyEvent>
+#include <iomanip>
 #include <sstream>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -23,6 +24,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->actionCopy->setShortcut(QKeySequence::Copy);
     ui->actionQuit->setShortcut(QKeySequence::Quit);
+
+    connect(ui->actionRandomize_palette, &QAction::triggered, ui->centralwidget,
+            &ViewerWidget::randomizePalette);
 }
 
 MainWindow::~MainWindow()
@@ -32,8 +36,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::startCalculating(double d, int iterations) {
   std::stringstream ss;
-  ss << "Calculating width = " << d << ", up to " << iterations
-     << " iterations";
+  ss << "Calculating width = " << std::setprecision(2) << d << ", up to "
+     << iterations << " iterations";
 
   ui->statusbar->showMessage(ss.str().c_str());
 }
@@ -41,8 +45,8 @@ void MainWindow::startCalculating(double d, int iterations) {
 void MainWindow::completed(double d, int min_depth, int max_depth,
                            double time) {
   std::stringstream ss;
-  ss << "Width = " << d << " completed in " << time << " seconds, depth "
-     << min_depth << "-" << max_depth;
+  ss << "Width = " << std::setprecision(2) << d << " completed in " << time
+     << " seconds, depth " << min_depth << "-" << max_depth;
 
   ui->statusbar->showMessage(ss.str().c_str());
 }

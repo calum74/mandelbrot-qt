@@ -53,6 +53,7 @@ public:
 public slots:
   void timer2();
   void copyCoords();
+  void randomizePalette();
 
 signals:
   void startCalculating(double width, int maxIterations);

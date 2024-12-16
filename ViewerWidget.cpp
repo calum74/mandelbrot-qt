@@ -24,6 +24,8 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
 
 void ViewerWidget::calculate() {
+  startCalculating(mandelbrot->width(), mandelbrot->iterations());
+
   assert(image.width() > 0);
 
   viewport.widget = this;
@@ -64,7 +66,6 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
   if (r < 0.5)
     r = 0.5;
   mandelbrot->zoom(r, event->position().x(), event->position().y(), viewport);
-  startCalculating(mandelbrot->width(), mandelbrot->iterations());
   calculate();
 }
 
@@ -121,7 +122,6 @@ void ViewerWidget::toggleAutoMode() {
 void ViewerWidget::timer2() {
   // std::cout << "Timer called!\n";
   mandelbrot->zoom(0.99, move_x, move_y, viewport);
-  startCalculating(mandelbrot->width(), mandelbrot->iterations());
   calculate();
 }
 
@@ -212,4 +212,10 @@ bool ViewerWidget::setCoords(const QString &x, const QString &y,
   mandelbrot->set_coords(coords, viewport);
   calculate();
   return true;
+}
+
+void ViewerWidget::randomizePalette() {
+  colourMap->randomize();
+  mandelbrot->redraw(viewport);
+  calculate();
 }
