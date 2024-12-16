@@ -2,7 +2,7 @@
 
 *Insert picture here*
 
-MandelbrotQt is an desktop application to explore the Mandelbrot set. If you just want to look at fractals, go to the Downloads section.
+MandelbrotQt is a desktop application to explore the Mandelbrot set. If you just want to look at fractals, go to the Downloads section.
 
 I wrote it because there didn't seem to be many good options for MacOS, and also because it's a fun learning experience.
 
@@ -12,35 +12,8 @@ To install binaries for your plaform, just go to the relevant [releases] page. M
 
 ## Building the software
 
-## Contributing to the software
-
-
-
-## Contributions
-
 
 # What is the Mandelbrot set?
-
-
-
-
-
-## Technical info
-
-This is a straightforward implementation of well known Mandelbrot algorithms, using multi-threading, perturbation and Taylor series to accelerate deep rendering. There is also a simple high-precision fixed-point implementation. None of this is new, it is just a simple and solid implementation for people to enjoy.
-
-For the UI, Qt has been used for simple cross-platform C++.
-
-If you want to get straight to the algorithms, check out [orbit.hpp].
-
-The project has been split into two parts, so you can 
-
-* A true cross-platform application
-* A C++ template library that encapsulates
-* Open-source
-* A plug-and-play playground for different algorithms and strategies
-
-
 
 
 # Background

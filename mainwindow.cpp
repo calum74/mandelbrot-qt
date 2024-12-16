@@ -9,8 +9,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(ui->centralwidget, &ViewerWidget::zoomChanged, this,
-            &MainWindow::zoomChanged);
+    connect(ui->centralwidget, &ViewerWidget::startCalculating, this,
+            &MainWindow::startCalculating);
     connect(ui->centralwidget, &ViewerWidget::completed, this,
             &MainWindow::completed);
     connect(ui->actionCopy, &QAction::triggered, ui->centralwidget,
@@ -30,9 +30,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::zoomChanged(double d) {
+void MainWindow::startCalculating(double d, int iterations) {
   std::stringstream ss;
-  ss << "Width = " << d;
+  ss << "Calculating width = " << d << ", up to " << iterations
+     << " iterations";
 
   ui->statusbar->showMessage(ss.str().c_str());
 }

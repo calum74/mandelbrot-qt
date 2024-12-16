@@ -18,7 +18,7 @@ public:
     ~MainWindow();
 
   public slots:
-    void zoomChanged(double d);
+    void startCalculating(double d, int i);
     void completed(double zoom, int min_depth, int max_depth, double time);
     void openGoToDialog();
 

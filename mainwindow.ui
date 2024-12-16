@@ -50,10 +50,6 @@
     <property name="title">
      <string>Rendering</string>
     </property>
-    <addaction name="actionSpeed"/>
-    <addaction name="actionQuality"/>
-    <addaction name="actionThreads"/>
-    <addaction name="separator"/>
     <addaction name="actionIncrease_iterations"/>
     <addaction name="actionDecrease_iterations"/>
     <addaction name="separator"/>
@@ -72,7 +68,6 @@
     </property>
     <addaction name="actionHome"/>
     <addaction name="separator"/>
-    <addaction name="actionSave"/>
     <addaction name="actionGoTo"/>
    </widget>
    <addaction name="menuExample"/>
@@ -82,6 +77,9 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Open...</string>
    </property>
@@ -102,6 +100,9 @@
    </property>
   </action>
   <action name="actionSave_position">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save...</string>
    </property>
@@ -154,6 +155,9 @@
    </property>
   </action>
   <action name="actionColours">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Colours...</string>
    </property>
