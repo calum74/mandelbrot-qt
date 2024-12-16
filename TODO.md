@@ -1,7 +1,7 @@
 # Task list
 
 MVP tasks:
-- [ ] Home button
+- [ ] Smooth rendering
 - [ ] Build tasks
    - open-source
    - Build on Actions
