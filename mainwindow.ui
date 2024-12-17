@@ -166,6 +166,9 @@
    <property name="text">
     <string>Randomize palette</string>
    </property>
+   <property name="shortcut">
+    <string>R</string>
+   </property>
   </action>
   <action name="actionThreads">
    <property name="text">

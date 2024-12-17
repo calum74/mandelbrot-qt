@@ -1,22 +1,24 @@
 # Task list
 
 MVP tasks:
-- [ ] Smooth rendering
+- [ ] Application icon
 - [ ] Build tasks
    - open-source
    - Build on Actions
    - Build installation package
    - CPack maybe
-- [ ] Application icon
 - [x] Tidy up menus. Remove unused icons etc.
 - [ ] Write some blurb
 - [ ] Select different fractals
+- [x] When zooming with threads, don't fill it in with grey. Just invalidate the errors.
+- [x] Initial orbit calculation can hang the UI
 
 Coding tasks:
 - Refactor view layout logic
 - General code tidy
 - Unit tests
 - Still a double-free somewhere (test in debug-mode)
+- API to add fractals and options
 
 Bugs:
 - Around 1e-30, the view goto logic is buggy
@@ -69,6 +71,10 @@ Depth 275000
 -0.8803719416978159046998812464618718478458961652747324614061208825350523554491456624151328674083981171488871367376885952916902381147409350757625324489559447600501506545300366675709131155260843890892214782
 0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003025
 
+-0.0783482369601075163944917383105858335241253043551250774434430019003988613925771644508614315385856473190257091170931003505751963709736852727420939046130538282081462027787202690043558439277863842393507403938957
+-0.8803719416978159046998812464618718478458961652747324614061208825350523554491456624151328674083981171488871367376885952916902381147409350757625324489559447600501506545300366675709131155260843890892215664088828
+0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000081
+
 
 
 Refactoring:
@@ -92,6 +98,12 @@ Core work:
 - [x] Fix precision issues/glitches. Maybe check that the low epsilon was just a fluke and we need to validate all values.
 - 8 threads (or configurable)
 - Make threads more efficient
+- [ ] Mandelbrot finder - find regions of rotational symmetry somehow
+    Just a 'c' button that centers the image.
+    Index each row. Find a corresponding row that's flipped.
+
+
+  
 
 Algorithm improvements:
 - [x] Fix up the colour palette.
@@ -137,6 +149,7 @@ Version 3.0:
 
 # Notes
 
+# Smooth zoom
 
 Rendering logic:
 
@@ -154,3 +167,51 @@ Summary:
 When zooming in or out, we have a fully computed outside window, which we'll project to an "inner window" in a smooth manner. The animation 
 
 Render the 
+
+# API
+
+Circle tutorial
+
+Let's add a simple 
+
+
+circle.cpp
+
+```c++
+#include "register_fractal.hpp"
+#include "high_precision_real.hpp"
+
+template<typename Real>
+class Circle : public Renderer
+{
+  struct view_state
+  {
+    Real x0,y0,dx,dy;
+  };
+
+  static ViewCoords initial_position() {
+    return {0,0,1.5,10};
+  }
+
+  Circle(const ViewCoords &p, int w, int h, std::atomic<bool> &stop)
+  {
+    // If we computed anything slow in here, be sure to check `stop` regularly.
+    ...
+  };
+
+  double compute_point(int px, int py, const view_state &s, std::atomic<bool> &stop) const
+  {
+    auto x = x0 + px*dx;
+    auto y = y0 + py*dy;
+    return x*x + y*x <= 1.0 ? 100 : 0;
+  }
+};
+
+static bool r = register_fractal<Circle<double>>("Circle");
+```
+
+
+
+
+
+

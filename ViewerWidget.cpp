@@ -17,7 +17,8 @@
 
 ViewerWidget::ViewerWidget(QWidget *parent)
     : QWidget{parent}, colourMap{fractals::make_colourmap()},
-      mandelbrot{fractals::make_mandelbrot()} {
+      mandelbrot{fractals::make_mandelbrot()},
+      registry{fractals::make_registry()} {
   connect(&timer, &QTimer::timeout, this, &ViewerWidget::timer2);
 }
 
