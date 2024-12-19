@@ -24,6 +24,13 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        Renderer.hpp
+        Renderer.cpp
+        RenderingSequence.hpp
+        RenderingSequence.cpp
+        ColourMapImpl.cpp
+        ColourMap.hpp
+        ColourMapImpl.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
