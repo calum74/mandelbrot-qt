@@ -31,7 +31,6 @@ public:
 
   private:
     Ui::MainWindow *ui;
-    class ChangeFractalAction *currentAction;
 };
 
 // TODO: Move this elsewhere

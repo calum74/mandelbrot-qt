@@ -1,8 +1,6 @@
 # Task list
 
 MVP tasks:
-- [ ] The current fractal is selected in the menu
-- [ ] Select different fractals
 - [ ] Application icon
 - [ ] Build tasks
    - open-source

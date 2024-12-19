@@ -36,8 +36,6 @@ MainWindow::MainWindow(QWidget *parent)
     bool first = true;
     for (auto &[name, f] : ui->centralwidget->listFractals()) {
       auto *action = new ChangeFractalAction(name.c_str(), f, first);
-      if (first)
-        currentAction = action;
       first = false;
       connect(action, &ChangeFractalAction::changeFractal, this,
               &MainWindow::changeFractal);
