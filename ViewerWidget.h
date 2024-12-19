@@ -23,7 +23,7 @@ class ViewerWidget : public QWidget {
 
   std::unique_ptr<fractals::ColourMap> colourMap;
   std::unique_ptr<fractals::Registry> registry;
-  std::unique_ptr<fractals::Renderer> mandelbrot;
+  std::unique_ptr<fractals::Renderer> renderer;
 
   // Track the previous position of the mouse cursor
   int press_x, press_y, move_x, move_y;
@@ -54,11 +54,15 @@ public:
   bool setCoords(const QString &x, const QString &y, const QString &r,
                  const QString &i);
 
+  std::vector<std::pair<std::string, const fractals::PointwiseFractal &>>
+  listFractals();
+
 public slots:
   void timer2();
   void copyCoords();
   void randomizePalette();
   void resetCurrentFractal();
+  void changeFractal(const fractals::PointwiseFractal &fractal);
 
 signals:
   void startCalculating(double width, int maxIterations);

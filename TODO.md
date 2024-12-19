@@ -1,23 +1,16 @@
 # Task list
 
-Rewrite:
-- [ ] When scrolling, make sure we don't recalculate already-calculated pixels
-- [ ] Prevent zoom out too far
-- [ ] Select the right precision.
-- [ ] Slight glitch when zooming out too far.
-
 MVP tasks:
+- [ ] Select different fractals
 - [ ] Application icon
 - [ ] Build tasks
    - open-source
    - Build on Actions
    - Build installation package
    - CPack maybe
-- [x] Tidy up menus. Remove unused icons etc.
 - [ ] Write some blurb
-- [ ] Select different fractals
-- [x] When zooming with threads, don't fill it in with grey. Just invalidate the errors.
-- [x] Initial orbit calculation can hang the UI
+- [ ] Select Cubic mandelbrot
+- [ ] Further code tidying
 
 Coding tasks:
 - Refactor view layout logic
@@ -29,7 +22,6 @@ Coding tasks:
 Bugs:
 - Around 1e-30, the view goto logic is buggy
 - You should be able to go-to the same location without moving anywhere
-- When increasing iterations should reset the status bar
 - When opening 'Go to' window, ensure focus is on the ok button
 
 When we zoom out, we should also reduce the iteration count
@@ -81,46 +73,30 @@ Depth 275000
 -0.8803719416978159046998812464618718478458961652747324614061208825350523554491456624151328674083981171488871367376885952916902381147409350757625324489559447600501506545300366675709131155260843890892215664088828
 0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000081
 
-
+Can I create a mapping between every point outside the MB set to every point inside it? This would give us something to look at on the inside as well?
 
 Refactoring:
 - [ ] Abstract the idea of a view/algorithm and reference orbit
 - [ ] Ability to iterate all points simultaneously so that the black can shrink.
-
-- [ ] Smooth rendering.
 - [ ] Unit-test orbits - see how far they diverge from a reference orbit.
-
 - [ ] Still some glitches with epsilon
 
 Core work:
-- [x] Use binary search to locate the starting point better (1)
 - [ ] Log the starting iteration in the task bar (2)
 - [ ] Build on Actions if possible & upload artefacts (3)
-- [ ] Create a `class Algorithm` which is different to `Renderer` (4)
-- [x] Refactor orbit.hpp (5)
-- [x] Figure out epsilon
-- [x] Multi-resolution rendering/switch algorithm at different resolutions
 - [x] Multithreading
 - [x] Fix precision issues/glitches. Maybe check that the low epsilon was just a fluke and we need to validate all values.
 - 8 threads (or configurable)
 - Make threads more efficient
-- [ ] Mandelbrot finder - find regions of rotational symmetry somehow
-    Just a 'c' button that centers the image.
-    Index each row. Find a corresponding row that's flipped.
-
-
-  
 
 Algorithm improvements:
 - [x] Fix up the colour palette.
-- [ ] Smooth shading
 - [ ] Shadows
 - [ ] Auto-depth
 - [ ] Turn rendering_sequence into an iterator
 
 UI improvements:
 - [ ] Ability to add new fractals (1,2,3...)
-- [ ] Reset back to start
 - [ ] Tweak iterations
 - [ ] Tweak options, e.g. speed or precision
 - [ ] Random explore
@@ -131,24 +107,18 @@ UI improvements:
 - [ ] Get an app icon
 - [ ] Create an installer package
 
-Random:
-- [x] set max_iterations based on min-iterations
-- [x] Multi-resolution algorithms - go to the next algorithm/depth when limit is reached.
-  - [ ] Idea of an "evaluation strategy" which encompasses various options.
-
 Observation:
 - Around minibrots, you have local rotation symmetry of order 2
 
-
 Version 2.0:
 - [ ] Tidy up logic for smooth navigation
-- [ ] Refactor this logic
+- [ ] High quality smooth zooming
+- [ ] Center finding
 
 Version 3.0:
 - [ ] Load/save position
 - [ ] Export to image
 - [ ] Generate movie
-- [ ] Smooth shading
 - [ ] Auto-iterations
 - [ ] Smooth navigation
 - [ ] Edit colour palette
@@ -172,59 +142,32 @@ Zoom out, at a rate such that we'll expect to be completely rendered
 Summary:
 When zooming in or out, we have a fully computed outside window, which we'll project to an "inner window" in a smooth manner. The animation 
 
-Render the 
-
-# API
-
-Circle tutorial
-
-Let's add a simple 
-
-
-circle.cpp
-
-```c++
-#include "register_fractal.hpp"
-#include "high_precision_real.hpp"
-
-template<typename Real>
-class Circle : public Renderer
-{
-  struct view_state
-  {
-    Real x0,y0,dx,dy;
-  };
-
-  static ViewCoords initial_position() {
-    return {0,0,1.5,10};
-  }
-
-  Circle(const ViewCoords &p, int w, int h, std::atomic<bool> &stop)
-  {
-    // If we computed anything slow in here, be sure to check `stop` regularly.
-    ...
-  };
-
-  double compute_point(int px, int py, const view_state &s, std::atomic<bool> &stop) const
-  {
-    auto x = x0 + px*dx;
-    auto y = y0 + py*dy;
-    return x*x + y*x <= 1.0 ? 100 : 0;
-  }
-};
-
-static bool r = register_fractal<Circle<double>>("Circle");
-```
-
 
 
 
 Center-finding:
 
 Algothim:
+1. Decide the length of a line
+
 Locate a line in the top half of the screen.
 
 Locate the same line in the bottom half of the screen. Create a rolling hash of length n, creating a window. However, we'd like to sum the differences - a permutation/FFT would be a good choice but my maths isn't good enough.
+
+To match a line:
+- Compare 2 points. Create a different-squared measure of the lines originating at those points.
+- Each point needs an "index" and we only compare points with similar indexes.
+
+To generate the index for a point:
+  Create 4 numbers: The average of the lines above, below, left and right N pixels.
+  We can implement this as a rolling average in 4 directions.
+
+To find potential matches:
+Sort all points by index, creating 4 arrays.
+In each array, compare points that are extremely close. Ensure that they compare in all 4 directions (flipping for symmetry). This generates candidate pairs.
+Validate each candidate pair?
+Find the center-point of the candidate pair and add 1 to the "center points found" on this pixel.
+The center-points are the pixels with the most votes.
 
 
 

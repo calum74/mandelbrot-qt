@@ -178,6 +178,11 @@ public:
     underlying_fractal->decrease_iterations(vp);
   }
 
+  void set_fractal(const fractals::PointwiseFractal &f) override {
+    stop_current_calculation();
+    underlying_fractal->set_fractal(f);
+  }
+
   double calculate_point(int w, int h, int x, int y) override {
     return underlying_fractal->calculate_point(w, h, x, y);
   }
@@ -401,7 +406,7 @@ class CalculatedFractalRenderer : public fractals::Renderer {
 public:
   ViewCoords coords;
 
-  CalculatedFractalRenderer(const PointwiseFractal &f) : factory(f) {
+  CalculatedFractalRenderer(const PointwiseFractal &f) : factory(&f) {
     coords = initial_coords();
   }
 
@@ -413,7 +418,7 @@ public:
   }
 
   void start_async_calculation(Viewport &vp, std::atomic<bool> &stop) override {
-    calculation = factory.create(coords, vp.width, vp.height, stop);
+    calculation = factory->create(coords, vp.width, vp.height, stop);
   }
 
   double calculate_point(int w, int h, int x, int y) override {
@@ -451,7 +456,7 @@ public:
     new_coords.y = CY - (CY - coords.y) * r;
     new_coords.r = coords.r * r;
 
-    if (!factory.valid_for(new_coords)) {
+    if (!factory->valid_for(new_coords)) {
       return false;
     }
     coords = new_coords;
@@ -475,19 +480,27 @@ public:
   int iterations() const override { return coords.max_iterations; }
 
   ViewCoords initial_coords() const override {
-    return factory.initial_coords();
+    return factory->initial_coords();
+  }
+
+  void set_fractal(const fractals::PointwiseFractal &f) override {
+    factory = &f;
   }
 
 private:
-  const PointwiseFractal &factory;
+  const PointwiseFractal *factory;
   std::unique_ptr<PointwiseCalculation> calculation;
 };
+
+void fractals::Renderer::set_fractal(const fractals::PointwiseFractal &) {}
 
 // DELETEME!!!
 
 extern const fractals::PointwiseFractal &mb;
+extern const fractals::PointwiseFractal &cubicMb;
+extern const fractals::PointwiseFractal &inverseMb;
 
-std::unique_ptr<fractals::Renderer> fractals::make_mandelbrot() {
+std::unique_ptr<fractals::Renderer> fractals::make_renderer() {
   return std::make_unique<AsyncRenderer>(
-      std::make_unique<CalculatedFractalRenderer>(mb));
+      std::make_unique<CalculatedFractalRenderer>(inverseMb));
 }

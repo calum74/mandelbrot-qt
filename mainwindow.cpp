@@ -5,6 +5,8 @@
 #include <iomanip>
 #include <sstream>
 
+extern const fractals::PointwiseFractal &cubicMb;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -29,6 +31,15 @@ MainWindow::MainWindow(QWidget *parent)
             &ViewerWidget::randomizePalette);
     connect(ui->actionHome, &QAction::triggered, ui->centralwidget,
             &ViewerWidget::resetCurrentFractal);
+
+    // Dynamically populate the fractals
+    for (auto &[name, f] : ui->centralwidget->listFractals()) {
+      std::cout << "Got " << name << std::endl;
+      auto *action = new ChangeFractalAction(name.c_str(), f);
+      connect(action, &ChangeFractalAction::changeFractal, ui->centralwidget,
+              &ViewerWidget::changeFractal);
+      ui->menuFractal->addAction(action);
+    }
 }
 
 MainWindow::~MainWindow()

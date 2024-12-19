@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "fractal.hpp"
+#include <QEvent>
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -25,4 +27,26 @@ public:
   private:
     Ui::MainWindow *ui;
 };
+
+// TODO: Move this elsewhere
+class ChangeFractalAction : public QAction {
+  Q_OBJECT
+public:
+  ChangeFractalAction(const char *name,
+                      const fractals::PointwiseFractal &fractal)
+      : QAction{name}, fractal{fractal} {
+
+    connect(this, &QAction::triggered, this, &ChangeFractalAction::select);
+  }
+
+signals:
+  void changeFractal(const fractals::PointwiseFractal &);
+
+private slots:
+  void select() { changeFractal(fractal); }
+
+private:
+  const fractals::PointwiseFractal &fractal;
+};
+
 #endif // MAINWINDOW_H

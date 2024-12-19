@@ -5,6 +5,7 @@ namespace fractals {
 class Viewport;
 class ColourMap;
 class ViewCoords;
+class PointwiseFractal;
 
 class Renderer {
 public:
@@ -64,6 +65,8 @@ public:
   virtual void redraw(Viewport &vp);
 
   virtual ViewCoords initial_coords() const = 0;
+
+  virtual void set_fractal(const PointwiseFractal &fractal);
 
 private:
   int previous_min_depth = 10;

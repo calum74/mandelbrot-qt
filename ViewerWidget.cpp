@@ -10,22 +10,24 @@
 #include <QResizeEvent>
 #include <QWheelEvent>
 
-// Only for debugging
-#include "ViewCoords.hpp"
+#include "mandelbrot.hpp"
+
 #include <iomanip>
 #include <iostream>
 
 ViewerWidget::ViewerWidget(QWidget *parent)
     : QWidget{parent}, colourMap{fractals::make_colourmap()},
-      mandelbrot{fractals::make_mandelbrot()},
-      registry{fractals::make_registry()} {
+      renderer{fractals::make_renderer()}, registry{fractals::make_registry()} {
   connect(&timer, &QTimer::timeout, this, &ViewerWidget::timer2);
+
+  mandelbrot::add_fractals(*registry);
+  fractals::register_fractals(*registry);
 }
 
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
 
 void ViewerWidget::calculate() {
-  startCalculating(mandelbrot->width(), mandelbrot->iterations());
+  startCalculating(renderer->width(), renderer->iterations());
 
   assert(image.width() > 0);
 
@@ -34,7 +36,7 @@ void ViewerWidget::calculate() {
   viewport.width = image.width();
   viewport.height = image.height();
 
-  mandelbrot->calculate_async(viewport, *colourMap);
+  renderer->calculate_async(viewport, *colourMap);
 }
 
 void ViewerWidget::draw() {
@@ -55,7 +57,7 @@ void ViewerWidget::resizeEvent(QResizeEvent *event) {
   viewport.data = (fractals::RGB *)image.bits();
   viewport.width = image.width();
   viewport.height = image.height();
-  mandelbrot->set_aspect_ratio(viewport); // Tweak width and height
+  renderer->set_aspect_ratio(viewport); // Tweak width and height
 
   calculate();
 }
@@ -66,14 +68,14 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
     r = 2.0;
   if (r < 0.5)
     r = 0.5;
-  mandelbrot->zoom(r, event->position().x(), event->position().y(), viewport);
+  renderer->zoom(r, event->position().x(), event->position().y(), viewport);
   calculate();
 }
 
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
   if (event->buttons() & Qt::LeftButton) {
-    mandelbrot->scroll(press_x - event->pos().x(), press_y - event->pos().y(),
-                       viewport);
+    renderer->scroll(press_x - event->pos().x(), press_y - event->pos().y(),
+                     viewport);
     calculate();
     press_x = event->pos().x();
     press_y = event->pos().y();
@@ -103,12 +105,12 @@ void ViewerWidget::MyViewport::finished(double width, int min_depth,
 }
 
 void ViewerWidget::increaseIterations() {
-  mandelbrot->increase_iterations(viewport);
+  renderer->increase_iterations(viewport);
   calculate();
 }
 
 void ViewerWidget::decreaseIterations() {
-  mandelbrot->decrease_iterations(viewport);
+  renderer->decrease_iterations(viewport);
   calculate();
 }
 
@@ -122,7 +124,7 @@ void ViewerWidget::toggleAutoMode() {
 
 void ViewerWidget::timer2() {
   // std::cout << "Timer called!\n";
-  mandelbrot->zoom(0.99, move_x, move_y, viewport);
+  renderer->zoom(0.99, move_x, move_y, viewport);
   calculate();
 }
 
@@ -130,30 +132,30 @@ void ViewerWidget::timerEvent(QTimerEvent *evt) {}
 
 void ViewerWidget::copyCoords()
 {
-    auto c = mandelbrot->get_coords();
+  auto c = renderer->get_coords();
 
-    auto cx = c.x;
-    auto cy = c.y;
+  auto cx = c.x;
+  auto cy = c.y;
 
-    int zeros = fractals::count_zeros(c.r);
-    int width = 4 + zeros * 0.30103;
+  int zeros = fractals::count_zeros(c.r);
+  int width = 4 + zeros * 0.30103;
 
-    std::stringstream ss;
-    ss << std::setprecision(width) << cx << std::endl;
-    ss << cy << std::endl;
-    ss << c.r << std::endl;
+  std::stringstream ss;
+  ss << std::setprecision(width) << cx << std::endl;
+  ss << cy << std::endl;
+  ss << c.r << std::endl;
 
-    QClipboard *clipboard = QApplication::clipboard();
+  QClipboard *clipboard = QApplication::clipboard();
 
-    QMimeData *data = new QMimeData;
-    data->setImageData(image);
-    data->setText(ss.str().c_str());
-    clipboard->setMimeData(data);
+  QMimeData *data = new QMimeData;
+  data->setImageData(image);
+  data->setText(ss.str().c_str());
+  clipboard->setMimeData(data);
 }
 
 void ViewerWidget::getCoords(QString &x, QString &y, QString &r,
                              QString &i) const {
-  auto c = mandelbrot->get_coords();
+  auto c = renderer->get_coords();
 
   int zeros = fractals::count_zeros(c.r);
   int width = 3 + zeros * 0.30103;
@@ -210,18 +212,30 @@ bool ViewerWidget::setCoords(const QString &x, const QString &y,
     ss >> coords.max_iterations;
   }
 
-  mandelbrot->set_coords(coords, viewport);
+  renderer->set_coords(coords, viewport);
   calculate();
   return true;
 }
 
 void ViewerWidget::randomizePalette() {
   colourMap->randomize();
-  mandelbrot->redraw(viewport);
+  renderer->redraw(viewport);
   calculate();
 }
 
 void ViewerWidget::resetCurrentFractal() {
-  mandelbrot->set_coords(mandelbrot->initial_coords(), viewport);
+  renderer->set_coords(renderer->initial_coords(), viewport);
   calculate();
+}
+
+void ViewerWidget::changeFractal(const fractals::PointwiseFractal &fractal) {
+  renderer->set_fractal(fractal);
+  renderer->set_coords(renderer->initial_coords(), viewport);
+  renderer->redraw(viewport);
+  calculate();
+}
+
+std::vector<std::pair<std::string, const fractals::PointwiseFractal &>>
+ViewerWidget::listFractals() {
+  return registry->listFractals();
 }
