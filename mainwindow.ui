@@ -58,7 +58,7 @@
    </widget>
    <widget class="QMenu" name="menuFractal">
     <property name="title">
-     <string>Fractal</string>
+     <string>Renderer</string>
     </property>
     <addaction name="actionMandelbrot"/>
    </widget>

@@ -1,5 +1,11 @@
 # Task list
 
+Rewrite:
+- [ ] When scrolling, make sure we don't recalculate already-calculated pixels
+- [ ] Prevent zoom out too far
+- [ ] Select the right precision.
+- [ ] Slight glitch when zooming out too far.
+
 MVP tasks:
 - [ ] Application icon
 - [ ] Build tasks
@@ -90,7 +96,7 @@ Core work:
 - [x] Use binary search to locate the starting point better (1)
 - [ ] Log the starting iteration in the task bar (2)
 - [ ] Build on Actions if possible & upload artefacts (3)
-- [ ] Create a `class Algorithm` which is different to `Fractal` (4)
+- [ ] Create a `class Algorithm` which is different to `Renderer` (4)
 - [x] Refactor orbit.hpp (5)
 - [x] Figure out epsilon
 - [x] Multi-resolution rendering/switch algorithm at different resolutions
@@ -212,6 +218,13 @@ static bool r = register_fractal<Circle<double>>("Circle");
 
 
 
+
+Center-finding:
+
+Algothim:
+Locate a line in the top half of the screen.
+
+Locate the same line in the bottom half of the screen. Create a rolling hash of length n, creating a window. However, we'd like to sum the differences - a permutation/FFT would be a good choice but my maths isn't good enough.
 
 
 
