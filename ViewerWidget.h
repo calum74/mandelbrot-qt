@@ -5,6 +5,9 @@
 #include <QTimer>
 #include <QWidget>
 
+#include "ColourMap.hpp"
+#include "Renderer.hpp"
+#include "Viewport.hpp"
 #include "fractal.hpp"
 
 class ViewerWidget : public QWidget {
