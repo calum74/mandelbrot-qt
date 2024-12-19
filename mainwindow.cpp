@@ -33,11 +33,16 @@ MainWindow::MainWindow(QWidget *parent)
             &ViewerWidget::resetCurrentFractal);
 
     // Dynamically populate the fractals
+    bool first = true;
     for (auto &[name, f] : ui->centralwidget->listFractals()) {
-      std::cout << "Got " << name << std::endl;
-      auto *action = new ChangeFractalAction(name.c_str(), f);
-      connect(action, &ChangeFractalAction::changeFractal, ui->centralwidget,
-              &ViewerWidget::changeFractal);
+      auto *action = new ChangeFractalAction(name.c_str(), f, first);
+      if (first)
+        currentAction = action;
+      first = false;
+      connect(action, &ChangeFractalAction::changeFractal, this,
+              &MainWindow::changeFractal);
+      connect(this, &MainWindow::clearAllExcept, action,
+              &ChangeFractalAction::clearAllExcept);
       ui->menuFractal->addAction(action);
     }
 }
@@ -45,6 +50,12 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::changeFractal(ChangeFractalAction *src,
+                               const fractals::PointwiseFractal &fractal) {
+  clearAllExcept(src);
+  ui->centralwidget->changeFractal(fractal);
 }
 
 void MainWindow::startCalculating(double d, int iterations) {

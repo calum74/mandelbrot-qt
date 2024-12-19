@@ -494,13 +494,9 @@ private:
 
 void fractals::Renderer::set_fractal(const fractals::PointwiseFractal &) {}
 
-// DELETEME!!!
-
 extern const fractals::PointwiseFractal &mb;
-extern const fractals::PointwiseFractal &cubicMb;
-extern const fractals::PointwiseFractal &inverseMb;
 
 std::unique_ptr<fractals::Renderer> fractals::make_renderer() {
   return std::make_unique<AsyncRenderer>(
-      std::make_unique<CalculatedFractalRenderer>(inverseMb));
+      std::make_unique<CalculatedFractalRenderer>(mb));
 }
