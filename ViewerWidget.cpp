@@ -10,6 +10,7 @@
 #include <QResizeEvent>
 #include <QWheelEvent>
 
+#include "center_finder.hpp"
 #include "mandelbrot.hpp"
 
 #include <iomanip>
@@ -101,6 +102,9 @@ void ViewerWidget::MyViewport::region_updated(int x, int y, int w, int h) {
 
 void ViewerWidget::MyViewport::finished(double width, int min_depth,
                                         int max_depth, double render_time) {
+  // Temporarily run the center-finding algorithm
+  fractals::find_centers(*this, 64);
+
   widget->completed(width, min_depth, max_depth, render_time);
 }
 

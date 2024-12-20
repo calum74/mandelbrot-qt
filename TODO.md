@@ -1,7 +1,7 @@
 # Task list
 
 MVP tasks:
-- [ ] Application icon
+- [x] Application icon
 - [ ] Build tasks
    - open-source
    - Build on Actions
@@ -13,6 +13,7 @@ MVP tasks:
 Less important tasks:
 - [ ] Center finding
 - [ ] Mandeldrop (and inverse)
+    Implement inverse in high_precision_fractal
 - [ ] Smooth zoom
 
 Coding tasks:
