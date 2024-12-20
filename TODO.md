@@ -8,15 +8,17 @@ MVP tasks:
    - Build installation package
    - CPack maybe
 - [ ] Write some blurb
-- [ ] Select Cubic mandelbrot
 - [ ] Further code tidying
 
+Less important tasks:
+- [ ] Center finding
+- [ ] Mandeldrop (and inverse)
+- [ ] Smooth zoom
+
 Coding tasks:
-- Refactor view layout logic
 - General code tidy
 - Unit tests
 - Still a double-free somewhere (test in debug-mode)
-- API to add fractals and options
 
 Bugs:
 - Around 1e-30, the view goto logic is buggy
@@ -95,7 +97,6 @@ Algorithm improvements:
 - [ ] Turn rendering_sequence into an iterator
 
 UI improvements:
-- [ ] Ability to add new fractals (1,2,3...)
 - [ ] Tweak iterations
 - [ ] Tweak options, e.g. speed or precision
 - [ ] Random explore

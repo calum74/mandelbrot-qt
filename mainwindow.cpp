@@ -5,8 +5,6 @@
 #include <iomanip>
 #include <sstream>
 
-extern const fractals::PointwiseFractal &cubicMb;
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -31,6 +29,9 @@ MainWindow::MainWindow(QWidget *parent)
             &ViewerWidget::randomizePalette);
     connect(ui->actionHome, &QAction::triggered, ui->centralwidget,
             &ViewerWidget::resetCurrentFractal);
+
+    QIcon icon(":/new/prefix1/icon.ico");
+    QApplication::setWindowIcon(icon);
 
     // Dynamically populate the fractals
     bool first = true;

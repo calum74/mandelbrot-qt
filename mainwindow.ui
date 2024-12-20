@@ -19,10 +19,6 @@
   <property name="windowTitle">
    <string>MandelbrotQt</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>../../Desktop/mbqticon.png</normaloff>../../Desktop/mbqticon.png</iconset>
-  </property>
   <widget class="ViewerWidget" name="centralwidget">
    <property name="mouseTracking">
     <bool>true</bool>
