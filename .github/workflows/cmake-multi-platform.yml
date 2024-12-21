@@ -32,19 +32,23 @@ jobs:
             c_compiler: cl
             cpp_compiler: cl
             cpack: WIX
+            extension: msi
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
             cpack: TGZ
+            extension: tar.gz
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
             cpack: TGZ
+            extension: tar.gz
           - os: macos-latest
             c_compiler: clang
             cpp_compiler: clang++
             qt_version: 6.8.1
             cpack: DragNDrop
+            extension: dmg
         exclude:
           - os: windows-latest
             c_compiler: gcc
@@ -100,11 +104,9 @@ jobs:
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: cpack -C ${{ matrix.build_type }} -G ${{ matrix.cpack }}
 
-    - name: Upload artifact
+    - name: Upload package
       uses: actions/upload-artifact@v4
       with:
-        # name: mandelbrot-qt-${{ matrix.os }}-${{ matrix.qt }}-${{ matrix.c_compiler }}-${{ matrix.cpack }}
+        name: mandelbrot-qt-${{ matrix.os }}-qt${{ matrix.qt_version }}-${{ matrix.c_compiler }}.${{ matrix.extension }}
         path: |
-          ${{ steps.strings.outputs.build-output-dir }}/*.dmg
-          ${{ steps.strings.outputs.build-output-dir }}/*.tar.gz
-          ${{ steps.strings.outputs.build-output-dir }}/*.msi
+          ${{ steps.strings.outputs.build-output-dir }}/*.${{ matrix.extension }}
