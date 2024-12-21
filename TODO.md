@@ -3,10 +3,8 @@
 MVP tasks:
 - [x] Application icon
 - [ ] Build tasks
-   - open-source
-   - Build on Actions
-   - Build installation package
-   - CPack maybe
+  - Generated
+  - Use static linkage of Qt
 - [ ] Write some blurb
 - [ ] Further code tidying
 
