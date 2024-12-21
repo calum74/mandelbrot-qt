@@ -104,4 +104,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: my-artifact
-        path: ${{ steps.strings.outputs.build-output-dir }}/*.{zip|dmg|exe|tgz}
+        path: ${{ steps.strings.outputs.build-output-dir }}/*.{zip|dmg|msi|tar.gz}
