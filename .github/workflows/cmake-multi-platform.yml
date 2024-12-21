@@ -93,4 +93,4 @@ jobs:
       run: ctest --build-config ${{ matrix.build_type }}
 
     - name: Pack
-      run: cpack -C ${{ matrix.build_type }}
+      run: cpack -C ${{ matrix.build_type }} -G ZIP
