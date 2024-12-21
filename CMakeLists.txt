@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(mandelbrot-qt VERSION 0.1 LANGUAGES CXX)
+project(mandelbrot-qt VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -90,3 +90,13 @@ install(TARGETS mandelbrot-qt
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(mandelbrot-qt)
 endif()
+
+include(CPack)
+set(CPACK_PACKAGE_NAME "mandelbrot-qt")
+set(CPACK_PACKAGE_VENDOR "github.com/calum74")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "MyLib - CPack Component Installation Example")
+set(CPACK_PACKAGE_VERSION "1.0.0")
+set(CPACK_PACKAGE_VERSION_MAJOR "1")
+set(CPACK_PACKAGE_VERSION_MINOR "0")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "MandelbrotQt")
