@@ -31,6 +31,10 @@ set(PROJECT_SOURCES
         ColourMapImpl.cpp
         ColourMap.hpp
         ColourMapImpl.hpp
+        ViewerWidget.h
+        ViewerWidget.cpp
+        gotodialog.h
+        gotodialog.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

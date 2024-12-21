@@ -4,6 +4,7 @@
 #include "fractal.hpp"
 #include <QEvent>
 #include <QMainWindow>
+#include <QAction>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
