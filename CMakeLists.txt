@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.21)
 
 project(mandelbrot-qt VERSION 1.0 LANGUAGES CXX)
 
@@ -90,6 +90,14 @@ install(TARGETS mandelbrot-qt
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(mandelbrot-qt)
 endif()
+
+qt_generate_deploy_app_script(
+    TARGET mandelbrot-qt
+    OUTPUT_SCRIPT deploy_script
+    NO_UNSUPPORTED_PLATFORM_ERROR
+)
+
+install(SCRIPT ${deploy_script})
 
 include(CPack)
 set(CPACK_PACKAGE_NAME "mandelbrot-qt")
