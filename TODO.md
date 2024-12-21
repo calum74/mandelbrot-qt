@@ -15,6 +15,7 @@ Less important tasks:
 - [ ] Mandeldrop (and inverse)
     Implement inverse in high_precision_fractal
 - [ ] Smooth zoom
+- [ ] Errors affect the output, so store them in a separate buffer
 
 Coding tasks:
 - General code tidy
