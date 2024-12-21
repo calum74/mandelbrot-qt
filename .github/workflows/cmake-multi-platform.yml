@@ -103,7 +103,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: mandelbrot-qt-${{ matrix.os }}
+        # name: mandelbrot-qt-${{ matrix.os }}-${{ matrix.qt }}-${{ matrix.c_compiler }}-${{ matrix.cpack }}
         path: |
           ${{ steps.strings.outputs.build-output-dir }}/*.dmg
           ${{ steps.strings.outputs.build-output-dir }}/*.tar.gz
