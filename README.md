@@ -1,4 +1,6 @@
-# Welcome to MandelbrotQt
+# Welcome to Mandelbrot-Qt
+
+[![CMake on multiple platforms](https://github.com/calum74/mandelbrot-qt/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/calum74/mandelbrot-qt/actions/workflows/cmake-multi-platform.yml)
 
 *Insert picture here*
 
