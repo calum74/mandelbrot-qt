@@ -31,16 +31,20 @@ jobs:
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
+            cpack: WIX
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
+            cpack: TGZ
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
+            cpack: TGZ
           - os: macos-latest
             c_compiler: clang
             cpp_compiler: clang++
             qt_version: 6.8.1
+            cpack: DragNDrop
         exclude:
           - os: windows-latest
             c_compiler: gcc
@@ -94,10 +98,10 @@ jobs:
 
     - name: Pack
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: cpack -C ${{ matrix.build_type }}
+      run: cpack -C ${{ matrix.build_type }} -G ${{ matrix.cpack }}
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: my-artifact
-        path: ${{ steps.strings.outputs.build-output-dir }}/*.zip
+        path: ${{ steps.strings.outputs.build-output-dir }}/*.{zip|dmg|exe|tgz}
