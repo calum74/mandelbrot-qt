@@ -141,7 +141,7 @@ void ViewerWidget::copyCoords()
   auto cx = c.x;
   auto cy = c.y;
 
-  int zeros = fractals::count_zeros(c.r);
+  int zeros = fractals::count_fractional_zeros(c.r);
   int width = 4 + zeros * 0.30103;
 
   std::stringstream ss;
@@ -161,7 +161,7 @@ void ViewerWidget::getCoords(QString &x, QString &y, QString &r,
                              QString &i) const {
   auto c = renderer->get_coords();
 
-  int zeros = fractals::count_zeros(c.r);
+  int zeros = fractals::count_fractional_zeros(c.r);
   int width = 3 + zeros * 0.30103;
 
   {

@@ -3,8 +3,8 @@
 MVP tasks:
 - [x] Application icon
 - [ ] Build tasks
-  - Generated
-  - Use static linkage of Qt
+
+
 - [ ] Write some blurb
 - [ ] Further code tidying
 

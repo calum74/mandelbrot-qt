@@ -47,8 +47,8 @@ jobs:
             c_compiler: clang
             cpp_compiler: clang++
             qt_version: 6.8.1
-            cpack: ZIP  # DragNDrop
-            extension: zip # dmg
+            cpack: DragNDrop
+            extension: dmg
         exclude:
           - os: windows-latest
             c_compiler: gcc
