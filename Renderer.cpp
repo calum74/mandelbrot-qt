@@ -163,8 +163,11 @@ public:
     stop_current_calculation();
     for (int j = 0; j < vp.height; ++j)
       for (int i = 0; i < vp.width; ++i) {
-        // TODO: Only redraw black points
-        vp(i, j) = with_extra(vp(i, j), 127);
+        auto &c = vp(i, j);
+        if (!c) {
+          // Only redraw final coloured points
+          c = with_extra(vp(i, j), 127);
+        }
       }
     underlying_fractal->increase_iterations(vp);
   }

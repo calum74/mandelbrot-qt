@@ -9,19 +9,15 @@ High precision tidy:
 - Configure integer size as well
 - Full two's complement??
 
+- [ ] When increasing iterations, don't recalculate everything
+- [ ] When recolouring, don't recolour black
 - [ ] Use the same colour seed on all platforms using mt19937_64 with the same seed.
-
-
-- [ ] !! Bug in Taylor series: we must remember to bail out and don't set the upper bound to equal max_iterations.
-
 
 - [ ] Write some blurb
 - [ ] Further code tidying
 
 Less important tasks:
 - [ ] Center finding
-- [ ] Mandeldrop (and inverse)
-    Implement inverse in high_precision_fractal
 - [ ] Smooth zoom
 - [ ] Errors affect the output, so store them in a separate buffer
 
