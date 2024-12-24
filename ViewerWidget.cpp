@@ -64,7 +64,7 @@ void ViewerWidget::resizeEvent(QResizeEvent *event) {
 }
 
 void ViewerWidget::wheelEvent(QWheelEvent *event) {
-  double r = 1.0 - event->angleDelta().y() / 256.0;
+  double r = 1.0 - event->angleDelta().y() / 128.0;
   if (r > 2.0)
     r = 2.0;
   if (r < 0.5)

@@ -4,6 +4,16 @@ MVP tasks:
 - [x] Application icon
 - [ ] Build tasks
 
+High precision tidy:
+- Express size in bits
+- Configure integer size as well
+- Full two's complement??
+
+- [ ] Use the same colour seed on all platforms using mt19937_64 with the same seed.
+
+
+- [ ] !! Bug in Taylor series: we must remember to bail out and don't set the upper bound to equal max_iterations.
+
 
 - [ ] Write some blurb
 - [ ] Further code tidying
@@ -30,6 +40,13 @@ When we zoom out, we should also reduce the iteration count
 Testing:
 - [ ] Orbits tests
 - [ ] High precision tests
+
+- [ ] Implement a proper registry of fractals
+- [ ] Calculations self-report their names.
+
+```c++
+fractal::foo&algorithms[] = { mandelbrot, cubic_mandelbrot, mandeldrop, circle };
+```
 
 Deep zoom:
 -0.0783482369601075163944917383105858335241253043551250774434430019003988613925771644508614315385856473190257091171514
