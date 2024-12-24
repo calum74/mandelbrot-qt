@@ -5,7 +5,6 @@
 #include "Viewport.hpp"
 #include "fractal.hpp"
 
-#include <cassert>
 #include <future>
 #include <memory>
 #include <vector>
@@ -437,9 +436,6 @@ public:
 
   bool zoom(double r0, int cx, int cy, Viewport &vp) override {
 
-    std::cout << "Old X = " << coords.x << std::endl;
-    std::cout << "Old Y = " << coords.y << std::endl;
-
     double pw = vp.width;
     double ph = vp.height;
 
@@ -448,11 +444,6 @@ public:
 
     auto point_size =
         vp.width > vp.height ? coords.r * (2.0 / ph) : coords.r * (2.0 / pw);
-
-    assert(r0 > 0);
-    assert(r0 < 1000);
-    assert(!pixel_width.negative);
-    assert(!point_size.negative);
 
     ViewCoords::value_type r{r0};
 
@@ -469,44 +460,6 @@ public:
       return false;
     }
 
-    std::cout << "a=" << (cx - pw / 2) << " b=" << (pixel_width * (cx - pw / 2))
-              << " c=" << CX << std::endl;
-    std::cout << "d=" << (cy - ph / 2) << " e=" << (pixel_width * (cy - ph / 2))
-              << " f=" << CY << std::endl;
-
-    if ((new_coords.x * new_coords.x) >= 1000 ||
-        (new_coords.y * new_coords.y) >= 1000 || (CX * CX >= 1000) ||
-        (CY * CY >= 1000)) {
-
-      auto CXa = coords.x + pixel_width * (cx - pw / 2);
-      auto CXb = coords.x;
-      auto CXc = pixel_width * (cx - pw / 2);
-      auto CXd = CXb + CXc;
-      auto CYa = coords.y + pixel_width * (cy - ph / 2);
-      auto CYb = coords.y;
-      auto CYc = pixel_width * (cy - ph / 2);
-      auto CYd = CYb + CYc;
-
-      auto nxa = CX - (CX - coords.x) * r;
-      auto nxb = (CX - coords.x);
-      auto nxc = (CX - coords.x) * r;
-      auto nya = CY - (CY - coords.y) * r;
-      auto nyb = (CY - coords.y);
-      auto nyc = (CY - coords.y) * r;
-
-      std::cout << "CX = " << CX << std::endl;
-      std::cout << "CY = " << CY << std::endl;
-      std::cout << "r = " << r << std::endl;
-    }
-    std::cout << "g=" << (CX - coords.x) << " " << "h=" << ((CX - coords.x) * r)
-              << " " << " i=" << (CX - (CX - coords.x) * r) << std::endl;
-
-    std::cout << pixel_width << " " << point_size << " " << CX << " " << CY
-              << " ";
-    std::cout << cx << " " << cy << ' ' << pw << " " << ph << ' ';
-
-    std::cout << "New X = " << new_coords.x << std::endl;
-    std::cout << "New Y = " << new_coords.y << std::endl;
     coords = new_coords;
     return true;
   }
