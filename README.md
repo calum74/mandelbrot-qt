@@ -14,6 +14,26 @@ To install binaries for your plaform, just go to the relevant [releases] page. M
 
 ## Building the software
 
+Trying to build anything with Qt is an utterly miserable and demoralising experience. Don't be fooled, just because it appears to work first time on one machine does not mean that it will ever work on any other machine. No, I don't ever want to become an expert at debugging CMake, thanks for asking trolls. May you see the sunlight.
+
+On Linux:
+
+```
+sudo apt install git clang cmake qt6-base-dev
+git clone https://github.com/calum74/mandelbrot-qt --recursive
+mkdir mandelbrot-qt-build
+cd mandelbrot-qt-build
+cmake ../mandelbrot-qt
+
+```
+
+On Windows:
+
+Install Qt from https://www.qt.io/download-qt-installer-oss
+
+```
+cmake -DQt6DIR=C:\Qt\6.8.1\
+```
 
 # What is the Mandelbrot set?
 

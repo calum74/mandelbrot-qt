@@ -1,6 +1,9 @@
 #include "ColourMapImpl.hpp"
 
-fractals::ColourMapImpl::ColourMapImpl() { randomize(); }
+// Good ones: 1, *9, 2027, 80871
+// We initialze the random number generator with a seed that produces
+// attractive colours.
+fractals::ColourMapImpl::ColourMapImpl() : e(80871) { randomize(); }
 
 fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   if (d == 0)

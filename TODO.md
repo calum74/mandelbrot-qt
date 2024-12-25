@@ -1,5 +1,17 @@
 # Task list
 
+- [ ] Coding
+  - [ ] Go to Window too much_resolution
+  - Windows test failing
+  - Fix Windows zoom
+  - Ensure same seed on all platforms
+  - Refactor logic registry into a list + self-declared names
+- [ ] Code tidy
+  - Unit test tidy up!
+- [ ] Make mandelbrots parameterisable by order
+- [ ] Fix Mac build
+- [ ] Write blurb
+
 MVP tasks:
 - [x] Application icon
 - [ ] Build tasks

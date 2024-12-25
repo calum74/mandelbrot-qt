@@ -9,7 +9,7 @@ class ColourMapImpl : public ColourMap {
 public:
   std::vector<RGB> colours;
   double gamma = 0.8, k = 0.1, offset = 0.0;
-  std::default_random_engine e;
+  std::mt19937 e;
 
   ColourMapImpl();
   RGB operator()(double d) const override;
