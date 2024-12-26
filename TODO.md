@@ -1,5 +1,7 @@
 # Task list
 
+Colour palette 
+
 - [ ] Coding
   - [ ] Test windows not building using qt (just the tests)
   - [ ] Test windows by downloading the exe
