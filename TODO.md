@@ -1,13 +1,13 @@
 # Task list
 
-- fix up colours even better
+- Distribution build on Mac
+
 - Write some comments in the files
 - code tidy
 - tidy up mandelbrot-qt
 
 - benchmarks
 - tests
-- Distribution build on Mac
 
 
 - Parameterise mandelbrots
