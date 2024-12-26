@@ -1,5 +1,6 @@
 #pragma once
 #include <atomic>
+#include <memory>
 
 namespace fractals {
 class Viewport;
@@ -71,4 +72,6 @@ public:
 private:
   int previous_min_depth = 10;
 };
+
+std::unique_ptr<Renderer> make_renderer();
 } // namespace fractals
