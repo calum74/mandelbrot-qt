@@ -1,31 +1,18 @@
 # Task list
 
 - Distribution build on Mac
-
-- Write some comments in the files
 - code tidy
-- tidy up mandelbrot-qt
+- docs
+- doc comments
+
+# Log term tasks
 
 - benchmarks
 - tests
+- Tidy up the installer text and license
 
-
-- Parameterise mandelbrots
-- Fix crappy registration using an array
-
-- [ ] Coding
-  - [ ] Test windows not building using qt (just the tests)
-  - [ ] Test windows by downloading the exe
-  - [ ] Go to Window too much_resolution
-  - Windows test failing
-  - Fix Windows zoom
-  - Ensure same seed on all platforms
-  - Refactor logic registry into a list + self-declared names
 - [ ] Code tidy
   - Unit test tidy up!
-- [ ] Make mandelbrots parameterisable by order
-- [ ] Fix Mac build
-- [ ] Write blurb
 
 MVP tasks:
 - [x] Application icon
@@ -34,19 +21,10 @@ MVP tasks:
 High precision tidy:
 - Express size in bits
 - Configure integer size as well
-- Full two's complement??
-
-- [ ] When increasing iterations, don't recalculate everything
-- [ ] When recolouring, don't recolour black
-- [ ] Use the same colour seed on all platforms using mt19937_64 with the same seed.
-
-- [ ] Write some blurb
-- [ ] Further code tidying
 
 Less important tasks:
-- [ ] Center finding
 - [ ] Smooth zoom
-- [ ] Errors affect the output, so store them in a separate buffer
+- [ ] Errorsin pixels affect the output, so store them in a separate array
 
 Coding tasks:
 - General code tidy
@@ -58,18 +36,10 @@ Bugs:
 - You should be able to go-to the same location without moving anywhere
 - When opening 'Go to' window, ensure focus is on the ok button
 
-When we zoom out, we should also reduce the iteration count
-
 Testing:
 - [ ] Orbits tests
 - [ ] High precision tests
 
-- [ ] Implement a proper registry of fractals
-- [ ] Calculations self-report their names.
-
-```c++
-fractal::foo&algorithms[] = { mandelbrot, cubic_mandelbrot, mandeldrop, circle };
-```
 
 Deep zoom:
 -0.0783482369601075163944917383105858335241253043551250774434430019003988613925771644508614315385856473190257091171514
