@@ -16,13 +16,14 @@
 #include <iomanip>
 #include <iostream>
 
+void register_fractals(fractals::Registry &r);
+
 ViewerWidget::ViewerWidget(QWidget *parent)
     : QWidget{parent}, colourMap{fractals::make_colourmap()},
       renderer{fractals::make_renderer()}, registry{fractals::make_registry()} {
   connect(&timer, &QTimer::timeout, this, &ViewerWidget::timer2);
 
-  mandelbrot::add_fractals(*registry);
-  fractals::register_fractals(*registry);
+  register_fractals(*registry);
 }
 
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }

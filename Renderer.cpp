@@ -4,6 +4,7 @@
 #include "ViewCoords.hpp"
 #include "Viewport.hpp"
 #include "fractal.hpp"
+#include "mandelbrot.hpp"
 
 #include <future>
 #include <memory>
@@ -498,9 +499,7 @@ private:
 
 void fractals::Renderer::set_fractal(const fractals::PointwiseFractal &) {}
 
-extern const fractals::PointwiseFractal &mb;
-
 std::unique_ptr<fractals::Renderer> fractals::make_renderer() {
   return std::make_unique<AsyncRenderer>(
-      std::make_unique<CalculatedFractalRenderer>(mb));
+      std::make_unique<CalculatedFractalRenderer>(mandelbrot_fractal));
 }

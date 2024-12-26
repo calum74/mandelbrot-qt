@@ -1,6 +1,7 @@
 # Task list
 
-Colour palette 
+- Parameterise mandelbrots
+- Fix crappy registration using an array
 
 - [ ] Coding
   - [ ] Test windows not building using qt (just the tests)

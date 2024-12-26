@@ -4,7 +4,7 @@
 // Good ones: 31, 83, 97, 106
 // We initialze the random number generator with a seed that produces
 // attractive colours.
-fractals::ColourMapImpl::ColourMapImpl() : seed(97) { randomize(); }
+fractals::ColourMapImpl::ColourMapImpl() : seed(106) { randomize(); }
 
 fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   if (d == 0)

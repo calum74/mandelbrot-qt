@@ -33,6 +33,7 @@ set(PROJECT_SOURCES
         ColourMapImpl.hpp
         ViewerWidget.h
         ViewerWidget.cpp
+        Fractals.cpp
         gotodialog.h
         gotodialog.cpp
 )
