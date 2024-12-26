@@ -17,8 +17,8 @@ class ViewerWidget : public QWidget {
   struct MyViewport : public fractals::Viewport {
     ViewerWidget *widget;
     void region_updated(int x, int y, int w, int h) override;
-    void finished(double width, int min_depth, int max_depth,
-                  double render_time) override;
+    void finished(double width, int min_depth, int max_depth, double avg,
+                  double skipped, double render_time) override;
   } viewport;
 
   std::unique_ptr<fractals::ColourMap> colourMap;
@@ -65,7 +65,8 @@ public slots:
 
 signals:
   void startCalculating(double width, int maxIterations);
-  void completed(double width, int min_depth, int max_depth, double time);
+  void completed(double width, int min_depth, int max_depth, double, double,
+                 double time);
 };
 
 #endif // VIEWERWIDGET_H

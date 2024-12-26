@@ -65,11 +65,16 @@ void MainWindow::startCalculating(double d, int iterations) {
   ui->statusbar->showMessage(ss.str().c_str());
 }
 
-void MainWindow::completed(double d, int min_depth, int max_depth,
-                           double time) {
+void MainWindow::completed(double d, int min_depth, int max_depth, double avg,
+                           double skipped, double time) {
   std::stringstream ss;
   ss << "Width " << std::setprecision(2) << d << " completed in " << time
      << " seconds, depth " << min_depth << "-" << max_depth;
+
+  // Log the number of iterations skipped if you want
+  // (also, could display this somehow)
+  std::cout << "Average " << avg << " iterations\n";
+  std::cout << "Skipped " << skipped << " iterations\n";
 
   ui->statusbar->showMessage(ss.str().c_str());
 }

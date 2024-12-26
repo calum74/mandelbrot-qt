@@ -22,7 +22,8 @@ public:
 
   public slots:
     void startCalculating(double d, int i);
-    void completed(double zoom, int min_depth, int max_depth, double time);
+    void completed(double zoom, int min_depth, int max_depth, double, double,
+                   double time);
     void openGoToDialog();
     void changeFractal(class ChangeFractalAction *src,
                        const fractals::PointwiseFractal &fractal);

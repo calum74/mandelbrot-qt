@@ -69,8 +69,9 @@ public:
 
   virtual void set_fractal(const PointwiseFractal &fractal);
 
-private:
-  int previous_min_depth = 10;
+  virtual double get_average_iterations() const;
+
+  virtual double get_average_skipped_iterations() const;
 };
 
 std::unique_ptr<Renderer> make_renderer();

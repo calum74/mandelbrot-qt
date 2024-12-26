@@ -21,6 +21,7 @@ struct Viewport {
   // Callback when viewport fully calculated.
   // May not get called if cancelled.
   virtual void finished(double width, int min_depth, int max_depth,
+                        double avg_iterations, double avg_skipped_iterations,
                         double render_time);
 };
 

@@ -100,8 +100,9 @@ void ViewerWidget::MyViewport::region_updated(int x, int y, int w, int h) {
 }
 
 void ViewerWidget::MyViewport::finished(double width, int min_depth,
-                                        int max_depth, double render_time) {
-  widget->completed(width, min_depth, max_depth, render_time);
+                                        int max_depth, double avg,
+                                        double skipped, double render_time) {
+  widget->completed(width, min_depth, max_depth, avg, skipped, render_time);
 }
 
 void ViewerWidget::increaseIterations() {

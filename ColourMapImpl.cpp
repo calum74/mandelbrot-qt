@@ -1,10 +1,10 @@
 #include "ColourMapImpl.hpp"
 #include <random>
 
-// Good ones: 31, 83, 97, 106
+// Good ones: 31, 83, 97, 106, 112
 // We initialze the random number generator with a seed that produces
 // attractive colours.
-fractals::ColourMapImpl::ColourMapImpl() : seed(106) { randomize(); }
+fractals::ColourMapImpl::ColourMapImpl() : seed(112) { randomize(); }
 
 fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   if (d == 0)
@@ -28,7 +28,7 @@ void fractals::ColourMapImpl::setRange(double, double) {}
 void fractals::ColourMapImpl::randomize() {
   seed++;
   // If we want to find a new seed, log it here
-  // std::cout << "Seed is " << seed << std::endl;
+  // std::cout << "Colour is " << seed << std::endl;
   std::mt19937 e{seed};
   std::uniform_int_distribution<int> r256(0, 256);
 

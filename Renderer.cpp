@@ -127,7 +127,8 @@ void fractals::Renderer::calculate(Viewport &vp, const ColourMap &cm,
   auto t1 = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> d = t1 - t0;
 
-  vp.finished(width(), min_depth, max_depth, d.count());
+  vp.finished(width(), min_depth, max_depth, get_average_iterations(),
+              get_average_skipped_iterations(), d.count());
 }
 
 void Renderer::increase_iterations(Viewport &) {}
@@ -180,6 +181,14 @@ public:
         vp(i, j) = with_extra(vp(i, j), 127);
       }
     underlying_fractal->decrease_iterations(vp);
+  }
+
+  double get_average_iterations() const override {
+    return underlying_fractal->get_average_iterations();
+  }
+
+  double get_average_skipped_iterations() const override {
+    return underlying_fractal->get_average_skipped_iterations();
   }
 
   void set_fractal(const fractals::PointwiseFractal &f) override {
@@ -275,7 +284,11 @@ public:
               auto t1 = std::chrono::high_resolution_clock::now();
               std::chrono::duration<double> d = t1 - t0;
 
-              view.finished(width(), view_min, view_max, d.count());
+              view.finished(
+                  width(), view_min, view_max,
+                  underlying_fractal->get_average_iterations(),
+                  underlying_fractal->get_average_skipped_iterations(),
+                  d.count());
             }
             // Notify that we are finished
           }
@@ -387,9 +400,13 @@ void Renderer::calculate_async(fractals::Viewport &view, const ColourMap &cm) {
     view.region_updated(0, 0, view.width, view.height);
 }
 
+double Renderer::get_average_iterations() const { return 0; }
+
+double Renderer::get_average_skipped_iterations() const { return 0; }
+
 void Viewport::region_updated(int x, int y, int w, int h) {}
 
-void fractals::Viewport::finished(double, int, int, double) {}
+void fractals::Viewport::finished(double, int, int, double, double, double) {}
 
 template <typename LowPrecisionComplex, typename HighPrecisionComplex>
 struct test_algorithm {
@@ -423,6 +440,14 @@ public:
 
   void start_async_calculation(Viewport &vp, std::atomic<bool> &stop) override {
     calculation = factory->create(coords, vp.width, vp.height, stop);
+  }
+
+  double get_average_iterations() const override {
+    return calculation->average_iterations();
+  }
+
+  double get_average_skipped_iterations() const override {
+    return calculation->average_skipped();
   }
 
   double calculate_point(int w, int h, int x, int y) override {
