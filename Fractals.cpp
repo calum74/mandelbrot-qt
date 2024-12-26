@@ -1,5 +1,6 @@
 #include "circle.hpp"
 #include "mandelbrot.hpp"
+#include "registry.hpp"
 
 void register_fractals(fractals::Registry &r) {
   r.add(mandelbrot_fractal);

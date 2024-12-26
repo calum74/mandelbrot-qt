@@ -1,6 +1,7 @@
+#include "registry.hpp"
 #include "fractal.hpp"
+
 #include <string>
-#include <vector>
 
 namespace {
 using namespace fractals;

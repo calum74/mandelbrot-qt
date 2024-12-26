@@ -11,6 +11,7 @@
 #include <QWheelEvent>
 
 #include "mandelbrot.hpp"
+#include "registry.hpp"
 
 #include <iomanip>
 #include <iostream>
@@ -19,10 +20,8 @@ void register_fractals(fractals::Registry &r);
 
 ViewerWidget::ViewerWidget(QWidget *parent)
     : QWidget{parent}, colourMap{fractals::make_colourmap()},
-      renderer{fractals::make_renderer()}, registry{fractals::make_registry()} {
+      renderer{fractals::make_renderer()} {
   connect(&timer, &QTimer::timeout, this, &ViewerWidget::timer2);
-
-  register_fractals(*registry);
 }
 
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
@@ -238,5 +237,7 @@ void ViewerWidget::changeFractal(const fractals::PointwiseFractal &fractal) {
 
 std::vector<std::pair<std::string, const fractals::PointwiseFractal &>>
 ViewerWidget::listFractals() {
+  auto registry = fractals::make_registry();
+  register_fractals(*registry);
   return registry->listFractals();
 }

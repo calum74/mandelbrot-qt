@@ -22,7 +22,6 @@ class ViewerWidget : public QWidget {
   } viewport;
 
   std::unique_ptr<fractals::ColourMap> colourMap;
-  std::unique_ptr<fractals::Registry> registry;
   std::unique_ptr<fractals::Renderer> renderer;
 
   // Track the previous position of the mouse cursor
