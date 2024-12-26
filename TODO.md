@@ -1,5 +1,6 @@
 # Task list
 
+
 - [ ] Distribution build on Mac
 - code tidy
 - docs
@@ -10,6 +11,7 @@
 - benchmarks
 - tests
 - Tidy up the installer text and license
+- [ ] Progress bar
 
 - [ ] Code tidy
   - Unit test tidy up!

@@ -10,7 +10,9 @@ inline RGB make_rgbx(int r, int g, int b, int x) {
 inline int red(RGB i) { return 0xff & (i >> 16); }
 inline int green(RGB i) { return 0xff & (i >> 8); }
 inline int blue(RGB i) { return 0xff & i; }
-inline int extra(RGB i) { return 0xff & ((std::uint32_t)i >> 24); }
-inline RGB with_extra(RGB i, int x) { return i & (0xffffff) | (x << 24); }
+inline int extra(RGB i) { return std::uint32_t(i) >> 24; }
+inline RGB with_extra(RGB i, int x) {
+  return i & (0xffffff) | (std::uint32_t(x) << 24);
+}
 
 } // namespace fractals
