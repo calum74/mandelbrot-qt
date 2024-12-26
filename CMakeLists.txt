@@ -36,6 +36,8 @@ set(PROJECT_SOURCES
         Fractals.cpp
         gotodialog.h
         gotodialog.cpp
+        registry.hpp
+        registry.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
