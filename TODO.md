@@ -1,6 +1,8 @@
 # Task list
 
 - [ ] Coding
+  - [ ] Test windows not building using qt (just the tests)
+  - [ ] Test windows by downloading the exe
   - [ ] Go to Window too much_resolution
   - Windows test failing
   - Fix Windows zoom
