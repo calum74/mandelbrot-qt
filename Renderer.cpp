@@ -1,10 +1,10 @@
 #include "Renderer.hpp"
 #include "ColourMap.hpp"
 #include "RenderingSequence.hpp"
-#include "ViewCoords.hpp"
 #include "Viewport.hpp"
 #include "fractal.hpp"
 #include "mandelbrot.hpp"
+#include "view_coords.hpp"
 
 #include <future>
 #include <memory>
@@ -351,17 +351,17 @@ public:
     underlying_fractal->set_aspect_ratio(vp);
   }
 
-  ViewCoords get_coords() const override {
+  view_coords get_coords() const override {
     return underlying_fractal->get_coords();
   }
 
-  ViewCoords initial_coords() const override {
+  view_coords initial_coords() const override {
     return underlying_fractal->initial_coords();
   }
 
   int iterations() const override { return underlying_fractal->iterations(); }
 
-  bool set_coords(const ViewCoords &c, Viewport &vp) override {
+  bool set_coords(const view_coords &c, Viewport &vp) override {
     redraw(vp);
     return underlying_fractal->set_coords(c, vp);
   }
@@ -394,7 +394,7 @@ void fractals::Viewport::finished(double, int, int, double) {}
 template <typename LowPrecisionComplex, typename HighPrecisionComplex>
 struct test_algorithm {
   struct params_type {
-    params_type(const ViewCoords &v);
+    params_type(const view_coords &v);
   };
 
   struct view_type {
@@ -408,15 +408,15 @@ struct test_algorithm {
 
 class CalculatedFractalRenderer : public fractals::Renderer {
 public:
-  ViewCoords coords;
+  view_coords coords;
 
   CalculatedFractalRenderer(const PointwiseFractal &f) : factory(&f) {
     coords = initial_coords();
   }
 
-  ViewCoords get_coords() const override { return coords; }
+  view_coords get_coords() const override { return coords; }
 
-  bool set_coords(const ViewCoords &w, Viewport &vp) override {
+  bool set_coords(const view_coords &w, Viewport &vp) override {
     coords = w; // TODO: Update aspect ratio
     return true;
   }
@@ -449,12 +449,12 @@ public:
     auto point_size =
         vp.width > vp.height ? coords.r * (2.0 / ph) : coords.r * (2.0 / pw);
 
-    ViewCoords::value_type r{r0};
+    view_coords::value_type r{r0};
 
     auto CX = coords.x + pixel_width * (cx - pw / 2);
     auto CY = coords.y + pixel_width * (cy - ph / 2);
 
-    ViewCoords new_coords;
+    view_coords new_coords;
     new_coords.max_iterations = coords.max_iterations;
     new_coords.x = CX - (CX - coords.x) * r;
     new_coords.y = CY - (CY - coords.y) * r;
@@ -484,7 +484,7 @@ public:
 
   int iterations() const override { return coords.max_iterations; }
 
-  ViewCoords initial_coords() const override {
+  view_coords initial_coords() const override {
     return factory->initial_coords();
   }
 

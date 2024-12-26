@@ -187,11 +187,11 @@ void ViewerWidget::getCoords(QString &x, QString &y, QString &r,
 
 bool ViewerWidget::setCoords(const QString &x, const QString &y,
                              const QString &r, const QString &i) {
-  fractals::ViewCoords coords;
+  fractals::view_coords coords;
 
-  fractals::ViewCoords::value_type cx;
-  fractals::ViewCoords::value_type cy;
-  fractals::ViewCoords::value_type cr;
+  fractals::view_coords::value_type cx;
+  fractals::view_coords::value_type cy;
+  fractals::view_coords::value_type cr;
 
   {
     std::istringstream ss(x.toStdString());

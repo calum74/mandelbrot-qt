@@ -1,5 +1,12 @@
 # Task list
 
+- fix up colours even better
+- benchmarks
+- tests
+- code tidy & split up orbit.
+- Distribution build on Mac
+
+
 - Parameterise mandelbrots
 - Fix crappy registration using an array
 

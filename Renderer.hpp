@@ -5,7 +5,7 @@
 namespace fractals {
 class Viewport;
 class ColourMap;
-class ViewCoords;
+class view_coords;
 class PointwiseFractal;
 
 class Renderer {
@@ -53,19 +53,19 @@ public:
   // Also marks the relevant pixels to redraw in the viewport
   virtual void decrease_iterations(Viewport &vp);
 
-  virtual ViewCoords get_coords() const = 0;
+  virtual view_coords get_coords() const = 0;
 
   // Returns true on success (and value changed)
   // False on failure (coords not changed).
   // Failure could be due to incorrect precision for the fractal.
   // May invalidate the viewport
-  virtual bool set_coords(const ViewCoords &w, Viewport &vp) = 0;
+  virtual bool set_coords(const view_coords &w, Viewport &vp) = 0;
 
   virtual int iterations() const = 0;
 
   virtual void redraw(Viewport &vp);
 
-  virtual ViewCoords initial_coords() const = 0;
+  virtual view_coords initial_coords() const = 0;
 
   virtual void set_fractal(const PointwiseFractal &fractal);
 
