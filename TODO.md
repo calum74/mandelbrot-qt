@@ -1,6 +1,6 @@
 # Task list
 
-- Distribution build on Mac
+- [ ] Distribution build on Mac
 - code tidy
 - docs
 - doc comments
@@ -84,21 +84,12 @@ Depth 275000
 -0.8803719416978159046998812464618718478458961652747324614061208825350523554491456624151328674083981171488871367376885952916902381147409350757625324489559447600501506545300366675709131155260843890892215664088828
 0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000081
 
-Can I create a mapping between every point outside the MB set to every point inside it? This would give us something to look at on the inside as well?
-
 Refactoring:
-- [ ] Abstract the idea of a view/algorithm and reference orbit
 - [ ] Ability to iterate all points simultaneously so that the black can shrink.
 - [ ] Unit-test orbits - see how far they diverge from a reference orbit.
 - [ ] Still some glitches with epsilon
 
 Core work:
-- [ ] Log the starting iteration in the task bar (2)
-- [ ] Build on Actions if possible & upload artefacts (3)
-- [x] Multithreading
-- [x] Fix precision issues/glitches. Maybe check that the low epsilon was just a fluke and we need to validate all values.
-- 8 threads (or configurable)
-- Make threads more efficient
 
 Algorithm improvements:
 - [x] Fix up the colour palette.
@@ -107,13 +98,8 @@ Algorithm improvements:
 - [ ] Turn rendering_sequence into an iterator
 
 UI improvements:
-- [ ] Tweak iterations
 - [ ] Tweak options, e.g. speed or precision
-- [ ] Random explore
 - [ ] Ensure we render image at the highest resolution  
-- [x] Prevent zooming out too far
-- [x] Initial position should be in the center
-- [x] Window resizing correctly
 - [ ] Get an app icon
 - [ ] Create an installer package
 
