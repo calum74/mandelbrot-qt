@@ -1,12 +1,30 @@
 # Task list
 
-
 - [ ] Distribution build on Mac
+- [ ] Open source mandelbrot-qt
+  - Squash the history
 - code tidy
 - docs
 - doc comments
 
+- mandelbrot tutorial
+  - Give examples of the algorithms and how to use them
+
 # Log term tasks
+
+High quality zoom
+1. Wait for the image to be fully computed.
+2. When you zoom in, you actually just display the outer image, zoomed.
+3. When you zoom in, you commit to a place to zoom to, and calculate the zoomed-in image.
+4. When you reach the inner image
+5. We'll keep a cache of saved images to zoom out to.
+- Each layer stores the time taken to render it.
+- Implement an auto-zoom mode which follows the cursor
+- Store the images as a "depth" (using just a `float`) and compute the colour on the fly.
+
+- When you zoom in, you pick actually on
+
+
 
 - benchmarks
 - tests

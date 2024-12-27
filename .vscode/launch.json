@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Tutorial",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build.dir/mandelbrot/tutorial",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb"
+        },
+        {
             "name": "High precision tests",
             "type": "cppdbg",
             "request": "launch",
