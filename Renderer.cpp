@@ -509,52 +509,119 @@ public:
     coords = f.initial_coords();
   }
 
-  std::unique_ptr<layer> current_layer;
   std::future<void> layer_calculation;
 
   void display_layer(Viewport &vp, const ColourMap &cm) {
+
+    // Compute a mapping from the layer coords to the current coords
+
+    // Assume that the current coords are embedded in the layer's coords
+    auto &lc = layers.back().coords;
+
+    auto ps = lc.point_size(vp.width, vp.height);
+    auto x0 = (coords.left(vp.width, vp.height) - lc.left(vp.width, vp.height))
+                  .to_double() /
+              ps;
+    auto y0 = (coords.top(vp.width, vp.height) - lc.top(vp.width, vp.height))
+                  .to_double() /
+              ps;
+    auto r = coords.r.to_double() / lc.r.to_double();
+
+    std::cout << "Need to project the coords " << x0 << "," << y0 << "-"
+              << (vp.width * r) << "," << (vp.height * r) << std::endl;
+
     // Map the relevant layer to the viewport
     for (int j = 0; j < vp.height; ++j)
       for (int i = 0; i < vp.width; ++i) {
-        vp(i, j) = cm((*current_layer)(i, j));
+        int x = x0 + i * r;
+        int y = y0 + j * r;
+
+        // Should not happen but sensible to check
+        if (x < 0 || x >= vp.width || y < 0 || y >= vp.height)
+          vp(i, j) = 0;
+        else
+          vp(i, j) = cm(layers.back()(x0 + i * r, y0 + j * r));
       }
     vp.region_updated(0, 0, vp.width, vp.height);
     vp.finished(0, 0, 0, 0, 0, 0);
-    std::cout << "Finished calculation\n";
+  }
+
+  std::atomic<bool> stop;
+
+  void push_new_layer(Viewport &vp, int cx, int cy) {
+    std::cout << "Pushing layer\n";
+    // In the thread (todo):
+    layer_calculation = std::async([&]() {
+      auto x = current_fractal->create(coords, vp.width, vp.height, stop);
+      layers.emplace_back(coords, cx, cy, vp.width, vp.height, *x, stop, 4);
+    });
+    layer_calculation.wait();
+  }
+
+  void calculate_layer(Viewport &vp) {
+    if (!layer_calculation.valid() && layers.empty()) {
+      push_new_layer(vp, 0, 0);
+    }
   }
 
   void calculate_async(Viewport &vp, const ColourMap &cm) override {
 
-    std::atomic<bool> stop;
-
-    if (!layer_calculation.valid() && !current_layer) {
-      // In the thread (todo):
-      layer_calculation = std::async([&]() {
-        auto x = current_fractal->create(coords, vp.width, vp.height, stop);
-        current_layer = std::make_unique<fractals::layer>(
-            coords, vp.width, vp.height, *x, stop, 4);
-        display_layer(vp, cm);
-      });
-
-      // Why wait??
-      layer_calculation.wait();
-    } // else
-      //  display_layer(vp, cm);
+    calculate_layer(vp);
+    display_layer(vp, cm);
+    std::cout << "Call to calculate_async\n";
   }
 
   void start_async_calculation(Viewport &vp, std::atomic<bool> &stop) override {
-    // TODO: This should be async
-
-    // Now we'll transfer all of the
   }
 
   double calculate_point(int w, int h, int x, int y) override { return 0; }
 
   bool zoom(double r, int cx, int cy, Viewport &vp) override {
+
+    // In quality mode, we'll naturally slow down the zooming
+
+    if (r < 0.5)
+      r = 0.5;
+    if (r > 2)
+      r = 2;
+
+    auto &lc = layers.back().coords;
+    auto layer_ratio = r * coords.r.to_double() / lc.r.to_double();
+
     // r is the new size relative to the old size
     // When we zoom, we lock in a point, and zoom to that.
-    if (r < 1) {
-      std::cout << "Zooming in\n";
+
+    if (layer_ratio > 0.5 && layer_ratio <= 1) {
+
+      auto new_coords =
+          coords.zoom(r, vp.width, vp.height, layers.back().layer_cx,
+                      layers.back().layer_cy);
+
+      if (r < 1) {
+        // Zoom in on the same layer
+      } else {
+        // Zoom out on the same layer
+      }
+      coords = new_coords;
+
+      return true;
+    } else if (r < 1) {
+      auto new_coords = coords.zoom(r, vp.width, vp.height, cx, cy);
+
+      // Zoom in one layer
+      // Let's bump the layer
+      coords = new_coords;
+      push_new_layer(vp, cx, cy);
+      return true;
+    } else if (r > 1) {
+      // Zoom out one layer
+      if (layers.size() > 1) {
+        std::cout << "Popping layer\n";
+        // coords = new_coords;
+        layers.pop_back();
+        coords = layers.back().coords;
+        return true;
+      }
     }
     return false;
   }
@@ -563,7 +630,7 @@ public:
 
   void set_aspect_ratio(Viewport &vp) override {}
 
-  double width() const override { return 0; }
+  double width() const override { return coords.r.to_double(); }
 
   view_coords get_coords() const override { return coords; }
 
@@ -586,7 +653,7 @@ private:
 
 std::unique_ptr<fractals::Renderer> fractals::make_renderer() {
   // TODO: Make it switchable between speed/quality
-  // return std::make_unique<HighPrecisionRenderer>(mandelbrot_fractal);
+  return std::make_unique<HighPrecisionRenderer>(mandelbrot_fractal);
 
   return std::make_unique<AsyncRenderer>(
       std::make_unique<CalculatedFractalRenderer>(mandelbrot_fractal));

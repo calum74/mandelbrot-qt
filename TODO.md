@@ -1,5 +1,13 @@
 # Task list
 
+Smooth zoom
+- [ ] Start next layer calculation on initial zoom (not wait until we reach resolution)
+  - Lock in the zoom coordinates
+- [ ] When we zoom out, 
+- [ ] Fix the crash
+- [ ] Animate the zoom
+  
+
 - [ ] Distribution build on Mac
 - [ ] Open source mandelbrot-qt
   - Squash the history
