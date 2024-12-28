@@ -3,9 +3,11 @@
 #include "RenderingSequence.hpp"
 #include "Viewport.hpp"
 #include "fractal.hpp"
+#include "layer.hpp"
 #include "mandelbrot.hpp"
 #include "view_coords.hpp"
 
+#include <deque>
 #include <future>
 #include <memory>
 #include <vector>
@@ -465,25 +467,7 @@ public:
 
   bool zoom(double r0, int cx, int cy, Viewport &vp) override {
 
-    double pw = vp.width;
-    double ph = vp.height;
-
-    auto pixel_width =
-        vp.width > vp.height ? coords.r * (2.0 / ph) : coords.r * (2.0 / pw);
-
-    auto point_size =
-        vp.width > vp.height ? coords.r * (2.0 / ph) : coords.r * (2.0 / pw);
-
-    view_coords::value_type r{r0};
-
-    auto CX = coords.x + pixel_width * (cx - pw / 2);
-    auto CY = coords.y + pixel_width * (cy - ph / 2);
-
-    view_coords new_coords;
-    new_coords.max_iterations = coords.max_iterations;
-    new_coords.x = CX - (CX - coords.x) * r;
-    new_coords.y = CY - (CY - coords.y) * r;
-    new_coords.r = coords.r * r;
+    auto new_coords = coords.zoom(r0, vp.width, vp.height, cx, cy);
 
     if (!factory->valid_for(new_coords)) {
       return false;
@@ -494,13 +478,7 @@ public:
   }
 
   void scroll(int dx, int dy, Viewport &vp) override {
-    if (vp.width > vp.height) {
-      coords.y += coords.r * (2.0 * dy / vp.height);
-      coords.x += coords.r * (2.0 * dx / vp.height);
-    } else {
-      coords.y += coords.r * (2.0 * dy / vp.width);
-      coords.x += coords.r * (2.0 * dx / vp.width);
-    }
+    coords = coords.scroll(vp.width, vp.height, dx, dy);
   }
 
   double width() const override { return convert<double>(coords.r); }
@@ -524,7 +502,92 @@ private:
 
 void fractals::Renderer::set_fractal(const fractals::PointwiseFractal &) {}
 
+class HighPrecisionRenderer : public Renderer {
+public:
+  HighPrecisionRenderer(const fractals::PointwiseFractal &f)
+      : current_fractal(&f) {
+    coords = f.initial_coords();
+  }
+
+  std::unique_ptr<layer> current_layer;
+  std::future<void> layer_calculation;
+
+  void display_layer(Viewport &vp, const ColourMap &cm) {
+    // Map the relevant layer to the viewport
+    for (int j = 0; j < vp.height; ++j)
+      for (int i = 0; i < vp.width; ++i) {
+        vp(i, j) = cm((*current_layer)(i, j));
+      }
+    vp.region_updated(0, 0, vp.width, vp.height);
+    vp.finished(0, 0, 0, 0, 0, 0);
+    std::cout << "Finished calculation\n";
+  }
+
+  void calculate_async(Viewport &vp, const ColourMap &cm) override {
+
+    std::atomic<bool> stop;
+
+    if (!layer_calculation.valid() && !current_layer) {
+      // In the thread (todo):
+      layer_calculation = std::async([&]() {
+        auto x = current_fractal->create(coords, vp.width, vp.height, stop);
+        current_layer = std::make_unique<fractals::layer>(
+            coords, vp.width, vp.height, *x, stop, 4);
+        display_layer(vp, cm);
+      });
+
+      // Why wait??
+      layer_calculation.wait();
+    } // else
+      //  display_layer(vp, cm);
+  }
+
+  void start_async_calculation(Viewport &vp, std::atomic<bool> &stop) override {
+    // TODO: This should be async
+
+    // Now we'll transfer all of the
+  }
+
+  double calculate_point(int w, int h, int x, int y) override { return 0; }
+
+  bool zoom(double r, int cx, int cy, Viewport &vp) override {
+    // r is the new size relative to the old size
+    // When we zoom, we lock in a point, and zoom to that.
+    if (r < 1) {
+      std::cout << "Zooming in\n";
+    }
+    return false;
+  }
+
+  void scroll(int dx, int dy, Viewport &vp) override {}
+
+  void set_aspect_ratio(Viewport &vp) override {}
+
+  double width() const override { return 0; }
+
+  view_coords get_coords() const override { return coords; }
+
+  bool set_coords(const view_coords &c, Viewport &vp) override {
+    coords = c;
+    return true;
+  }
+
+  int iterations() const override { return coords.max_iterations; }
+
+  view_coords initial_coords() const override {
+    return current_fractal->initial_coords();
+  }
+
+private:
+  const fractals::PointwiseFractal *current_fractal;
+  view_coords coords;
+  std::deque<fractals::layer> layers;
+};
+
 std::unique_ptr<fractals::Renderer> fractals::make_renderer() {
+  // TODO: Make it switchable between speed/quality
+  // return std::make_unique<HighPrecisionRenderer>(mandelbrot_fractal);
+
   return std::make_unique<AsyncRenderer>(
       std::make_unique<CalculatedFractalRenderer>(mandelbrot_fractal));
 }
