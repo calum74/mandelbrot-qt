@@ -68,8 +68,10 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
     r = 2.0;
   if (r < 0.5)
     r = 0.5;
-  renderer->zoom(r, event->position().x(), event->position().y(), viewport);
-  calculate();
+  if (r != 1.0) {
+    renderer->zoom(r, event->position().x(), event->position().y(), viewport);
+    calculate();
+  }
 }
 
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {

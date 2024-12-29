@@ -3,10 +3,11 @@
 Smooth zoom
 - [ ] Start next layer calculation on initial zoom (not wait until we reach resolution)
   - Lock in the zoom coordinates
-- [ ] When we zoom out, 
-- [ ] Fix the crash
 - [ ] Animate the zoom
-  
+- [ ] Avoid computing lumps of black - use the original rendering sequence maybe.  
+- [ ] Make sure to smooth the pixels
+
+- [ ] Use a QActionGroup::setExclusive(true) to enable exclusive options for
 
 - [ ] Distribution build on Mac
 - [ ] Open source mandelbrot-qt
@@ -15,6 +16,18 @@ Smooth zoom
 - docs
 - doc comments
 
+- [ ] Implement general Taylor series expansion
+
+```c++
+template<typename Complex, int S>
+std::array<Complex, S> next_taylor_series(const Complex &z, const std::array<Complex, S> &previous)
+{
+
+}
+
+```
+
+- Mandelbrot - list the classes and document them
 - mandelbrot tutorial
   - Give examples of the algorithms and how to use them
 

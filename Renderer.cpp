@@ -7,6 +7,7 @@
 #include "mandelbrot.hpp"
 #include "view_coords.hpp"
 
+#include <cassert>
 #include <deque>
 #include <future>
 #include <memory>
@@ -509,7 +510,9 @@ public:
     coords = f.initial_coords();
   }
 
-  std::future<void> layer_calculation;
+  ~HighPrecisionRenderer() { stop_calculation(); }
+
+  std::future<layer> layer_calculation;
 
   void display_layer(Viewport &vp, const ColourMap &cm) {
 
@@ -527,6 +530,7 @@ public:
               ps;
     auto r = coords.r.to_double() / lc.r.to_double();
 
+    std::cout << "Rendering using layer " << layers.size() << std::endl;
     std::cout << "Need to project the coords " << x0 << "," << y0 << "-"
               << (vp.width * r) << "," << (vp.height * r) << std::endl;
 
@@ -539,8 +543,11 @@ public:
         // Should not happen but sensible to check
         if (x < 0 || x >= vp.width || y < 0 || y >= vp.height)
           vp(i, j) = 0;
-        else
+        else {
+          // TODO: Blend the pixels smoothly
+          // Make sure we treat 0 as special
           vp(i, j) = cm(layers.back()(x0 + i * r, y0 + j * r));
+        }
       }
     vp.region_updated(0, 0, vp.width, vp.height);
     vp.finished(0, 0, 0, 0, 0, 0);
@@ -548,27 +555,46 @@ public:
 
   std::atomic<bool> stop;
 
-  void push_new_layer(Viewport &vp, int cx, int cy) {
-    std::cout << "Pushing layer\n";
-    // In the thread (todo):
-    layer_calculation = std::async([&]() {
-      auto x = current_fractal->create(coords, vp.width, vp.height, stop);
-      layers.emplace_back(coords, cx, cy, vp.width, vp.height, *x, stop, 4);
-    });
-    layer_calculation.wait();
+  void stop_calculation() {
+    if (layer_calculation.valid()) {
+      stop = true;
+      layer_calculation.get();
+      stop = false;
+    }
   }
 
-  void calculate_layer(Viewport &vp) {
-    if (!layer_calculation.valid() && layers.empty()) {
-      push_new_layer(vp, 0, 0);
-    }
+  void start_new_layer(const view_coords &new_coords, Viewport &vp, int cx,
+                       int cy) {
+    std::cout << "Starting new layer at " << new_coords << "\n";
+    stop_calculation();
+    layer_cx = cx;
+    layer_cy = cy;
+
+    layer_calculation = std::async(std::launch::async, [&vp, this, new_coords,
+                                                        cx, cy]() {
+      std::cout << "Calculating layer\n";
+      auto x = current_fractal->create(new_coords, vp.width, vp.height, stop);
+      auto t0 = std::chrono::high_resolution_clock::now();
+      auto l = layer(new_coords, cx, cy, vp.width, vp.height, *x, stop, 4);
+      auto t1 = std::chrono::high_resolution_clock::now(); // !! Compute this in
+                                                           // the layer itself
+      std::chrono::duration<double> d = t1 - t0;
+
+      std::cout << "Layer calculation completed in " << d.count()
+                << " seconds\n";
+      return l;
+    });
   }
 
   void calculate_async(Viewport &vp, const ColourMap &cm) override {
 
-    calculate_layer(vp);
+    // std::cout << "Call to calculate_async\n";
+    if (!layer_calculation.valid() && layers.empty()) {
+      start_new_layer(coords, vp, 0, 0);
+      std::cout << "Pushed initial layer\n";
+      layers.push_back(layer_calculation.get());
+    }
     display_layer(vp, cm);
-    std::cout << "Call to calculate_async\n";
   }
 
   void start_async_calculation(Viewport &vp, std::atomic<bool> &stop) override {
@@ -576,9 +602,12 @@ public:
 
   double calculate_point(int w, int h, int x, int y) override { return 0; }
 
+  int layer_cx, layer_cy;
+
   bool zoom(double r, int cx, int cy, Viewport &vp) override {
 
-    // In quality mode, we'll naturally slow down the zooming
+    // In quality mode, we'll slow down the zooming speed
+    r = std::pow(r, 0.25);
 
     if (r < 0.5)
       r = 0.5;
@@ -587,39 +616,87 @@ public:
 
     auto &lc = layers.back().coords;
     auto layer_ratio = r * coords.r.to_double() / lc.r.to_double();
+    std::cout << "Layer ratio = " << layer_ratio << std::endl;
 
     // r is the new size relative to the old size
     // When we zoom, we lock in a point, and zoom to that.
 
-    if (layer_ratio > 0.5 && layer_ratio <= 1) {
-
-      auto new_coords =
-          coords.zoom(r, vp.width, vp.height, layers.back().layer_cx,
-                      layers.back().layer_cy);
-
-      if (r < 1) {
-        // Zoom in on the same layer
-      } else {
-        // Zoom out on the same layer
+    if (r < 1) {
+      // We're zooming in, so we'd better have a layer calculation started
+      if (!layer_calculation.valid()) {
+        // We need to start calculating the next layer, and lock in the
+        // coordinates
+        start_new_layer(coords.zoom(0.50, vp.width, vp.height, cx, cx), vp, cx,
+                        cy);
       }
+      assert(layer_calculation.valid());
+    }
+
+    if (layer_ratio > 0.5 && layer_ratio <= 1.001) {
+      // We'll render the existing layer
+      std::cout << "Rendering using outer layer\n";
+
+#if 0
+  // It can be jarring to either delay the calculation
+  // or zoom in to some place new
+      if (cx != layer_cx || cy != layer_cy) {
+        // Throw away the old calculation because we don't want to mess up the
+        // zoom
+        coords = layers.back().coords;
+        start_new_layer(
+            layers.back().coords.zoom(0.50, vp.width, vp.height, cx, cy), vp,
+            cx, cy);
+      }
+#endif
+
+      auto new_coords = coords.zoom(r, vp.width, vp.height, cx, cy);
+
       coords = new_coords;
 
       return true;
     } else if (r < 1) {
-      auto new_coords = coords.zoom(r, vp.width, vp.height, cx, cy);
-
+      std::cout << "Zooming in to layer " << (layers.size() + 1) << "\n";
       // Zoom in one layer
-      // Let's bump the layer
-      coords = new_coords;
-      push_new_layer(vp, cx, cy);
+
+      // TODO: Don't wait for the calculation up to a threshold
+
+      assert(layer_calculation.valid());
+
+      // if(!layer_calculation.wait_for({})
+      //   std::cout << "Blocked waiting for computation\n";
+
+      std::cout << "   waiting for calculation...\n";
+      layers.push_back(layer_calculation.get());
+
+      // We can start a new layer calculation straight away
+
+      // coords = layers.back().coords.zoom(r, vp.width, vp.height, cx, cy);
+      coords = layers.back().coords;
+      // coords = coords.zoom(r, vp.width, vp.height, cx, cy);
+
+      // Lock in the next layer
+      start_new_layer(
+          layers.back().coords.zoom(0.50, vp.width, vp.height, cx, cy), vp, cx,
+          cy);
+
       return true;
     } else if (r > 1) {
       // Zoom out one layer
+      if (layer_calculation.valid()) {
+        stop = true;
+        layer_calculation.get();
+        stop = false;
+      }
       if (layers.size() > 1) {
-        std::cout << "Popping layer\n";
+        std::cout << "Zooming out to layer " << (layers.size() - 1) << "\n";
         // coords = new_coords;
+
+        // coords = layers.back().coords;
+        coords = coords.zoom(r, vp.width, vp.height, cx, cy);
+        // layer_cx = layers.back().cx;
+        // layer_cu
         layers.pop_back();
-        coords = layers.back().coords;
+
         return true;
       }
     }
