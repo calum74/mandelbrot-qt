@@ -1,5 +1,12 @@
 # Task list
 
+Auto-iteration:
+- On each zoom, calculate the percentiles somehow.
+- All non-zero values get placed in an array
+- Heapify the array
+- Pop n items from the array
+
+
 Smooth zoom
 - When shifting centerpoint, we get black borders
   - Zooming in

@@ -5,6 +5,7 @@
 #include "fractal.hpp"
 #include "layer.hpp"
 #include "mandelbrot.hpp"
+#include "percentile.hpp"
 #include "view_coords.hpp"
 
 #include <cassert>
@@ -215,6 +216,10 @@ public:
     underlying_fractal->start_async_calculation(vp, stop);
   }
 
+  // We're going hold an array of all non-zero depths
+  std::mutex depth_mutex;
+  std::vector<double> depths;
+
   void calculate_region_in_thread(fractals::Viewport &vp, const ColourMap &cm,
                                   std::atomic<bool> &stop, int x0, int y0,
                                   int w, int h) {
@@ -238,6 +243,10 @@ public:
         if (depth > max_depth || max_depth == 0)
           max_depth = depth;
         point = cm(depth);
+        if (depth > 0) {
+          std::lock_guard<std::mutex> lck(depth_mutex);
+          depths.push_back(depth);
+        }
       }
 
 #if 1
@@ -264,6 +273,7 @@ public:
 
   void calculate_async(fractals::Viewport &view, const ColourMap &cm) override {
     stop_current_calculation();
+    depths.clear();
 
     stop = false;
 
@@ -293,6 +303,17 @@ public:
                   underlying_fractal->get_average_skipped_iterations(),
                   d.count());
             }
+
+            // Minor
+            if (depths.begin() < depths.end()) {
+              double discovered_depth =
+                  util::percentile(depths.begin(), depths.end(), 0.999);
+              std::cout << "99.9 percentile = " << discovered_depth
+                        << std::endl;
+              view.discovered_depth(std::distance(depths.begin(), depths.end()),
+                                    discovered_depth);
+            }
+
             // Notify that we are finished
           }
         }));
@@ -408,6 +429,8 @@ double Renderer::get_average_iterations() const { return 0; }
 double Renderer::get_average_skipped_iterations() const { return 0; }
 
 void Viewport::region_updated(int x, int y, int w, int h) {}
+
+void Viewport::discovered_depth(int, double) {}
 
 void fractals::Viewport::finished(double, int, int, double, double, double) {}
 

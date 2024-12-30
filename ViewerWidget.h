@@ -19,6 +19,8 @@ class ViewerWidget : public QWidget {
     void region_updated(int x, int y, int w, int h) override;
     void finished(double width, int min_depth, int max_depth, double avg,
                   double skipped, double render_time) override;
+    virtual void discovered_depth(int points, double discovered_depth) override;
+
   } viewport;
 
   std::unique_ptr<fractals::ColourMap> colourMap;
