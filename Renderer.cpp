@@ -607,15 +607,19 @@ public:
 
   void start_new_layer(Viewport &vp, int cx, int cy) {
     /*
+      Note the cx,cy are relative to the current coords, not the outer coords.
+
+      1. Locate the fixed point (CX,CY) that we'll keep fixed.
+      2. Zoom in by a factor of 2 from the outer layer, keeping the fixed point
+        (CX,CY) in the same position.
 
     */
-    // We need to start a new layer
-    // What point do we want to fix?
-    // We want to fix the point at (cx,cy), and zoom in by a factor of 2 from
-    // the outer layer.
-    start_new_layer(
-        layers.back().coords.zoom(0.50, vp.width, vp.height, cx, cy), vp, cx,
-        cy);
+
+    auto C = coords.map_point(vp.width, vp.height, cx, cy);
+
+    start_new_layer(layers.back().coords.zoom(0.50, vp.width, vp.height, cx, cy,
+                                              C.first, C.second),
+                    vp, cx, cy);
   }
 
   bool zoom(double r, int cx, int cy, Viewport &vp) override {
@@ -650,6 +654,8 @@ public:
       std::cout << "   waiting for calculation...\n";
 
       layers.push_back(layer_calculation.get());
+      layer_cx = layers.back().layer_cx;
+      layer_cy = layers.back().layer_cy;
 
       auto t2 = std::chrono::high_resolution_clock::now();
       std::chrono::duration<double> d = t2 - t1;
@@ -665,6 +671,8 @@ public:
       // Need to instead pop layers
       std::cout << "Popping layer " << layers.size() << std::endl;
       stop_calculation();
+      layer_cx = layers.back().layer_cx;
+      layer_cy = layers.back().layer_cy;
       layers.pop_back();
       layer_ratio *= 0.5;
     }

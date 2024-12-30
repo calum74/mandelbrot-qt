@@ -1,6 +1,42 @@
 # Task list
 
 Smooth zoom
+Bugs that need fixing:
+
+
+We need to ensure that we always calculate using powers of 2.
+Recalculate the centerpoint of the zoom correctly. It's not just (cx,cy).
+Don't glitch the zoom to the current layer, but use the available layers to render.
+
+
+
+Recalculate zoom if the centerpoint moves.
+Render missing pixels from other planes, not just black.
+Smooth interpolation.
+
+Implementation:
+We keep a list of fractals we have computed. In version 1, all fractals are fully computed. When we zoom, we'll try to anticipate where the zoom will go, and precompute the region to display.
+
+
+
+
+- [ ] Look at `screen.devicePixelRatio`
+
+
+Minecraft:
+- Breed the villages
+- More fields
+- Get more
+ - iron
+ - diamonds
+ - fields
+ - villagers
+ - books
+ - obsidian
+
+
+
+
 - [ ] Start next layer calculation on initial zoom (not wait until we reach resolution)
   - Lock in the zoom coordinates
 - [ ] Animate the zoom
