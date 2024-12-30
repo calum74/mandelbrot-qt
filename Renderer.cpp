@@ -606,12 +606,15 @@ public:
   int layer_cx, layer_cy;
 
   void start_new_layer(Viewport &vp, int cx, int cy) {
+    /*
+
+    */
     // We need to start a new layer
     // What point do we want to fix?
     // We want to fix the point at (cx,cy), and zoom in by a factor of 2 from
     // the outer layer.
     start_new_layer(
-        layers.back().coords.zoom(0.50, vp.width, vp.height, cx, cx), vp, cx,
+        layers.back().coords.zoom(0.50, vp.width, vp.height, cx, cy), vp, cx,
         cy);
   }
 
