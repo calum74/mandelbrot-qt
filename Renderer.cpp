@@ -530,9 +530,9 @@ public:
               ps;
     auto r = coords.r.to_double() / lc.r.to_double();
 
-    std::cout << "Rendering using layer " << layers.size() << std::endl;
-    std::cout << "Need to project the coords " << x0 << "," << y0 << "-"
-              << (vp.width * r) << "," << (vp.height * r) << std::endl;
+    // std::cout << "Rendering using layer " << layers.size() << std::endl;
+    // std::cout << "Need to project the coords " << x0 << "," << y0 << "-"
+    //           << (vp.width * r) << "," << (vp.height * r) << std::endl;
 
     // Map the relevant layer to the viewport
     for (int j = 0; j < vp.height; ++j)
@@ -565,14 +565,15 @@ public:
 
   void start_new_layer(const view_coords &new_coords, Viewport &vp, int cx,
                        int cy) {
-    std::cout << "Starting new layer at " << new_coords << "\n";
+    std::cout << "Starting layer " << layers.size() << " at " << new_coords
+              << "\n";
     stop_calculation();
     layer_cx = cx;
     layer_cy = cy;
 
     layer_calculation = std::async(std::launch::async, [&vp, this, new_coords,
                                                         cx, cy]() {
-      std::cout << "Calculating layer\n";
+      std::cout << "  Calculating layer\n";
       auto x = current_fractal->create(new_coords, vp.width, vp.height, stop);
       auto t0 = std::chrono::high_resolution_clock::now();
       auto l = layer(new_coords, cx, cy, vp.width, vp.height, *x, stop, 4);
@@ -580,7 +581,7 @@ public:
                                                            // the layer itself
       std::chrono::duration<double> d = t1 - t0;
 
-      std::cout << "Layer calculation completed in " << d.count()
+      std::cout << "  Layer calculation completed in " << d.count()
                 << " seconds\n";
       return l;
     });
@@ -604,6 +605,16 @@ public:
 
   int layer_cx, layer_cy;
 
+  void start_new_layer(Viewport &vp, int cx, int cy) {
+    // We need to start a new layer
+    // What point do we want to fix?
+    // We want to fix the point at (cx,cy), and zoom in by a factor of 2 from
+    // the outer layer.
+    start_new_layer(
+        layers.back().coords.zoom(0.50, vp.width, vp.height, cx, cx), vp, cx,
+        cy);
+  }
+
   bool zoom(double r, int cx, int cy, Viewport &vp) override {
 
     // In quality mode, we'll slow down the zooming speed
@@ -614,93 +625,57 @@ public:
     if (r > 2)
       r = 2;
 
-    auto &lc = layers.back().coords;
-    auto layer_ratio = r * coords.r.to_double() / lc.r.to_double();
+    auto layer_ratio =
+        r * coords.r.to_double() / layers.back().coords.r.to_double();
     std::cout << "Layer ratio = " << layer_ratio << std::endl;
 
     // r is the new size relative to the old size
     // When we zoom, we lock in a point, and zoom to that.
 
-    if (r < 1) {
-      // We're zooming in, so we'd better have a layer calculation started
+    while (layer_ratio < 0.5) {
+      // We need to push a new layer
+
       if (!layer_calculation.valid()) {
         // We need to start calculating the next layer, and lock in the
-        // coordinates
-        start_new_layer(coords.zoom(0.50, vp.width, vp.height, cx, cx), vp, cx,
-                        cy);
+        //  coordinates
+        start_new_layer(vp, cx, cy);
       }
-      assert(layer_calculation.valid());
-    }
 
-    if (layer_ratio > 0.5 && layer_ratio <= 1.001) {
-      // We'll render the existing layer
-      std::cout << "Rendering using outer layer\n";
+      // Push the new layer
 
-#if 0
-  // It can be jarring to either delay the calculation
-  // or zoom in to some place new
-      if (cx != layer_cx || cy != layer_cy) {
-        // Throw away the old calculation because we don't want to mess up the
-        // zoom
-        coords = layers.back().coords;
-        start_new_layer(
-            layers.back().coords.zoom(0.50, vp.width, vp.height, cx, cy), vp,
-            cx, cy);
-      }
-#endif
-
-      auto new_coords = coords.zoom(r, vp.width, vp.height, cx, cy);
-
-      coords = new_coords;
-
-      return true;
-    } else if (r < 1) {
-      std::cout << "Zooming in to layer " << (layers.size() + 1) << "\n";
-      // Zoom in one layer
-
-      // TODO: Don't wait for the calculation up to a threshold
-
-      assert(layer_calculation.valid());
-
-      // if(!layer_calculation.wait_for({})
-      //   std::cout << "Blocked waiting for computation\n";
-
+      auto t1 = std::chrono::high_resolution_clock::now();
       std::cout << "   waiting for calculation...\n";
+
       layers.push_back(layer_calculation.get());
 
-      // We can start a new layer calculation straight away
+      auto t2 = std::chrono::high_resolution_clock::now();
+      std::chrono::duration<double> d = t2 - t1;
+      std::cout << "   Blocked for " << d.count() << " seconds\n";
 
-      // coords = layers.back().coords.zoom(r, vp.width, vp.height, cx, cy);
-      coords = layers.back().coords;
-      // coords = coords.zoom(r, vp.width, vp.height, cx, cy);
+      layer_ratio *= 2;
 
-      // Lock in the next layer
-      start_new_layer(
-          layers.back().coords.zoom(0.50, vp.width, vp.height, cx, cy), vp, cx,
-          cy);
-
-      return true;
-    } else if (r > 1) {
-      // Zoom out one layer
-      if (layer_calculation.valid()) {
-        stop = true;
-        layer_calculation.get();
-        stop = false;
-      }
-      if (layers.size() > 1) {
-        std::cout << "Zooming out to layer " << (layers.size() - 1) << "\n";
-        // coords = new_coords;
-
-        // coords = layers.back().coords;
-        coords = coords.zoom(r, vp.width, vp.height, cx, cy);
-        // layer_cx = layers.back().cx;
-        // layer_cu
-        layers.pop_back();
-
-        return true;
-      }
+      // Start the next calculation
+      start_new_layer(vp, cx, cy);
     }
-    return false;
+
+    while (layer_ratio > 1.0 && layers.size() > 1) {
+      // Need to instead pop layers
+      std::cout << "Popping layer " << layers.size() << std::endl;
+      stop_calculation();
+      layers.pop_back();
+      layer_ratio *= 0.5;
+    }
+
+    if (r < 1 && !layer_calculation.valid()) {
+      // We still need to start a new calculation to avoid blocking the zoom
+      // What point do we want to fix?
+      // We want to fix the point at (cx,cy), and zoom in by a factor of 2 from
+      // the outer layer.
+      start_new_layer(vp, cx, cy);
+    }
+
+    coords = coords.zoom(r, vp.width, vp.height, cx, cy);
+    return true;
   }
 
   void scroll(int dx, int dy, Viewport &vp) override {}
