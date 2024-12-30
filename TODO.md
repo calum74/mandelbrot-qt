@@ -1,6 +1,23 @@
 # Task list
 
 Smooth zoom
+- When shifting centerpoint, we get black borders
+  - Zooming in
+  - Zooming out
+- When an image has been shifted, we seem to get a permanent black border.
+
+Improvements to fast mode:
+- Auto iterations, based on histogram of iterations, and iterations in previous calculation.
+- Use threads, but calculate each layer separately.
+
+Heuristic:
+- Look at the 99th percentile
+- Set max iterations = 99th percentile * 1.3 or something.
+
+How to calculate a percentile?
+
+
+
 Bugs that need fixing:
 
 

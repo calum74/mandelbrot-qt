@@ -715,9 +715,6 @@ private:
 };
 
 std::unique_ptr<fractals::Renderer> fractals::make_renderer() {
-  // TODO: Make it switchable between speed/quality
-  return std::make_unique<HighPrecisionRenderer>(mandelbrot_fractal);
-
   return std::make_unique<AsyncRenderer>(
       std::make_unique<CalculatedFractalRenderer>(mandelbrot_fractal));
 }
