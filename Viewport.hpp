@@ -23,6 +23,9 @@ struct Viewport {
   virtual void finished(double width, int min_depth, int max_depth,
                         double avg_iterations, double avg_skipped_iterations,
                         double render_time);
+
+  // Can be called even if stopped
+  virtual void discovered_depth(int points, double discovered_depth);
 };
 
 } // namespace fractals
