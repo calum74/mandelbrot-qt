@@ -1,54 +1,13 @@
 # Task list
 
-Auto-iteration:
-- On each zoom, calculate the percentiles somehow.
-- All non-zero values get placed in an array
-- Heapify the array
-- Pop n items from the array
-
-- percentile returns an iterator
+- Segmentation fault on exit
 - Menu option for auto-iterations
 - Menu option for threading (default: enabled)
-
-- Tweak constants
-
-
-
-Smooth zoom
-- When shifting centerpoint, we get black borders
-  - Zooming in
-  - Zooming out
-- When an image has been shifted, we seem to get a permanent black border.
+- Threading!
 
 Improvements to fast mode:
 - Auto iterations, based on histogram of iterations, and iterations in previous calculation.
 - Use threads, but calculate each layer separately.
-
-Heuristic:
-- Look at the 99th percentile
-- Set max iterations = 99th percentile * 1.3 or something.
-
-How to calculate a percentile?
-
-
-
-Bugs that need fixing:
-
-
-We need to ensure that we always calculate using powers of 2.
-Recalculate the centerpoint of the zoom correctly. It's not just (cx,cy).
-Don't glitch the zoom to the current layer, but use the available layers to render.
-
-
-
-Recalculate zoom if the centerpoint moves.
-Render missing pixels from other planes, not just black.
-Smooth interpolation.
-
-Implementation:
-We keep a list of fractals we have computed. In version 1, all fractals are fully computed. When we zoom, we'll try to anticipate where the zoom will go, and precompute the region to display.
-
-
 
 
 - [ ] Look at `screen.devicePixelRatio`
