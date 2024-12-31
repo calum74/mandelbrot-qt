@@ -108,7 +108,9 @@ void ViewerWidget::MyViewport::finished(double width, int min_depth,
 }
 
 void ViewerWidget::MyViewport::discovered_depth(int points,
-                                                double discovered_depth) {}
+                                                double discovered_depth) {
+  widget->renderer->discovered_depth(points, discovered_depth);
+}
 
 void ViewerWidget::increaseIterations() {
   renderer->increase_iterations(viewport);
