@@ -6,6 +6,13 @@ Auto-iteration:
 - Heapify the array
 - Pop n items from the array
 
+- percentile returns an iterator
+- Menu option for auto-iterations
+- Menu option for threading (default: enabled)
+
+- Tweak constants
+
+
 
 Smooth zoom
 - When shifting centerpoint, we get black borders

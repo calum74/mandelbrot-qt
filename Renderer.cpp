@@ -200,6 +200,10 @@ public:
     underlying_fractal->set_fractal(f);
   }
 
+  void discovered_depth(int points, double discovered_depth) override {
+    underlying_fractal->discovered_depth(points, discovered_depth);
+  }
+
   double calculate_point(int w, int h, int x, int y) override {
     return underlying_fractal->calculate_point(w, h, x, y);
   }
@@ -306,12 +310,10 @@ public:
 
             // Minor
             if (depths.begin() < depths.end()) {
-              double discovered_depth =
-                  util::percentile(depths.begin(), depths.end(), 0.999);
-              std::cout << "99.9 percentile = " << discovered_depth
-                        << std::endl;
+              auto discovered_depth =
+                  util::top_percentile(depths.begin(), depths.end(), 0.999);
               view.discovered_depth(std::distance(depths.begin(), depths.end()),
-                                    discovered_depth);
+                                    *discovered_depth);
             }
 
             // Notify that we are finished
@@ -434,20 +436,7 @@ void Viewport::discovered_depth(int, double) {}
 
 void fractals::Viewport::finished(double, int, int, double, double, double) {}
 
-template <typename LowPrecisionComplex, typename HighPrecisionComplex>
-struct test_algorithm {
-  struct params_type {
-    params_type(const view_coords &v);
-  };
-
-  struct view_type {
-    view_type(const params_type &pt, std::atomic<bool> &stop);
-  };
-
-  static double calculate(const view_type &view, int x, int y);
-
-  using next_type = void;
-};
+void Renderer::discovered_depth(int, double) {}
 
 class CalculatedFractalRenderer : public fractals::Renderer {
 public:
@@ -478,6 +467,11 @@ public:
 
   double calculate_point(int w, int h, int x, int y) override {
     return calculation->calculate(x, y);
+  }
+
+  void discovered_depth(int points, double discovered_depth) override {
+    if (points > 1000)                              // Fudge factor
+      coords.max_iterations = discovered_depth * 2; // Fudge factor
   }
 
   void increase_iterations(Viewport &vp) override {
