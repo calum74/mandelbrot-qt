@@ -1,9 +1,8 @@
 # Task list
 
-- Segmentation fault on exit
+- Threading!
 - Menu option for auto-iterations
 - Menu option for threading (default: enabled)
-- Threading!
 
 Improvements to fast mode:
 - Auto iterations, based on histogram of iterations, and iterations in previous calculation.

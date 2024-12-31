@@ -46,10 +46,12 @@
     <property name="title">
      <string>Rendering</string>
     </property>
+    <addaction name="actionAuto_iterations"/>
     <addaction name="actionIncrease_iterations"/>
     <addaction name="actionDecrease_iterations"/>
     <addaction name="separator"/>
-    <addaction name="actionColours"/>
+    <addaction name="actionMultithreading"/>
+    <addaction name="separator"/>
     <addaction name="actionRandomize_palette"/>
    </widget>
    <widget class="QMenu" name="menuFractal">
@@ -218,6 +220,28 @@
    </property>
    <property name="text">
     <string>Best quality</string>
+   </property>
+  </action>
+  <action name="actionAuto_iterations">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Auto iterations</string>
+   </property>
+  </action>
+  <action name="actionMultithreading">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Multithreading</string>
    </property>
   </action>
  </widget>
