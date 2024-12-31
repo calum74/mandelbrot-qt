@@ -14,6 +14,9 @@ class ViewerWidget : public QWidget {
   Q_OBJECT
   QImage image;
 
+  // Note destruction order - renderer must be destroyed after viewport
+  std::unique_ptr<fractals::Renderer> renderer;
+
   struct MyViewport : public fractals::Viewport {
     ViewerWidget *widget;
     void region_updated(int x, int y, int w, int h) override;
@@ -24,7 +27,6 @@ class ViewerWidget : public QWidget {
   } viewport;
 
   std::unique_ptr<fractals::ColourMap> colourMap;
-  std::unique_ptr<fractals::Renderer> renderer;
 
   // Track the previous position of the mouse cursor
   int press_x, press_y, move_x, move_y;
@@ -38,6 +40,7 @@ class ViewerWidget : public QWidget {
 
 public:
   explicit ViewerWidget(QWidget *parent = nullptr);
+  ~ViewerWidget() override;
 
   void paintEvent(QPaintEvent *event) override;
   void resizeEvent(QResizeEvent *event) override;

@@ -24,6 +24,8 @@ ViewerWidget::ViewerWidget(QWidget *parent)
   connect(&timer, &QTimer::timeout, this, &ViewerWidget::timer2);
 }
 
+ViewerWidget::~ViewerWidget() { renderer.reset(); }
+
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
 
 void ViewerWidget::calculate() {
@@ -109,7 +111,8 @@ void ViewerWidget::MyViewport::finished(double width, int min_depth,
 
 void ViewerWidget::MyViewport::discovered_depth(int points,
                                                 double discovered_depth) {
-  widget->renderer->discovered_depth(points, discovered_depth);
+  if (widget->renderer)
+    widget->renderer->discovered_depth(points, discovered_depth);
 }
 
 void ViewerWidget::increaseIterations() {

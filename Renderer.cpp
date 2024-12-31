@@ -308,7 +308,6 @@ public:
                   d.count());
             }
 
-            // Minor
             if (depths.begin() < depths.end()) {
               auto discovered_depth =
                   util::top_percentile(depths.begin(), depths.end(), 0.999);
