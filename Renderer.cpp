@@ -87,19 +87,18 @@ void fractals::Renderer::calculate(Viewport &vp, const ColourMap &cm,
   int depth_range = 500;
 
   RenderingSequence rs(w, h, 16);
-  int previous_stride = rs.stride;
   double min_depth = 0, max_depth = 0;
+  int x, y, stride;
+  bool stride_changed = false;
 
-  do {
-    if (rs.stride != previous_stride) {
-      // if (rs.stride <= 1)
+  while (rs.next(x, y, stride, stride_changed)) {
+    if (stride_changed) {
       vp.region_updated(0, 0, w, h);
-      previous_stride = rs.stride;
     }
-    auto &point = vp(rs.x, rs.y);
+    auto &point = vp(x, y);
 
     if (extra(point)) {
-      auto depth = calculate_point(w, h, rs.x, rs.y);
+      auto depth = calculate_point(w, h, x, y);
       if (depth < min_depth || min_depth == 0)
         min_depth = depth;
       if (depth > max_depth || max_depth == 0)
@@ -108,14 +107,14 @@ void fractals::Renderer::calculate(Viewport &vp, const ColourMap &cm,
     }
 
 #if 1
-    if (rs.stride > 1 && rs.x > 0 && rs.y > 0) {
+    if (stride > 1 && x > 0 && y > 0) {
       // Interpolate the region
-      interpolate_region(vp, rs.x - rs.stride, rs.y - rs.stride, rs.stride);
+      interpolate_region(vp, x - stride, y - stride, stride);
     }
 #endif
     if (stop)
       return;
-  } while (rs.next());
+  }
 
 #if 0
   for (int y = 0; y < h; ++y)
@@ -222,26 +221,27 @@ public:
 
   // We're going hold an array of all non-zero depths
   std::mutex depth_mutex;
-  std::vector<double> depths;
+  std::vector<double> depths;           // Guarded by depth_mutex
+  RenderingSequence rendering_sequence; // Guarded by depth_mutex
 
   void calculate_region_in_thread(fractals::Viewport &vp, const ColourMap &cm,
                                   std::atomic<bool> &stop, int x0, int y0,
                                   int w, int h) {
 
-    RenderingSequence rs(w, h, 16);
-    int previous_stride = rs.stride;
+    rendering_sequence = RenderingSequence(w, h, 16);
+    int x, y, stride;
+    bool stride_changed = false;
     double min_depth = 0, max_depth = 0;
 
-    do {
-      if (rs.stride != previous_stride) {
+    while (rendering_sequence.next(x, y, stride, stride_changed)) {
+      if (stride_changed) {
         // if (rs.stride <= 4)
         vp.region_updated(x0, y0, w, h);
-        previous_stride = rs.stride;
       }
-      auto &point = vp(x0 + rs.x, y0 + rs.y);
+      auto &point = vp(x0 + x, y0 + y);
 
       if (extra(point)) {
-        auto depth = calculate_point(vp.width, vp.height, x0 + rs.x, y0 + rs.y);
+        auto depth = calculate_point(vp.width, vp.height, x0 + x, y0 + y);
         if (depth < min_depth || min_depth == 0)
           min_depth = depth;
         if (depth > max_depth || max_depth == 0)
@@ -254,14 +254,14 @@ public:
       }
 
 #if 1
-      if (rs.stride > 1 && rs.x > 0 && rs.y > 0) {
+      if (stride > 1 && x > 0 && y > 0) {
         // Interpolate the region
-        interpolate_region(vp, rs.x - rs.stride, rs.y - rs.stride, rs.stride);
+        interpolate_region(vp, x - stride, y - stride, stride);
       }
 #endif
       if (stop)
         return;
-    } while (rs.next());
+    }
 
     if (view_min == 0 || min_depth > 0 && min_depth < view_min)
       view_min = min_depth;
