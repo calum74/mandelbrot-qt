@@ -382,7 +382,7 @@ public:
                   d.count());
             }
 
-            if (depths.begin() < depths.end()) {
+            if (automaticallyAdjustDepth && depths.begin() < depths.end()) {
               auto discovered_depth =
                   util::top_percentile(depths.begin(), depths.end(), 0.999);
               view.discovered_depth(std::distance(depths.begin(), depths.end()),
@@ -489,7 +489,11 @@ public:
 
   double width() const override { return underlying_fractal->width(); }
 
-  void enableAutoDepth(bool value) override {}
+  bool automaticallyAdjustDepth = true;
+
+  void enableAutoDepth(bool value) override {
+    automaticallyAdjustDepth = value;
+  }
 
   void setThreading(int threads) override { this->threads2 = threads; }
 };

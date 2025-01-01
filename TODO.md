@@ -3,8 +3,6 @@
 - [ ] Refactoring rendering logic and threading in Renderer
   - Change underlying fractal and remove calculate_point
   - Remove a load of dead code
-- [ ] Implement threads menu item
-- [ ] Implement auto-iterations menu item
 - [x] Implement UI using an Action group
 - [ ] Implementation notes
 - [ ] Build on Mac using static
