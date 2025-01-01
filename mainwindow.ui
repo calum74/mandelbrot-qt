@@ -161,7 +161,7 @@
   </action>
   <action name="actionRandomize_palette">
    <property name="text">
-    <string>Randomize palette</string>
+    <string>Recolour palette</string>
    </property>
    <property name="shortcut">
     <string>R</string>
@@ -193,33 +193,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
-   </property>
-  </action>
-  <action name="actionFastest">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Fastest</string>
-   </property>
-  </action>
-  <action name="actionGood_quality">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Good quality</string>
-   </property>
-  </action>
-  <action name="actionBest_quality">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Best quality</string>
    </property>
   </action>
   <action name="actionAuto_iterations">

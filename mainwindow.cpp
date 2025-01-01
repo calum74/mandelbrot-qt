@@ -6,44 +6,46 @@
 #include <sstream>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
-    connect(ui->centralwidget, &ViewerWidget::startCalculating, this,
-            &MainWindow::startCalculating);
-    connect(ui->centralwidget, &ViewerWidget::completed, this,
-            &MainWindow::completed);
-    connect(ui->actionCopy, &QAction::triggered, ui->centralwidget,
-            &ViewerWidget::copyCoords);
-    connect(ui->actionGoTo, &QAction::triggered, this,
-            &MainWindow::openGoToDialog);
+    : QMainWindow(parent), ui(new Ui::MainWindow), fractalsActionGroup(this) {
+  ui->setupUi(this);
+  connect(ui->centralwidget, &ViewerWidget::startCalculating, this,
+          &MainWindow::startCalculating);
+  connect(ui->centralwidget, &ViewerWidget::completed, this,
+          &MainWindow::completed);
+  connect(ui->actionCopy, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::copyCoords);
+  connect(ui->actionGoTo, &QAction::triggered, this,
+          &MainWindow::openGoToDialog);
 
-    connect(ui->actionIncrease_iterations, &QAction::triggered, ui->centralwidget, &ViewerWidget::increaseIterations);
-    connect(ui->actionDecrease_iterations, &QAction::triggered, ui->centralwidget, &ViewerWidget::decreaseIterations);
+  connect(ui->actionIncrease_iterations, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::increaseIterations);
+  connect(ui->actionDecrease_iterations, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::decreaseIterations);
 
-    ui->actionCopy->setShortcut(QKeySequence::Copy);
-    ui->actionQuit->setShortcut(QKeySequence::Quit);
+  ui->actionCopy->setShortcut(QKeySequence::Copy);
+  ui->actionQuit->setShortcut(QKeySequence::Quit);
 
-    connect(ui->actionRandomize_palette, &QAction::triggered, ui->centralwidget,
-            &ViewerWidget::randomizePalette);
-    connect(ui->actionHome, &QAction::triggered, ui->centralwidget,
-            &ViewerWidget::resetCurrentFractal);
+  connect(ui->actionRandomize_palette, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::randomizePalette);
+  connect(ui->actionHome, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::resetCurrentFractal);
 
-    QIcon icon(":/new/prefix1/icon.ico");
-    QApplication::setWindowIcon(icon);
+  QIcon icon(":/new/prefix1/icon.ico");
+  QApplication::setWindowIcon(icon);
 
-    // Dynamically populate the fractals
-    bool first = true;
-    for (auto &[name, f] : ui->centralwidget->listFractals()) {
-      auto *action = new ChangeFractalAction(name.c_str(), f, first);
-      first = false;
-      connect(action, &ChangeFractalAction::changeFractal, this,
-              &MainWindow::changeFractal);
-      connect(this, &MainWindow::clearAllExcept, action,
-              &ChangeFractalAction::clearAllExcept);
-      ui->menuFractal->addAction(action);
-    }
+  fractalsActionGroup.setExclusionPolicy(
+      QActionGroup::ExclusionPolicy::Exclusive);
+
+  // Dynamically populate the fractals
+  bool first = true;
+  for (auto &[name, f] : ui->centralwidget->listFractals()) {
+    auto *action = new ChangeFractalAction(name.c_str(), f, first);
+    first = false;
+    connect(action, &ChangeFractalAction::changeFractal, this,
+            &MainWindow::changeFractal);
+    ui->menuFractal->addAction(action);
+    fractalsActionGroup.addAction(action);
+  }
 }
 
 MainWindow::~MainWindow()
