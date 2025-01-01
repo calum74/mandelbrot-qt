@@ -231,15 +231,19 @@ public:
   }
 
   class my_rendering_sequence
-      : public fractals::buffered_rendering_sequence<RGB> {
+      : public fractals::buffered_rendering_sequence<double> {
 
   public:
     my_rendering_sequence(Renderer &underlying_fractal, const ColourMap &cm,
                           Viewport &vp)
-        : fractals::buffered_rendering_sequence<RGB>(vp.width, vp.height, 16),
+        : fractals::buffered_rendering_sequence<double>(vp.width, vp.height,
+                                                        16),
           underlying_fractal(underlying_fractal), cm(cm), vp(vp) {}
 
-    void layer_complete(int stride) {
+    double min_depth = 0, max_depth = 0;
+    std::vector<double> depths;
+
+    void layer_complete(int stride) override {
       // Transfer and interpolate to the current viewport
 
       fractals::rendering_sequence seq(vp.width, vp.height, 16);
@@ -247,7 +251,15 @@ public:
       int x, y, s;
       bool c;
       while (seq.next(x, y, s, c) && stride == s) {
-        vp(x, y) = output[x + y * vp.width];
+        double depth = output[x + y * vp.width];
+        vp(x, y) = cm(depth);
+        if (depth > 0) {
+          depths.push_back(depth);
+          if (depth > max_depth)
+            max_depth = depth;
+          if (depth < min_depth || min_depth == 0)
+            min_depth = depth;
+        }
 #if 1
         if (stride > 1 && x > 0 && y > 0) {
           // Interpolate the region
@@ -259,8 +271,8 @@ public:
       vp.region_updated(0, 0, vp.width, vp.height);
     }
 
-    RGB get_point(int x, int y) {
-      return cm(underlying_fractal.calculate_point(vp.width, vp.height, x, y));
+    double get_point(int x, int y) override {
+      return underlying_fractal.calculate_point(vp.width, vp.height, x, y);
     }
 
   private:
@@ -274,7 +286,10 @@ public:
                                   int w, int h) {
 
     my_rendering_sequence seq(*underlying_fractal, cm, vp);
-    seq.calculate(0, stop);
+    seq.calculate(4, stop);
+    view_min = seq.min_depth;
+    view_max = seq.max_depth;
+    depths = std::move(seq.depths);
     return;
 
     int x, y, stride;
