@@ -2,9 +2,10 @@
 #define MAINWINDOW_H
 
 #include "fractal.hpp"
+#include <QAction>
+#include <QActionGroup>
 #include <QEvent>
 #include <QMainWindow>
-#include <QAction>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -33,6 +34,7 @@ public:
 
   private:
     Ui::MainWindow *ui;
+    QActionGroup fractalsActionGroup;
 };
 
 // TODO: Move this elsewhere
@@ -55,29 +57,11 @@ signals:
 private slots:
   void select(bool checked) {
     if (checked) {
-      if (!internalClear)
-        changeFractal(this, fractal);
-    } else {
-      // Attempt to clear currently-selected fractal
-      if (!internalClear) {
-        internalClear = true;
-        setChecked(true);
-        internalClear = false;
-      }
-    }
-  }
-
-public slots:
-  void clearAllExcept(QAction *action) {
-    if (action != this) {
-      internalClear = true;
-      setChecked(false);
-      internalClear = false;
+      changeFractal(this, fractal);
     }
   }
 
 private:
-  bool internalClear = false;
   const fractals::PointwiseFractal &fractal;
 };
 

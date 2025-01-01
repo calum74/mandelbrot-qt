@@ -1,93 +1,16 @@
 # Task list
 
-Rendering sequence
-- Move to fractals
-- Unit tests
-- 
-
-
-New threading algorithm: Run all threads until the next stride.
-
-Each thread reads from the render_sequence and creates a "block" of results.
-- Stops before the next layer
-The block of results gets populated into the view and updated.
-
-Output: list of (x,y,depth)
-
-Or, shall we turn this into a true work queue??
-
-Render algorithm:
-- Render at stride = 16
-- Copy results into 
-
-1) Create a thread pool of workers
-2) Workers carry on reading from the renderer until end, or wait?
-
-```
-void workThreadFn()
-{
-  while(reader.get_next(...))
-    fractal
-}
-
-class RendererWork
-{
-  std::vector<point> to_calculate;
-
-  std::vector<result> results;
-
-
-  bool getNext(FractalCalculation **, int x, int y);
-
-  {
-
-  }
-};
-```
-
-
-Worker:
-- Wait for ready condition
-- Carry on 
+- [ ] Refactoring rendering logic and threading in Renderer
+  - Change underlying fractal and remove calculate_point
+  - Remove a load of dead code
+- [ ] Implement threads menu item
+- [ ] Implement auto-iterations menu item
+- [ ] Implement UI using an Action group
+- [ ] Implementation notes
+- [ ] Build on Mac using static
 
 
 
-
-
-(x,y,value) vector?
-
-
-- Threading!
-- Menu option for auto-iterations
-- Menu option for threading (default: enabled)
-
-Improvements to fast mode:
-- Auto iterations, based on histogram of iterations, and iterations in previous calculation.
-- Use threads, but calculate each layer separately.
-
-
-- [ ] Look at `screen.devicePixelRatio`
-
-
-Minecraft:
-- Breed the villages
-- More fields
-- Get more
- - iron
- - diamonds
- - fields
- - villagers
- - books
- - obsidian
-
-
-
-
-- [ ] Start next layer calculation on initial zoom (not wait until we reach resolution)
-  - Lock in the zoom coordinates
-- [ ] Animate the zoom
-- [ ] Avoid computing lumps of black - use the original rendering sequence maybe.  
-- [ ] Make sure to smooth the pixels
 
 - [ ] Use a QActionGroup::setExclusive(true) to enable exclusive options for
 
@@ -100,34 +23,9 @@ Minecraft:
 
 - [ ] Implement general Taylor series expansion
 
-```c++
-template<typename Complex, int S>
-std::array<Complex, S> next_taylor_series(const Complex &z, const std::array<Complex, S> &previous)
-{
-
-}
-
-```
-
 - Mandelbrot - list the classes and document them
-- mandelbrot tutorial
-  - Give examples of the algorithms and how to use them
 
 # Log term tasks
-
-High quality zoom
-1. Wait for the image to be fully computed.
-2. When you zoom in, you actually just display the outer image, zoomed.
-3. When you zoom in, you commit to a place to zoom to, and calculate the zoomed-in image.
-4. When you reach the inner image
-5. We'll keep a cache of saved images to zoom out to.
-- Each layer stores the time taken to render it.
-- Implement an auto-zoom mode which follows the cursor
-- Store the images as a "depth" (using just a `float`) and compute the colour on the fly.
-
-- When you zoom in, you pick actually on
-
-
 
 - benchmarks
 - tests
@@ -136,10 +34,6 @@ High quality zoom
 
 - [ ] Code tidy
   - Unit test tidy up!
-
-MVP tasks:
-- [x] Application icon
-- [ ] Build tasks
 
 High precision tidy:
 - Express size in bits
