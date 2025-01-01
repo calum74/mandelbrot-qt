@@ -66,10 +66,8 @@ void Renderer::setThreading(int threads) {}
 
 class AsyncRenderer : public Renderer {
   std::unique_ptr<Renderer> underlying_fractal;
-  std::vector<std::future<void>> calculate_threads;
+  std::future<void> current_calculation;
   std::atomic<bool> stop;
-
-  std::atomic<int> active_threads;
 
   std::chrono::time_point<std::chrono::high_resolution_clock> t0;
 
@@ -124,10 +122,9 @@ public:
 
   void stop_current_calculation() {
     stop = true;
-    while (!calculate_threads.empty()) {
-      calculate_threads.back().wait();
-      calculate_threads.pop_back();
-    }
+    if (current_calculation.valid())
+      current_calculation.get();
+    stop = false;
   }
 
   void start_async_calculation(Viewport &vp, std::atomic<bool> &stop) override {
@@ -135,15 +132,7 @@ public:
   }
 
   // We're going hold an array of all non-zero depths
-  std::mutex depth_mutex;
-  std::vector<double> depths;           // Guarded by depth_mutex
-  fractals::rendering_sequence rendering_sequence; // Guarded by depth_mutex
-
-  bool next_rendering_sequence(int &x, int &y, int &stride,
-                               bool &stride_changed) {
-    std::lock_guard<std::mutex> lck(depth_mutex);
-    return rendering_sequence.next(x, y, stride, stride_changed);
-  }
+  std::vector<double> depths;
 
   class my_rendering_sequence
       : public fractals::buffered_rendering_sequence<double> {
@@ -175,7 +164,7 @@ public:
           if (depth < min_depth || min_depth == 0)
             min_depth = depth;
         }
-#if 1
+#if 1 // Useful to be able to disable this for debugging
         if (stride > 1 && x > 0 && y > 0) {
           // Interpolate the region
           interpolate_region(vp, x - stride, y - stride, stride);
@@ -196,66 +185,19 @@ public:
     Viewport &vp;
   };
 
-  int threads2 = 4;
+  int threads = 4;
 
   void calculate_region_in_thread(fractals::Viewport &vp, const ColourMap &cm,
-                                  std::atomic<bool> &stop, int x0, int y0,
-                                  int w, int h) {
+                                  std::atomic<bool> &stop) {
 
     my_rendering_sequence seq(*underlying_fractal, cm, vp);
-    seq.calculate(threads2, stop);
+    seq.calculate(threads, stop);
     view_min = seq.min_depth;
     view_max = seq.max_depth;
     depths = std::move(seq.depths);
-    return;
-
-    int x, y, stride;
-    bool stride_changed = false;
-    double min_depth = 0, max_depth = 0;
-
-    while (next_rendering_sequence(x, y, stride, stride_changed)) {
-      if (stride_changed) {
-        // if (rs.stride <= 4)
-        vp.region_updated(x0, y0, w, h);
-      }
-      auto &point = vp(x0 + x, y0 + y);
-
-      /* if (extra(point)) */ {
-        auto depth = calculate_point(vp.width, vp.height, x0 + x, y0 + y);
-        if (depth < min_depth || min_depth == 0)
-          min_depth = depth;
-        if (depth > max_depth || max_depth == 0)
-          max_depth = depth;
-        std::lock_guard<std::mutex> lck(depth_mutex);
-        ((std::atomic<int> &)point) = cm(depth);
-        // point = cm(depth);
-        if (depth > 0) {
-          depths.push_back(depth);
-        }
-      }
-
-#if 1
-      if (stride > 1 && x > 0 && y > 0) {
-        // Interpolate the region
-        interpolate_region(vp, x - stride, y - stride, stride);
-      }
-#endif
-      if (stop)
-        return;
-    }
-
-    // Not threadsafe (FIXME)
-    if (view_min == 0 || min_depth > 0 && min_depth < view_min)
-      view_min = min_depth;
-    if (view_max == 0 || max_depth > view_max)
-      view_max = max_depth;
-
-    // vp.region_updated(x0, y0, w, h);
-    // vp.finished(width(), min_depth, max_depth, d.count());
   }
 
-  std::atomic<double> view_min, view_max;
-  int threads = 1;
+  double view_min, view_max;
 
   void calculate_async(fractals::Viewport &view, const ColourMap &cm) override {
     stop_current_calculation();
@@ -263,47 +205,31 @@ public:
 
     stop = false;
 
-    ++active_threads;
-    rendering_sequence =
-        fractals::rendering_sequence(view.width, view.height, 16);
-
-    calculate_threads.push_back(std::async([&]() {
+    current_calculation = std::async([&]() {
       underlying_fractal->start_async_calculation(view, stop);
 
       t0 = std::chrono::high_resolution_clock::now();
       view_min = 0;
       view_max = 0;
-      for (int t = 0; !stop && t < threads; ++t) {
-        ++active_threads;
-        calculate_threads.push_back(std::async([&, t]() {
-          auto y0 = t * view.height / threads;
-          auto y1 = (t + 1) * view.height / threads;
-          calculate_region_in_thread(view, cm, stop, 0, y0, view.width,
-                                     y1 - y0);
-          if (0 == --active_threads) {
-            if (!stop) {
-              view.region_updated(0, 0, view.width, view.height);
-              auto t1 = std::chrono::high_resolution_clock::now();
-              std::chrono::duration<double> d = t1 - t0;
+      calculate_region_in_thread(view, cm, stop);
+      if (!stop) {
+        view.region_updated(0, 0, view.width, view.height);
+        auto t1 = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> d = t1 - t0;
 
-              view.finished(
-                  width(), view_min, view_max,
-                  underlying_fractal->get_average_iterations(),
-                  underlying_fractal->get_average_skipped_iterations(),
-                  d.count());
-            }
-
-            if (automaticallyAdjustDepth && depths.begin() < depths.end()) {
-              auto discovered_depth =
-                  util::top_percentile(depths.begin(), depths.end(), 0.999);
-              view.discovered_depth(std::distance(depths.begin(), depths.end()),
-                                    *discovered_depth);
-            }
-          }
-        }));
+        view.finished(width(), view_min, view_max,
+                      underlying_fractal->get_average_iterations(),
+                      underlying_fractal->get_average_skipped_iterations(),
+                      d.count());
       }
-      --active_threads;
-    }));
+
+      if (automaticallyAdjustDepth && depths.begin() < depths.end()) {
+        auto discovered_depth =
+            util::top_percentile(depths.begin(), depths.end(), 0.999);
+        view.discovered_depth(std::distance(depths.begin(), depths.end()),
+                              *discovered_depth);
+      }
+    });
   }
 
   bool zoom(double r, int cx, int cy, Viewport &vp) override {
@@ -406,7 +332,7 @@ public:
     automaticallyAdjustDepth = value;
   }
 
-  void setThreading(int threads) override { this->threads2 = threads; }
+  void setThreading(int threads) override { this->threads = threads; }
 };
 
 void Renderer::calculate_async(fractals::Viewport &view, const ColourMap &cm) {}
