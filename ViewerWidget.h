@@ -2,7 +2,6 @@
 #define VIEWERWIDGET_H
 
 #include <QImage>
-#include <QTimer>
 #include <QWidget>
 
 #include "ColourMap.hpp"
@@ -36,8 +35,6 @@ class ViewerWidget : public QWidget {
 
   std::atomic<int> pending_redraw;
 
-  QTimer timer;
-
 public:
   explicit ViewerWidget(QWidget *parent = nullptr);
   ~ViewerWidget() override;
@@ -48,11 +45,9 @@ public:
   void wheelEvent(QWheelEvent *event) override;
   void mouseMoveEvent(QMouseEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
-  void timerEvent(QTimerEvent *event) override;
 
   void increaseIterations();
   void decreaseIterations();
-  void toggleAutoMode();
 
   void getCoords(QString &x, QString &y, QString &r, QString &i) const;
   bool setCoords(const QString &x, const QString &y, const QString &r,
@@ -62,11 +57,12 @@ public:
   listFractals();
 
 public slots:
-  void timer2();
   void copyCoords();
-  void randomizePalette();
+  void recolourPalette();
   void resetCurrentFractal();
   void changeFractal(const fractals::PointwiseFractal &fractal);
+  void enableThreading(bool checked);
+  void enableAutoDepth(bool checked);
 
 signals:
   void startCalculating(double width, int maxIterations);

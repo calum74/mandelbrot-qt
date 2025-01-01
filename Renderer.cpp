@@ -144,6 +144,10 @@ void Renderer::redraw(Viewport &vp) {
       vp(i, j) = with_extra(vp(i, j), 127);
 }
 
+void Renderer::enableAutoDepth(bool value) {}
+
+void Renderer::setThreading(int threads) {}
+
 class AsyncRenderer : public Renderer {
   std::unique_ptr<Renderer> underlying_fractal;
   std::vector<std::future<void>> calculate_threads;
@@ -281,12 +285,14 @@ public:
     Viewport &vp;
   };
 
+  int threads2 = 4;
+
   void calculate_region_in_thread(fractals::Viewport &vp, const ColourMap &cm,
                                   std::atomic<bool> &stop, int x0, int y0,
                                   int w, int h) {
 
     my_rendering_sequence seq(*underlying_fractal, cm, vp);
-    seq.calculate(4, stop);
+    seq.calculate(threads2, stop);
     view_min = seq.min_depth;
     view_max = seq.max_depth;
     depths = std::move(seq.depths);
@@ -482,6 +488,10 @@ public:
   }
 
   double width() const override { return underlying_fractal->width(); }
+
+  void enableAutoDepth(bool value) override {}
+
+  void setThreading(int threads) override { this->threads2 = threads; }
 };
 
 void Renderer::calculate_async(fractals::Viewport &view, const ColourMap &cm) {

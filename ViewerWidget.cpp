@@ -20,9 +20,7 @@ void register_fractals(fractals::Registry &r);
 
 ViewerWidget::ViewerWidget(QWidget *parent)
     : QWidget{parent}, colourMap{fractals::make_colourmap()},
-      renderer{fractals::make_renderer()} {
-  connect(&timer, &QTimer::timeout, this, &ViewerWidget::timer2);
-}
+      renderer{fractals::make_renderer()} {}
 
 ViewerWidget::~ViewerWidget() { renderer.reset(); }
 
@@ -125,22 +123,6 @@ void ViewerWidget::decreaseIterations() {
   calculate();
 }
 
-void ViewerWidget::toggleAutoMode() {
-
-  if (timer.isActive())
-    timer.stop();
-  else
-    timer.start(100);
-}
-
-void ViewerWidget::timer2() {
-  // std::cout << "Timer called!\n";
-  renderer->zoom(0.99, move_x, move_y, viewport);
-  calculate();
-}
-
-void ViewerWidget::timerEvent(QTimerEvent *evt) {}
-
 void ViewerWidget::copyCoords()
 {
   auto c = renderer->get_coords();
@@ -228,7 +210,7 @@ bool ViewerWidget::setCoords(const QString &x, const QString &y,
   return true;
 }
 
-void ViewerWidget::randomizePalette() {
+void ViewerWidget::recolourPalette() {
   colourMap->randomize();
   renderer->redraw(viewport);
   calculate();
@@ -251,4 +233,12 @@ ViewerWidget::listFractals() {
   auto registry = fractals::make_registry();
   register_fractals(*registry);
   return registry->listFractals();
+}
+
+void ViewerWidget::enableAutoDepth(bool value) {
+  renderer->enableAutoDepth(value);
+}
+
+void ViewerWidget::enableThreading(bool value) {
+  renderer->setThreading(value ? 4 : 1);
 }
