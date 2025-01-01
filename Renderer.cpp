@@ -1,11 +1,11 @@
 #include "Renderer.hpp"
 #include "ColourMap.hpp"
-#include "RenderingSequence.hpp"
 #include "Viewport.hpp"
 #include "fractal.hpp"
 #include "layer.hpp"
 #include "mandelbrot.hpp"
 #include "percentile.hpp"
+#include "rendering_sequence.hpp"
 #include "view_coords.hpp"
 
 #include <cassert>
