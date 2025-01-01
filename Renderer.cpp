@@ -230,9 +230,52 @@ public:
     return rendering_sequence.next(x, y, stride, stride_changed);
   }
 
+  class my_rendering_sequence
+      : public fractals::buffered_rendering_sequence<RGB> {
+
+  public:
+    my_rendering_sequence(Renderer &underlying_fractal, const ColourMap &cm,
+                          Viewport &vp)
+        : fractals::buffered_rendering_sequence<RGB>(vp.width, vp.height, 16),
+          underlying_fractal(underlying_fractal), cm(cm), vp(vp) {}
+
+    void layer_complete(int stride) {
+      // Transfer and interpolate to the current viewport
+
+      fractals::rendering_sequence seq(vp.width, vp.height, 16);
+      seq.start_at_stride(stride);
+      int x, y, s;
+      bool c;
+      while (seq.next(x, y, s, c) && stride == s) {
+        vp(x, y) = output[x + y * vp.width];
+#if 1
+        if (stride > 1 && x > 0 && y > 0) {
+          // Interpolate the region
+          interpolate_region(vp, x - stride, y - stride, stride);
+        }
+#endif
+      }
+
+      vp.region_updated(0, 0, vp.width, vp.height);
+    }
+
+    RGB get_point(int x, int y) {
+      return cm(underlying_fractal.calculate_point(vp.width, vp.height, x, y));
+    }
+
+  private:
+    Renderer &underlying_fractal;
+    const ColourMap &cm;
+    Viewport &vp;
+  };
+
   void calculate_region_in_thread(fractals::Viewport &vp, const ColourMap &cm,
                                   std::atomic<bool> &stop, int x0, int y0,
                                   int w, int h) {
+
+    my_rendering_sequence seq(*underlying_fractal, cm, vp);
+    seq.calculate(0, stop);
+    return;
 
     int x, y, stride;
     bool stride_changed = false;
