@@ -29,37 +29,23 @@ public:
     void changeFractal(class ChangeFractalAction *src,
                        const fractals::PointwiseFractal &fractal);
 
-  signals:
-    void clearAllExcept(QAction *action);
-
   private:
     Ui::MainWindow *ui;
     QActionGroup fractalsActionGroup;
 };
 
-// TODO: Move this elsewhere
 class ChangeFractalAction : public QAction {
   Q_OBJECT
 public:
   ChangeFractalAction(const char *name,
-                      const fractals::PointwiseFractal &fractal, bool checked)
-      : QAction{name}, fractal{fractal} {
-    setCheckable(true);
-    setChecked(checked);
-
-    connect(this, &QAction::toggled, this, &ChangeFractalAction::select);
-  }
+                      const fractals::PointwiseFractal &fractal, bool checked);
 
 signals:
   void changeFractal(ChangeFractalAction *src,
                      const fractals::PointwiseFractal &);
 
 private slots:
-  void select(bool checked) {
-    if (checked) {
-      changeFractal(this, fractal);
-    }
-  }
+  void select(bool checked);
 
 private:
   const fractals::PointwiseFractal &fractal;

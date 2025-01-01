@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
   fractalsActionGroup.setExclusionPolicy(
       QActionGroup::ExclusionPolicy::Exclusive);
 
-  // Dynamically populate the fractals
+  // Dynamically populate the fractals menu
   bool first = true;
   for (auto &[name, f] : ui->centralwidget->listFractals()) {
     auto *action = new ChangeFractalAction(name.c_str(), f, first);
@@ -55,7 +55,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::changeFractal(ChangeFractalAction *src,
                                const fractals::PointwiseFractal &fractal) {
-  clearAllExcept(src);
   ui->centralwidget->changeFractal(fractal);
 }
 
@@ -83,12 +82,26 @@ void MainWindow::completed(double d, int min_depth, int max_depth, double avg,
 
 void MainWindow::openGoToDialog() {
   GoToDialog dialog;
-  // TODO: Populate current coords
   QString x, y, r, i;
   ui->centralwidget->getCoords(x, y, r, i);
   dialog.setCoords(x, y, r, i);
   if (dialog.exec()) {
     dialog.getCoords(x, y, r, i);
     ui->centralwidget->setCoords(x, y, r, i);
+  }
+}
+
+ChangeFractalAction::ChangeFractalAction(
+    const char *name, const fractals::PointwiseFractal &fractal, bool checked)
+    : QAction{name}, fractal{fractal} {
+  setCheckable(true);
+  setChecked(checked);
+
+  connect(this, &QAction::toggled, this, &ChangeFractalAction::select);
+}
+
+void ChangeFractalAction::select(bool checked) {
+  if (checked) {
+    changeFractal(this, fractal);
   }
 }
