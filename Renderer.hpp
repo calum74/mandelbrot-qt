@@ -74,6 +74,10 @@ public:
   virtual double get_average_iterations() const;
 
   virtual double get_average_skipped_iterations() const;
+
+  virtual void enableAutoDepth(bool value);
+
+  virtual void setThreading(int threads);
 };
 
 std::unique_ptr<Renderer> make_renderer();

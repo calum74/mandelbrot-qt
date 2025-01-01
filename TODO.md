@@ -5,7 +5,7 @@
   - Remove a load of dead code
 - [ ] Implement threads menu item
 - [ ] Implement auto-iterations menu item
-- [ ] Implement UI using an Action group
+- [x] Implement UI using an Action group
 - [ ] Implementation notes
 - [ ] Build on Mac using static
 

@@ -26,9 +26,13 @@ MainWindow::MainWindow(QWidget *parent)
   ui->actionQuit->setShortcut(QKeySequence::Quit);
 
   connect(ui->actionRandomize_palette, &QAction::triggered, ui->centralwidget,
-          &ViewerWidget::randomizePalette);
+          &ViewerWidget::recolourPalette);
   connect(ui->actionHome, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::resetCurrentFractal);
+  connect(ui->actionMultithreading, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::enableThreading);
+  connect(ui->actionAuto_iterations, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::enableAutoDepth);
 
   QIcon icon(":/new/prefix1/icon.ico");
   QApplication::setWindowIcon(icon);
