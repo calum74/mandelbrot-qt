@@ -224,31 +224,37 @@ public:
   std::vector<double> depths;           // Guarded by depth_mutex
   RenderingSequence rendering_sequence; // Guarded by depth_mutex
 
+  bool next_rendering_sequence(int &x, int &y, int &stride,
+                               bool &stride_changed) {
+    std::lock_guard<std::mutex> lck(depth_mutex);
+    return rendering_sequence.next(x, y, stride, stride_changed);
+  }
+
   void calculate_region_in_thread(fractals::Viewport &vp, const ColourMap &cm,
                                   std::atomic<bool> &stop, int x0, int y0,
                                   int w, int h) {
 
-    rendering_sequence = RenderingSequence(w, h, 16);
     int x, y, stride;
     bool stride_changed = false;
     double min_depth = 0, max_depth = 0;
 
-    while (rendering_sequence.next(x, y, stride, stride_changed)) {
+    while (next_rendering_sequence(x, y, stride, stride_changed)) {
       if (stride_changed) {
         // if (rs.stride <= 4)
         vp.region_updated(x0, y0, w, h);
       }
       auto &point = vp(x0 + x, y0 + y);
 
-      if (extra(point)) {
+      /* if (extra(point)) */ {
         auto depth = calculate_point(vp.width, vp.height, x0 + x, y0 + y);
         if (depth < min_depth || min_depth == 0)
           min_depth = depth;
         if (depth > max_depth || max_depth == 0)
           max_depth = depth;
-        point = cm(depth);
+        std::lock_guard<std::mutex> lck(depth_mutex);
+        ((std::atomic<int> &)point) = cm(depth);
+        // point = cm(depth);
         if (depth > 0) {
-          std::lock_guard<std::mutex> lck(depth_mutex);
           depths.push_back(depth);
         }
       }
@@ -263,12 +269,13 @@ public:
         return;
     }
 
+    // Not threadsafe (FIXME)
     if (view_min == 0 || min_depth > 0 && min_depth < view_min)
       view_min = min_depth;
     if (view_max == 0 || max_depth > view_max)
       view_max = max_depth;
 
-    vp.region_updated(x0, y0, w, h);
+    // vp.region_updated(x0, y0, w, h);
     // vp.finished(width(), min_depth, max_depth, d.count());
   }
 
@@ -282,6 +289,8 @@ public:
     stop = false;
 
     ++active_threads;
+    rendering_sequence = RenderingSequence(view.width, view.height, 16);
+
     calculate_threads.push_back(std::async([&]() {
       underlying_fractal->start_async_calculation(view, stop);
 
@@ -314,8 +323,6 @@ public:
               view.discovered_depth(std::distance(depths.begin(), depths.end()),
                                     *discovered_depth);
             }
-
-            // Notify that we are finished
           }
         }));
       }
