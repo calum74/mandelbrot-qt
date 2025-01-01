@@ -1,5 +1,62 @@
 # Task list
 
+Rendering sequence
+- Move to fractals
+- Unit tests
+- 
+
+
+New threading algorithm: Run all threads until the next stride.
+
+Each thread reads from the render_sequence and creates a "block" of results.
+- Stops before the next layer
+The block of results gets populated into the view and updated.
+
+Output: list of (x,y,depth)
+
+Or, shall we turn this into a true work queue??
+
+Render algorithm:
+- Render at stride = 16
+- Copy results into 
+
+1) Create a thread pool of workers
+2) Workers carry on reading from the renderer until end, or wait?
+
+```
+void workThreadFn()
+{
+  while(reader.get_next(...))
+    fractal
+}
+
+class RendererWork
+{
+  std::vector<point> to_calculate;
+
+  std::vector<result> results;
+
+
+  bool getNext(FractalCalculation **, int x, int y);
+
+  {
+
+  }
+};
+```
+
+
+Worker:
+- Wait for ready condition
+- Carry on 
+
+
+
+
+
+(x,y,value) vector?
+
+
 - Threading!
 - Menu option for auto-iterations
 - Menu option for threading (default: enabled)
