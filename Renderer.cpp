@@ -9,7 +9,6 @@
 #include "view_coords.hpp"
 
 #include <cassert>
-#include <deque>
 #include <future>
 #include <memory>
 #include <vector>
@@ -29,9 +28,9 @@ void interpolate_region(Viewport &vp, int x0, int y0, int h) {
   auto c11 = vp(x0 + h, y0 + h);
   auto average = blend(blend(c00, c10, 1, 1), blend(c01, c11, 1, 1), 1, 1);
 
-  // If all 4 corners have the same colour, claim that the center is accurate
-  // 1 means more speed
-  // 0 means more accuracy
+  // If all 4 corners have the same colour, claim that the filled in colour is
+  // accurate and does not need to be recalculated 1 means more speed 0 means
+  // more accuracy
 #if 1
   if (c00 == c10 && c00 == c11 && c00 == c01 && h <= 4) {
     for (int j = 0; j < h; ++j)
@@ -40,7 +39,6 @@ void interpolate_region(Viewport &vp, int x0, int y0, int h) {
   }
 #endif
 
-#if 1
   // Solid colour
   for (int j = 0; j <= h; ++j)
     for (int i = 0; i <= h; ++i) {
@@ -50,88 +48,6 @@ void interpolate_region(Viewport &vp, int x0, int y0, int h) {
           p = with_extra(c11, h);
       }
     }
-  return;
-#endif
-
-#if 0
-  // Linear interpolation (also weird) - delete this
-  for (int j = 0; j < h; ++j)
-    for (int i = 0; i < h; ++i) {
-#if 0
-      int r = red(c00) * (h - j) * (h - i) + red(c10) * i * (h - j) +
-              red(c01) * (h - i) * j + red(c11) * i * j;
-      int g = green(c00) * (h - j) * (h - i) + green(c10) * i * (h - j) +
-              green(c01) * (h - i) * j + green(c11) * i * j;
-      int b = blue(c00) * (h - j) * (h - i) + blue(c10) * i * (h - j) +
-              blue(c01) * (h - i) * j + blue(c11) * i * j;
-      auto c = make_rgb(r / (h * h), g / (h * h), b / (h * h));
-#endif
-
-      auto c0 = blend(c00, c10, h - i, i);
-      auto c1 = blend(c01, c11, h - i, i);
-      auto c = blend(c0, c1, h - j, j);
-
-      // if (i > 0 && j > 0)
-      //  c = c00;
-      vp(x0 + i, y0 + j) = with_extra(c, std::abs(h - i) + std::abs(h - j));
-    }
-#endif
-}
-
-void fractals::Renderer::calculate(Viewport &vp, const ColourMap &cm,
-                                   std::atomic<bool> &stop) {
-  int w = vp.width;
-  int h = vp.height;
-  auto t0 = std::chrono::high_resolution_clock::now();
-
-  int depth_range = 500;
-
-  rendering_sequence rs(w, h, 16);
-  double min_depth = 0, max_depth = 0;
-  int x, y, stride;
-  bool stride_changed = false;
-
-  while (rs.next(x, y, stride, stride_changed)) {
-    if (stride_changed) {
-      vp.region_updated(0, 0, w, h);
-    }
-    auto &point = vp(x, y);
-
-    if (extra(point)) {
-      auto depth = calculate_point(w, h, x, y);
-      if (depth < min_depth || min_depth == 0)
-        min_depth = depth;
-      if (depth > max_depth || max_depth == 0)
-        max_depth = depth;
-      point = cm(depth);
-    }
-
-#if 1
-    if (stride > 1 && x > 0 && y > 0) {
-      // Interpolate the region
-      interpolate_region(vp, x - stride, y - stride, stride);
-    }
-#endif
-    if (stop)
-      return;
-  }
-
-#if 0
-  for (int y = 0; y < h; ++y)
-    for (int x = 0; x < w; ++x) {
-      vp(x, y) = calculate_point(w, h, x, y);
-      if (stop)
-        return;
-    }
-#endif
-
-  vp.region_updated(0, 0, vp.width, vp.height);
-
-  auto t1 = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> d = t1 - t0;
-
-  vp.finished(width(), min_depth, max_depth, get_average_iterations(),
-              get_average_skipped_iterations(), d.count());
 }
 
 void Renderer::increase_iterations(Viewport &) {}
@@ -162,11 +78,6 @@ public:
       : underlying_fractal{std::move(underlying_fractal)} {}
 
   ~AsyncRenderer() { stop_current_calculation(); }
-
-  void calculate(fractals::Viewport &view, const ColourMap &cm,
-                 std::atomic<bool> &) override {
-    underlying_fractal->calculate(view, cm, stop);
-  }
 
   void increase_iterations(Viewport &vp) override {
     stop_current_calculation();
@@ -498,12 +409,7 @@ public:
   void setThreading(int threads) override { this->threads2 = threads; }
 };
 
-void Renderer::calculate_async(fractals::Viewport &view, const ColourMap &cm) {
-  std::atomic<bool> stop = false;
-  calculate(view, cm, stop);
-  if (!stop)
-    view.region_updated(0, 0, view.width, view.height);
-}
+void Renderer::calculate_async(fractals::Viewport &view, const ColourMap &cm) {}
 
 double Renderer::get_average_iterations() const { return 0; }
 
@@ -598,217 +504,6 @@ private:
 };
 
 void fractals::Renderer::set_fractal(const fractals::PointwiseFractal &) {}
-
-class HighPrecisionRenderer : public Renderer {
-public:
-  HighPrecisionRenderer(const fractals::PointwiseFractal &f)
-      : current_fractal(&f) {
-    coords = f.initial_coords();
-  }
-
-  ~HighPrecisionRenderer() { stop_calculation(); }
-
-  std::future<layer> layer_calculation;
-
-  void display_layer(Viewport &vp, const ColourMap &cm) {
-
-    // Compute a mapping from the layer coords to the current coords
-
-    // Assume that the current coords are embedded in the layer's coords
-    auto &lc = layers.back().coords;
-
-    auto ps = lc.point_size(vp.width, vp.height);
-    auto x0 = (coords.left(vp.width, vp.height) - lc.left(vp.width, vp.height))
-                  .to_double() /
-              ps;
-    auto y0 = (coords.top(vp.width, vp.height) - lc.top(vp.width, vp.height))
-                  .to_double() /
-              ps;
-    auto r = coords.r.to_double() / lc.r.to_double();
-
-    // std::cout << "Rendering using layer " << layers.size() << std::endl;
-    // std::cout << "Need to project the coords " << x0 << "," << y0 << "-"
-    //           << (vp.width * r) << "," << (vp.height * r) << std::endl;
-
-    // Map the relevant layer to the viewport
-    for (int j = 0; j < vp.height; ++j)
-      for (int i = 0; i < vp.width; ++i) {
-        int x = x0 + i * r;
-        int y = y0 + j * r;
-
-        // Should not happen but sensible to check
-        if (x < 0 || x >= vp.width || y < 0 || y >= vp.height)
-          vp(i, j) = 0;
-        else {
-          // TODO: Blend the pixels smoothly
-          // Make sure we treat 0 as special
-          vp(i, j) = cm(layers.back()(x0 + i * r, y0 + j * r));
-        }
-      }
-    vp.region_updated(0, 0, vp.width, vp.height);
-    vp.finished(0, 0, 0, 0, 0, 0);
-  }
-
-  std::atomic<bool> stop;
-
-  void stop_calculation() {
-    if (layer_calculation.valid()) {
-      stop = true;
-      layer_calculation.get();
-      stop = false;
-    }
-  }
-
-  void start_new_layer(const view_coords &new_coords, Viewport &vp, int cx,
-                       int cy) {
-    std::cout << "Starting layer " << layers.size() << " at " << new_coords
-              << "\n";
-    stop_calculation();
-    layer_cx = cx;
-    layer_cy = cy;
-
-    layer_calculation = std::async(std::launch::async, [&vp, this, new_coords,
-                                                        cx, cy]() {
-      std::cout << "  Calculating layer\n";
-      auto x = current_fractal->create(new_coords, vp.width, vp.height, stop);
-      auto t0 = std::chrono::high_resolution_clock::now();
-      auto l = layer(new_coords, cx, cy, vp.width, vp.height, *x, stop, 4);
-      auto t1 = std::chrono::high_resolution_clock::now(); // !! Compute this in
-                                                           // the layer itself
-      std::chrono::duration<double> d = t1 - t0;
-
-      std::cout << "  Layer calculation completed in " << d.count()
-                << " seconds\n";
-      return l;
-    });
-  }
-
-  void calculate_async(Viewport &vp, const ColourMap &cm) override {
-
-    // std::cout << "Call to calculate_async\n";
-    if (!layer_calculation.valid() && layers.empty()) {
-      start_new_layer(coords, vp, 0, 0);
-      std::cout << "Pushed initial layer\n";
-      layers.push_back(layer_calculation.get());
-    }
-    display_layer(vp, cm);
-  }
-
-  void start_async_calculation(Viewport &vp, std::atomic<bool> &stop) override {
-  }
-
-  double calculate_point(int w, int h, int x, int y) override { return 0; }
-
-  int layer_cx, layer_cy;
-
-  void start_new_layer(Viewport &vp, int cx, int cy) {
-    /*
-      Note the cx,cy are relative to the current coords, not the outer coords.
-
-      1. Locate the fixed point (CX,CY) that we'll keep fixed.
-      2. Zoom in by a factor of 2 from the outer layer, keeping the fixed point
-        (CX,CY) in the same position.
-
-    */
-
-    auto C = coords.map_point(vp.width, vp.height, cx, cy);
-
-    start_new_layer(layers.back().coords.zoom(0.50, vp.width, vp.height, cx, cy,
-                                              C.first, C.second),
-                    vp, cx, cy);
-  }
-
-  bool zoom(double r, int cx, int cy, Viewport &vp) override {
-
-    // In quality mode, we'll slow down the zooming speed
-    r = std::pow(r, 0.25);
-
-    if (r < 0.5)
-      r = 0.5;
-    if (r > 2)
-      r = 2;
-
-    auto layer_ratio =
-        r * coords.r.to_double() / layers.back().coords.r.to_double();
-    std::cout << "Layer ratio = " << layer_ratio << std::endl;
-
-    // r is the new size relative to the old size
-    // When we zoom, we lock in a point, and zoom to that.
-
-    while (layer_ratio < 0.5) {
-      // We need to push a new layer
-
-      if (!layer_calculation.valid()) {
-        // We need to start calculating the next layer, and lock in the
-        //  coordinates
-        start_new_layer(vp, cx, cy);
-      }
-
-      // Push the new layer
-
-      auto t1 = std::chrono::high_resolution_clock::now();
-      std::cout << "   waiting for calculation...\n";
-
-      layers.push_back(layer_calculation.get());
-      layer_cx = layers.back().layer_cx;
-      layer_cy = layers.back().layer_cy;
-
-      auto t2 = std::chrono::high_resolution_clock::now();
-      std::chrono::duration<double> d = t2 - t1;
-      std::cout << "   Blocked for " << d.count() << " seconds\n";
-
-      layer_ratio *= 2;
-
-      // Start the next calculation
-      start_new_layer(vp, cx, cy);
-    }
-
-    while (layer_ratio > 1.0 && layers.size() > 1) {
-      // Need to instead pop layers
-      std::cout << "Popping layer " << layers.size() << std::endl;
-      stop_calculation();
-      layer_cx = layers.back().layer_cx;
-      layer_cy = layers.back().layer_cy;
-      layers.pop_back();
-      layer_ratio *= 0.5;
-    }
-
-    if (r < 1 && !layer_calculation.valid()) {
-      // We still need to start a new calculation to avoid blocking the zoom
-      // What point do we want to fix?
-      // We want to fix the point at (cx,cy), and zoom in by a factor of 2 from
-      // the outer layer.
-      start_new_layer(vp, cx, cy);
-    }
-
-    coords = coords.zoom(r, vp.width, vp.height, cx, cy);
-    return true;
-  }
-
-  void scroll(int dx, int dy, Viewport &vp) override {}
-
-  void set_aspect_ratio(Viewport &vp) override {}
-
-  double width() const override { return coords.r.to_double(); }
-
-  view_coords get_coords() const override { return coords; }
-
-  bool set_coords(const view_coords &c, Viewport &vp) override {
-    coords = c;
-    return true;
-  }
-
-  int iterations() const override { return coords.max_iterations; }
-
-  view_coords initial_coords() const override {
-    return current_fractal->initial_coords();
-  }
-
-private:
-  const fractals::PointwiseFractal *current_fractal;
-  view_coords coords;
-  std::deque<fractals::layer> layers;
-};
 
 std::unique_ptr<fractals::Renderer> fractals::make_renderer() {
   return std::make_unique<AsyncRenderer>(

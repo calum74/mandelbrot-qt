@@ -12,15 +12,11 @@ class Renderer {
 public:
   virtual ~Renderer() = default;
 
-  // Calculate the entire fractal, or return early if `stop` becomes
-  // true. Call vp one or more times to update the view.
-  virtual void calculate(Viewport &vp, const ColourMap &cm,
-                         std::atomic<bool> &stop);
-
   // Perform any expensive one-off initialization like
   // computing an orbit.
   virtual void start_async_calculation(Viewport &vp,
                                        std::atomic<bool> &stop) = 0;
+
   // Calculate a single point
   // Returns the depth, potentially smoothed
   virtual double calculate_point(int w, int h, int x, int y) = 0;
