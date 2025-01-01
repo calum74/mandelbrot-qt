@@ -132,7 +132,7 @@
   </action>
   <action name="actionIncrease_iterations">
    <property name="text">
-    <string>Increase iterations</string>
+    <string>Increase depth</string>
    </property>
    <property name="shortcut">
     <string>I</string>
@@ -140,7 +140,7 @@
   </action>
   <action name="actionDecrease_iterations">
    <property name="text">
-    <string>Decrease iterations</string>
+    <string>Decrease depth</string>
    </property>
    <property name="shortcut">
     <string>O</string>
@@ -203,7 +203,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Auto iterations</string>
+    <string>Automatic depth</string>
    </property>
   </action>
   <action name="actionMultithreading">
