@@ -86,7 +86,7 @@ void fractals::Renderer::calculate(Viewport &vp, const ColourMap &cm,
 
   int depth_range = 500;
 
-  RenderingSequence rs(w, h, 16);
+  rendering_sequence rs(w, h, 16);
   double min_depth = 0, max_depth = 0;
   int x, y, stride;
   bool stride_changed = false;
@@ -222,7 +222,7 @@ public:
   // We're going hold an array of all non-zero depths
   std::mutex depth_mutex;
   std::vector<double> depths;           // Guarded by depth_mutex
-  RenderingSequence rendering_sequence; // Guarded by depth_mutex
+  fractals::rendering_sequence rendering_sequence; // Guarded by depth_mutex
 
   bool next_rendering_sequence(int &x, int &y, int &stride,
                                bool &stride_changed) {
@@ -289,7 +289,8 @@ public:
     stop = false;
 
     ++active_threads;
-    rendering_sequence = RenderingSequence(view.width, view.height, 16);
+    rendering_sequence =
+        fractals::rendering_sequence(view.width, view.height, 16);
 
     calculate_threads.push_back(std::async([&]() {
       underlying_fractal->start_async_calculation(view, stop);
