@@ -26,8 +26,6 @@ set(PROJECT_SOURCES
         mainwindow.ui
         Renderer.hpp
         Renderer.cpp
-        RenderingSequence.hpp
-        RenderingSequence.cpp
         ColourMapImpl.cpp
         ColourMap.hpp
         ColourMapImpl.hpp
