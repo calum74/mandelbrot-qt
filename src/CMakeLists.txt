@@ -82,3 +82,10 @@ if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(mandelbrot-qt)
 endif()
 
+qt_generate_deploy_app_script(
+    TARGET mandelbrot-qt
+    OUTPUT_SCRIPT deploy_script
+    NO_UNSUPPORTED_PLATFORM_ERROR
+)
+
+install(SCRIPT ${deploy_script})

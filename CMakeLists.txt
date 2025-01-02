@@ -15,14 +15,6 @@ enable_testing()
 add_subdirectory(mandelbrot)
 add_subdirectory(src)
 
-qt_generate_deploy_app_script(
-    TARGET mandelbrot-qt
-    OUTPUT_SCRIPT deploy_script
-    NO_UNSUPPORTED_PLATFORM_ERROR
-)
-
-install(SCRIPT ${deploy_script})
-
 include(CPack)
 set(CPACK_PACKAGE_NAME "mandelbrot-qt")
 set(CPACK_PACKAGE_VENDOR "github.com/calum74")
