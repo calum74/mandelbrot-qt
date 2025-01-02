@@ -2,19 +2,38 @@
 
 [![CMake on multiple platforms](https://github.com/calum74/mandelbrot-qt/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/calum74/mandelbrot-qt/actions/workflows/cmake-multi-platform.yml)
 
-*Insert picture here*
-
-MandelbrotQt is a desktop application to explore the Mandelbrot set. If you just want to look at fractals, go to the Downloads section.
-
-I wrote it because there didn't seem to be many good options for MacOS, and also because it's a fun learning experience.
+MandelbrotQt is a desktop application to explore the Mandelbrot set. If you just want to look at fractals, go to the [releases](https://github.com/calum74/mandelbrot-qt/releases) page.
 
 ## Running the software
 
-To install binaries for your plaform, just go to the relevant [releases] page. MandelbrotQt has binaries for MacOS, Windows, and Linux.
+To install binaries for your plaform, just go to the [releases](https://github.com/calum74/mandelbrot-qt/releases) page. MandelbrotQt has binaries for MacOS, Windows, and Linux.
+
+## How to use it
+
+You will be presented with a view of the Mandelbrot set. You can navigate around this image by zooming using the mouse wheel (or touchpad), and you can pan/scroll by dragging the mouse. You can go very "deep", up to around 10e-300, and high "depth" of over 1 million iterations.
+
+There will be some regions will will take longer to render, and this is generally caused by a high number of iterations, or in areas are highly complex and close to black regions. This is not a bug.
+
+The menus contain other useful options:
+
+* `R` to recolour the palette, if you want to see the image using different colours, or if the current colour scheme does not work well.
+* To save an image, use copy and paste. (Image export option might be implemented in version 2 if there is sufficient interest.)
+* Other Mandelbrot-based fractals.
+
+## What is a Mandelbrot set?
+
+In brief, the Mandelbrot set is a type of "fractal", a mathematical object of unlimited complexity. The Mandelbrot set is a particularly interesting and beautiful fractal, and is in my opinion unrivalled.
+
+## What to do
+
+- Find minibrots - minature Mandelbrot sets embedded in the original image. There are an unlimited number of these. To find minibrots, observe an area with a rotational symmetry, which as you zoom in will resemble a cross, star, and circle. Carry on zooming right to the center.
+- What is the smallest minibrot you can find?
+- Make sure to explore all the different regions.
+
 
 ## Building the software
 
-Trying to build anything with Qt is an utterly miserable and demoralising experience. May the trolls see the sunlight.
+Trying to build anything with Qt is an utterly miserable and demoralising experience.
 
 On Linux:
 
@@ -23,29 +42,34 @@ sudo apt install git clang cmake qt6-base-dev
 git clone https://github.com/calum74/mandelbrot-qt --recursive
 mkdir mandelbrot-qt-build
 cd mandelbrot-qt-build
-cmake ../mandelbrot-qt
-# Watch how nothing works
+cmake ../mandelbrot-qt -DCMAKE_BUILD_TYPE=Release
+make
+sudo make install
 ```
 
-On Windows:
+On Windows/Mac:
 
-Install Qt from https://www.qt.io/download-qt-installer-oss
+Install Qt from https://www.qt.io/download-qt-installer-oss. 
+
+You can also use QtCreator, Visual Studio, Visual Studio Code to open the CMake project.
+
+## Creating an installer
+
+On Mac: Download the source code using the Qt installer https://www.qt.io/download-qt-installer-oss (e.g. version 6.8.1). 
 
 ```
-cmake
-# Watch how nothing works.
+./configure -static
+cmake --build . --parallel
+cmake --install .
 ```
 
-# What is the Mandelbrot set?
+Then, reconfigure cmake to use the static build
 
+```
+mkdir mandelbrot-qt-static
+cd mandelbrot-qt-static
+cmake ../mandelbrot-qt -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/Qt-6.8.1
+make
+```
 
-# Background
-
-The Mandelbrot set is a type *fractal* - a mathematical shape of unlimited complexity. The deeper you look at it, the more detail emerges. This behaves very differently to a regular shape or graph, where  when you zoom in far enough, it starts to look like a straight line.
-
-The Mandelbrot set is defined as the set of points c that don't escape to infinity under the transformation z->z+c. In spite of the simplicity of this formula, it turns out that points arbitrarily close together can behave completely differently, a phenomenon known as the "butterfly effect". Even small variations can become amplified to the degree that given enough time, the outcome is totally different. So named, because when a butterfly beats its wings, it can eventually trigger a hurricane on the other side of the earth.
-
-Another complexity, ehem, is that the Mandelbrot set is defined on the complex numbers. Each point in the Mandelbrot is actually on the complex plane, and is represented by x+iy. For the purposes of calculation however, we can ignore the fact that we are dealing with complex numbers, and just treat each point as the pair (x,y).
-
-Drawing a basic Mandelbrot set is not too complicated, but there is a lot more work required to make this a great experience. The first problem is that the algorithm never terminates, so we need to implement a "cut-off" and stop iterating after a certain number of iterations.
-
+On MacOS: `cpack -G DragNDrop`

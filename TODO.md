@@ -1,20 +1,35 @@
 # Task list
 
-- [ ] Refactoring rendering logic and threading in Renderer
-  - Change underlying fractal and remove calculate_point
-  - Remove a load of dead code
-- [x] Implement UI using an Action group
+
+Next steps:
+- [x] Download Qt and build it statically
+- [ ] Open-source the repo and squash the history
+- [ ] Tidy up the code further
+  - subdirectories
+- [ ] More unit tests, for example, orbits
+
+Papercuts:
+- [ ] Resizing the window displays garbage
+- [ ] Icon on Mac
+
+Future:
+- [ ] Export image
+- [ ] File load/save
+- [ ] Generate movie
+
+Mandeldrop bug:
+- Looks like there's an imprecision at -0.0000036023362057037546653,0.7137320572149256883936381,0.7137320572149256883936381,0.7137320572149256883936381
+
+
+
+- [x] Fix seg fault caused by rendering_sequence in threads
 - [ ] Implementation notes
 - [ ] Build on Mac using static
-
-
-
-
-- [ ] Use a QActionGroup::setExclusive(true) to enable exclusive options for
-
-- [ ] Distribution build on Mac
+  - [ ] Distribution build on Mac
+  - [ ] Set application icon on Mac
 - [ ] Open source mandelbrot-qt
   - Squash the history
+
 - code tidy
 - docs
 - doc comments
