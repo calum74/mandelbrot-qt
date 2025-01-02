@@ -8,7 +8,7 @@ Documentation and tidy:
 
 Papercuts:
 - [ ] Resizing the window displays garbage
-- [ ] Icon on Mac
+- [x] Icon on Mac
 - [ ] Installer does not install program on Windows
 - [ ] Make sure to not recalculate calculated pixels
 
