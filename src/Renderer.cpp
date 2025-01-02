@@ -175,6 +175,7 @@ public:
     }
 
     double get_point(int x, int y) override {
+      // TODO: Avoid recalculating known points
       return underlying_fractal.calculate_point(vp.width, vp.height, x, y);
     }
 

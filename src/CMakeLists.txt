@@ -28,14 +28,20 @@ set(PROJECT_SOURCES
         registry.cpp
 )
 
+set(MACOSX_BUNDLE_ICON_FILE icon.icns)
+set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/icon.icns")
+
+set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(mandelbrot-qt
         MANUAL_FINALIZATION
+        MACOSX_BUNDLE
+        ${app_icon_macos}
         ${PROJECT_SOURCES}
         ViewerWidget.h ViewerWidget.cpp
         gotodialog.h gotodialog.cpp gotodialog.ui
         resources.qrc
-
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET mandelbrot-qt APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -63,12 +69,14 @@ target_link_libraries(mandelbrot-qt PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 if(${QT_VERSION} VERSION_LESS 6.1.0)
   set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.mandelbrot-qt)
 endif()
+
 set_target_properties(mandelbrot-qt PROPERTIES
     ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE_ICON_FILE icon.icns
 )
 
 include(GNUInstallDirs)
