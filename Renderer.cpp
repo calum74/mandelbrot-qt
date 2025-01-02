@@ -2,7 +2,6 @@
 #include "ColourMap.hpp"
 #include "Viewport.hpp"
 #include "fractal.hpp"
-#include "layer.hpp"
 #include "mandelbrot.hpp"
 #include "percentile.hpp"
 #include "rendering_sequence.hpp"
