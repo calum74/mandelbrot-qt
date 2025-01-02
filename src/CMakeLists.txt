@@ -1,0 +1,84 @@
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+
+include_directories(../mandelbrot/include)
+link_libraries(mandelbrot extra_fractals)
+
+set(PROJECT_SOURCES
+        main.cpp
+        mainwindow.cpp
+        mainwindow.h
+        mainwindow.ui
+        Renderer.hpp
+        Renderer.cpp
+        ColourMapImpl.cpp
+        ColourMap.hpp
+        ColourMapImpl.hpp
+        ViewerWidget.h
+        ViewerWidget.cpp
+        Fractals.cpp
+        gotodialog.h
+        gotodialog.cpp
+        registry.hpp
+        registry.cpp
+)
+
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    qt_add_executable(mandelbrot-qt
+        MANUAL_FINALIZATION
+        ${PROJECT_SOURCES}
+        ViewerWidget.h ViewerWidget.cpp
+        gotodialog.h gotodialog.cpp gotodialog.ui
+        resources.qrc
+
+    )
+# Define target properties for Android with Qt 6 as:
+#    set_property(TARGET mandelbrot-qt APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
+# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
+else()
+    if(ANDROID)
+        add_library(mandelbrot-qt SHARED
+            ${PROJECT_SOURCES}
+        )
+# Define properties for Android with Qt 5 after find_package() calls as:
+#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
+    else()
+        add_executable(mandelbrot-qt
+            ${PROJECT_SOURCES}
+        )
+    endif()
+endif()
+
+target_link_libraries(mandelbrot-qt PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+
+# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
+# If you are developing for iOS or macOS you should consider setting an
+# explicit, fixed bundle identifier manually though.
+if(${QT_VERSION} VERSION_LESS 6.1.0)
+  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.mandelbrot-qt)
+endif()
+set_target_properties(mandelbrot-qt PROPERTIES
+    ${BUNDLE_ID_OPTION}
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE TRUE
+    WIN32_EXECUTABLE TRUE
+)
+
+include(GNUInstallDirs)
+install(TARGETS mandelbrot-qt
+    BUNDLE DESTINATION .
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+if(QT_VERSION_MAJOR EQUAL 6)
+    qt_finalize_executable(mandelbrot-qt)
+endif()
+
