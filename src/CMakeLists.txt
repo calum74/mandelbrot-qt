@@ -97,3 +97,14 @@ qt_generate_deploy_app_script(
 )
 
 install(SCRIPT ${deploy_script})
+
+include(CPack)
+set(CPACK_PACKAGE_NAME "mandelbrot-qt")
+set(CPACK_PACKAGE_VENDOR "github.com/calum74")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A viewer for the Mandelbrot set")
+set(CPACK_PACKAGE_VERSION "1.0.0")
+set(CPACK_PACKAGE_VERSION_MAJOR "1")
+set(CPACK_PACKAGE_VERSION_MINOR "0")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "MandelbrotQt")
+set(CPACK_PACKAGE_EXECUTABLES mandelbrot-qt "MandelbrotQt")
