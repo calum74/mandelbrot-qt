@@ -15,6 +15,8 @@ struct Viewport {
   RGB &operator()(int x, int y) { return data[x + y * width]; }
   RGB operator()(int x, int y) const { return data[x + y * width]; }
 
+  void invalidateAllPixels();
+
   // Callback when data has changed in the given pixel-region
   virtual void region_updated(int x, int y, int w, int h);
 

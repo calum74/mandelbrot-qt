@@ -49,17 +49,14 @@ void ViewerWidget::draw() {
 
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
 
-  // auto old_width = viewport.width;
-  // auto old_height = viewport.height;
-
-  image = QImage(event->size(), QImage::Format_RGB32);
+  renderer->set_aspect_ratio(event->size().width(), event->size().height());
 
   viewport.widget = this;
   viewport.data = (fractals::RGB *)image.bits();
   viewport.width = image.width();
   viewport.height = image.height();
-  renderer->set_aspect_ratio(viewport); // Tweak width and height
-
+  image = QImage(event->size(), QImage::Format_RGB32);
+  viewport.invalidateAllPixels();
   calculate();
 }
 

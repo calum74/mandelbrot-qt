@@ -292,10 +292,9 @@ public:
     Renderer::redraw(vp);
   }
 
-  void set_aspect_ratio(Viewport &vp) override {
-    redraw(vp);
-    // TODO: Transfer pixels from old to the new pixmap
-    underlying_fractal->set_aspect_ratio(vp);
+  void set_aspect_ratio(int new_width, int new_height) override {
+    stop_current_calculation();
+    underlying_fractal->set_aspect_ratio(new_width, new_height);
   }
 
   view_coords get_coords() const override {
@@ -412,7 +411,7 @@ public:
 
   double width() const override { return convert<double>(coords.r); }
 
-  void set_aspect_ratio(Viewport &vp) override {}
+  void set_aspect_ratio(int, int) override {}
 
   int iterations() const override { return coords.max_iterations; }
 
@@ -430,6 +429,13 @@ private:
 };
 
 void fractals::Renderer::set_fractal(const fractals::PointwiseFractal &) {}
+
+void fractals::Viewport::invalidateAllPixels() {
+  for (auto j = 0; j < height; ++j)
+    for (auto i = 0; i < width; ++i) {
+      (*this)(i, j) = with_extra((*this)(i, j), 127);
+    }
+}
 
 std::unique_ptr<fractals::Renderer> fractals::make_renderer() {
   return std::make_unique<AsyncRenderer>(

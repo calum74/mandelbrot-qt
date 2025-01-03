@@ -32,7 +32,7 @@ public:
   // !! This should be called "resize(Viewport & old, Viewport & new)"
   // Extends or contracts the current size such that the scale and top-left of
   // the fractal remains the same.
-  virtual void set_aspect_ratio(Viewport &vp) = 0;
+  virtual void set_aspect_ratio(int new_width, int new_height) = 0;
 
   // Get an approximate width of the fractal for display purposes.
   virtual double width() const = 0;

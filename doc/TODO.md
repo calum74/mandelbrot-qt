@@ -1,5 +1,7 @@
 # Task list
 
+- [ ] Segfault resizing window
+
 Minor tasks:
 - [ ] Quick save ('S')
 - [ ] Auto-scale palette. Look at min-iterations to "discovered depth".
