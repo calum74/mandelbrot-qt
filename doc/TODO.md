@@ -1,15 +1,28 @@
 # Task list
 
+Minor tasks:
+- [ ] Quick save ('S')
+- [ ] Auto-scale palette. Look at min-iterations to "discovered depth".
+  Or, just sort the depths array and create a grayscale
+  Or, create a scaling factor such that the image
+- [ ] Rescale palette ('p') 
+
 Documentation and tidy:
 - [ ] Implementation notes
 - [ ] Further code tidy
 - [ ] More unit tests, for example, orbits
   - Mandelbrot - list the classes and document them
 
-Papercuts:
+Create issues:
 - [ ] Resizing the window displays garbage
-- [x] Icon on Mac
-- [ ] Installer does not install program on Windows
+- [ ] Set windows icon
+- [ ] Icon on Mac isn't rounded
+- [ ] Installer does not install start menu on Windows
+- [ ] Add fractals
+- [ ] Speed up calculation
+- [ ] Remove glitches
+- [ ] Create benchmarks
+
 - [ ] Make sure to not recalculate calculated pixels
 
 Future:

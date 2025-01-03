@@ -37,8 +37,7 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpen"/>
-    <addaction name="actionSave_position"/>
+    <addaction name="actionQuick_save"/>
     <addaction name="separator"/>
     <addaction name="actionCopy"/>
    </widget>
@@ -53,6 +52,7 @@
     <addaction name="actionMultithreading"/>
     <addaction name="separator"/>
     <addaction name="actionRandomize_palette"/>
+    <addaction name="actionScale_palette"/>
    </widget>
    <widget class="QMenu" name="menuFractal">
     <property name="title">
@@ -215,6 +215,22 @@
    </property>
    <property name="text">
     <string>Multithreading</string>
+   </property>
+  </action>
+  <action name="actionQuick_save">
+   <property name="text">
+    <string>Quick save</string>
+   </property>
+   <property name="shortcut">
+    <string>S</string>
+   </property>
+  </action>
+  <action name="actionScale_palette">
+   <property name="text">
+    <string>Scale palette</string>
+   </property>
+   <property name="shortcut">
+    <string>P</string>
    </property>
   </action>
  </widget>

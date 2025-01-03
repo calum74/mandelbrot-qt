@@ -33,6 +33,10 @@ MainWindow::MainWindow(QWidget *parent)
           &ViewerWidget::enableThreading);
   connect(ui->actionAuto_iterations, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::enableAutoDepth);
+  connect(ui->actionQuick_save, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::quickSave);
+  connect(ui->actionScale_palette, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::scalePalette);
 
   QIcon icon(":/new/prefix1/icon.ico");
   QApplication::setWindowIcon(icon);

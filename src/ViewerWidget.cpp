@@ -13,6 +13,7 @@
 #include "mandelbrot.hpp"
 #include "registry.hpp"
 
+#include <filesystem>
 #include <iomanip>
 #include <iostream>
 
@@ -242,3 +243,25 @@ void ViewerWidget::enableAutoDepth(bool value) {
 void ViewerWidget::enableThreading(bool value) {
   renderer->setThreading(value ? 4 : 1);
 }
+
+void ViewerWidget::quickSave() {
+  auto home = getenv("HOME");
+  if (home) {
+    auto desktop = std::filesystem::path{home} / "Desktop";
+    auto prefix = "fractal ";
+    std::filesystem::path image_filename;
+
+    for (int file_counter = 0; file_counter < 1000; ++file_counter) {
+      std::stringstream ss;
+      ss << (desktop / prefix).string();
+      ss << file_counter << ".png";
+      image_filename = ss.str();
+      if (!std::filesystem::exists(image_filename))
+        break;
+    }
+
+    image.save((image_filename).c_str(), "PNG");
+  }
+}
+
+void ViewerWidget::scalePalette() {}

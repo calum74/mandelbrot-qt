@@ -7,7 +7,7 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 include_directories(../mandelbrot/include)
-link_libraries(mandelbrot extra_fractals)
+link_libraries(extra_fractals)
 
 set(PROJECT_SOURCES
         main.cpp

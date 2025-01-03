@@ -63,6 +63,8 @@ public slots:
   void changeFractal(const fractals::PointwiseFractal &fractal);
   void enableThreading(bool checked);
   void enableAutoDepth(bool checked);
+  void quickSave();
+  void scalePalette();
 
 signals:
   void startCalculating(double width, int maxIterations);
