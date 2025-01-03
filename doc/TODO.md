@@ -1,16 +1,16 @@
 # Task list
 
+Tasks:
+- [ ] Documentation and notes
+- [ ] Create a new release. Build Qt statically on a new VM.
+
 Bugs:
 - [ ] Glitch on main mandelbrot when resizing window sometimes
 - [ ] When resize, why is there so much black in the way?
 
-Scale palette:
-- Reset when we go home?
-- When we zoom out partially, still update view_min etc
-
 Enhancements:
-- Display the gradient somewhere
-- When saving images, also save a log of coordinates
+- [ ] Display the gradient somewhere
+- [ ] When saving images, also save a log of coordinates
 
 Documentation and tidy:
 - [ ] Implementation notes
