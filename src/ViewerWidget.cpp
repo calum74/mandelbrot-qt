@@ -271,7 +271,7 @@ void ViewerWidget::quickSave() {
     ss << "Max iterations: " << coords.max_iterations << std::endl;
 
     image.setText("Description", ss.str().c_str());
-    image.save((image_filename).c_str(), "png");
+    image.save((image_filename).string().c_str(), "png");
   }
 }
 
