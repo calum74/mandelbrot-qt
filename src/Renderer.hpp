@@ -71,9 +71,11 @@ public:
 
   virtual double get_average_skipped_iterations() const;
 
-  virtual void enableAutoDepth(bool value);
+  virtual void enable_auto_depth(bool value);
 
-  virtual void setThreading(int threads);
+  virtual void set_threading(int threads);
+
+  virtual void get_depth_range(double &min, double &percentile, double &max);
 };
 
 std::unique_ptr<Renderer> make_renderer();

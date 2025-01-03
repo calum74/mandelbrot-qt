@@ -234,11 +234,12 @@ ViewerWidget::listFractals() {
 }
 
 void ViewerWidget::enableAutoDepth(bool value) {
-  renderer->enableAutoDepth(value);
+  renderer->enable_auto_depth(value);
 }
 
 void ViewerWidget::enableThreading(bool value) {
-  renderer->setThreading(value ? 4 : 1);
+  // TODO: Configure this a bit better
+  renderer->set_threading(value ? 4 : 1);
 }
 
 void ViewerWidget::quickSave() {
@@ -261,4 +262,13 @@ void ViewerWidget::quickSave() {
   }
 }
 
-void ViewerWidget::scalePalette() {}
+void ViewerWidget::scalePalette() {
+  double min, p, max;
+  renderer->get_depth_range(min, p, max);
+  if (p > 0)
+    colourMap->setRange(min, p);
+  else if (max > 0)
+    colourMap->setRange(min, max);
+  renderer->redraw(viewport);
+  calculate();
+}

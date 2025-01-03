@@ -44,7 +44,7 @@ void interpolate_region(Viewport &vp, int x0, int y0, int h) {
       int error = (i == 0 || i == h) && (j == 0 || j == h) ? 0 : h;
       /* if ((i < h || j < h) && (i > 0 || j > 0)) */
       auto &p = vp(x0 + i, y0 + j);
-      if (extra(p) > error)
+      if (error < extra(p))
         p = with_extra(c11, error);
     }
 }
@@ -59,9 +59,9 @@ void Renderer::redraw(Viewport &vp) {
       vp(i, j) = with_extra(vp(i, j), 127);
 }
 
-void Renderer::enableAutoDepth(bool value) {}
+void Renderer::enable_auto_depth(bool value) {}
 
-void Renderer::setThreading(int threads) {}
+void Renderer::set_threading(int threads) {}
 
 class AsyncRenderer : public Renderer {
   std::unique_ptr<Renderer> underlying_fractal;
@@ -197,7 +197,7 @@ public:
     depths = std::move(seq.depths);
   }
 
-  double view_min, view_max;
+  double view_min, view_max, view_percentile_max;
 
   void calculate_async(fractals::Viewport &view, const ColourMap &cm) override {
     stop_current_calculation();
@@ -211,6 +211,7 @@ public:
       t0 = std::chrono::high_resolution_clock::now();
       view_min = 0;
       view_max = 0;
+      view_percentile_max = 0;
       calculate_region_in_thread(view, cm, stop);
       if (!stop) {
         view.region_updated(0, 0, view.width, view.height);
@@ -226,6 +227,7 @@ public:
       if (automaticallyAdjustDepth && depths.begin() < depths.end()) {
         auto discovered_depth =
             util::top_percentile(depths.begin(), depths.end(), 0.999);
+        view_percentile_max = *discovered_depth;
         view.discovered_depth(std::distance(depths.begin(), depths.end()),
                               *discovered_depth);
       }
@@ -327,12 +329,21 @@ public:
 
   bool automaticallyAdjustDepth = true;
 
-  void enableAutoDepth(bool value) override {
+  void enable_auto_depth(bool value) override {
     automaticallyAdjustDepth = value;
   }
 
-  void setThreading(int threads) override { this->threads = threads; }
+  void set_threading(int threads) override { this->threads = threads; }
+
+  void get_depth_range(double &min, double &p, double &max) override {
+    stop_current_calculation();
+    min = view_min;
+    max = view_max;
+    p = view_percentile_max;
+  }
 };
+
+void Renderer::get_depth_range(double &min, double &p, double &max) {}
 
 void Renderer::calculate_async(fractals::Viewport &view, const ColourMap &cm) {}
 

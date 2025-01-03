@@ -1,13 +1,16 @@
 # Task list
 
-- [ ] Segfault resizing window
+Bugs:
+- [ ] Glitch on main mandelbrot when resizing window sometimes
+- [ ] When resize, why is there so much black in the way?
 
-Minor tasks:
-- [ ] Quick save ('S')
-- [ ] Auto-scale palette. Look at min-iterations to "discovered depth".
-  Or, just sort the depths array and create a grayscale
-  Or, create a scaling factor such that the image
-- [ ] Rescale palette ('p') 
+Scale palette:
+- Reset when we go home?
+- When we zoom out partially, still update view_min etc
+
+Enhancements:
+- Display the gradient somewhere
+- When saving images, also save a log of coordinates
 
 Documentation and tidy:
 - [ ] Implementation notes
@@ -16,16 +19,15 @@ Documentation and tidy:
   - Mandelbrot - list the classes and document them
 
 Create issues:
-- [ ] Resizing the window displays garbage
 - [ ] Set windows icon
 - [ ] Icon on Mac isn't rounded
-- [ ] Installer does not install start menu on Windows
+- [ ] Installer does not install start menu item on Windows
 - [ ] Add fractals
 - [ ] Speed up calculation
 - [ ] Remove glitches
 - [ ] Create benchmarks
 
-- [ ] Make sure to not recalculate calculated pixels
+- [ ] Make sure to not recalculate calculated pixels (e.g. scroll)
 
 Future:
 - [ ] Export image

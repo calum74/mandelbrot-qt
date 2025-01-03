@@ -227,10 +227,10 @@
   </action>
   <action name="actionScale_palette">
    <property name="text">
-    <string>Scale palette</string>
+    <string>Enhance palette</string>
    </property>
    <property name="shortcut">
-    <string>P</string>
+    <string>E</string>
    </property>
   </action>
  </widget>

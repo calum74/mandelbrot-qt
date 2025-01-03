@@ -10,7 +10,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   if (d == 0)
     return make_rgb(0, 0, 0);
 
-  d = offset + std::pow(d, gamma) * k;
+  d = std::pow((d + offset) * k, gamma);
   int i = d;
   auto f = d - i;
   i %= colours.size();
@@ -23,7 +23,9 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
                   blue(c1) * (1 - f) + blue(c2) * f);
 }
 
-void fractals::ColourMapImpl::setRange(double, double) {}
+void fractals::ColourMapImpl::setRange(double min, double max) {
+  k = 10.0 / (max - min);
+}
 
 void fractals::ColourMapImpl::randomize() {
   seed++;
