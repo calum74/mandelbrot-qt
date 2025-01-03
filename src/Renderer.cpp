@@ -41,11 +41,11 @@ void interpolate_region(Viewport &vp, int x0, int y0, int h) {
   // Solid colour
   for (int j = 0; j <= h; ++j)
     for (int i = 0; i <= h; ++i) {
-      if ((i < h || j < h) && (i > 0 || j > 0)) {
-        auto &p = vp(x0 + i, y0 + j);
-        if (extra(p) > h)
-          p = with_extra(c11, h);
-      }
+      int error = (i == 0 || i == h) && (j == 0 || j == h) ? 0 : h;
+      /* if ((i < h || j < h) && (i > 0 || j > 0)) */
+      auto &p = vp(x0 + i, y0 + j);
+      if (extra(p) > error)
+        p = with_extra(c11, error);
     }
 }
 
