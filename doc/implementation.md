@@ -1,4 +1,4 @@
-# Implementation of MandelbrotQt
+# Implementation of Mandelbrot-Qt
 
 *This document is a work in progress and might be out of date in places*
 
@@ -32,7 +32,7 @@ To be clear, I didn't invent any of these ideas.
 
 ## Smooth scaling
 
-As well as making the underlying calculation as fast as possible, we'll want to be as smart as possible about rendering the image. MandelbrotQt prioritises smooth speed and navigation over image quality.
+As well as making the underlying calculation as fast as possible, we'll want to be as smart as possible about rendering the image. Mandelbrot-Qt prioritises smooth speed and navigation over image quality.
 
 - When zooming, we'll scale the current image
 - When panning, we'll scroll the pixels
@@ -59,9 +59,9 @@ Computing the 99.9 percentile is found in `percentile.hpp`.
 
 ## Threading
 
-Rendering the Mandelbrot set is an "embarrassingly parallel" problem, meaning that it is in theory trivial to render the MB set, since each point can be computed independently. This is only partially true - if you need to juggle multiple reference orbits then certainly there is more work to do. In its first version, MandelbrotQt only uses a single reference orbit per image however, but this could be improved.
+Rendering the Mandelbrot set is an "embarrassingly parallel" problem, meaning that it is in theory trivial to render the MB set, since each point can be computed independently. This is only partially true - if you need to juggle multiple reference orbits then certainly there is more work to do. In its first version, Mandelbrot-Qt only uses a single reference orbit per image however, but this could be improved.
 
-Algorithms typically segment the image into "tiles" which can be rendered independently. However, MandelbrotQt takes a different approach by using a thread pool to process one pixel at a time. This might seem suboptimal, but the overheads of doing this are quite small relative to the computation required for each pixel. This also means that all threads are fully occupied, rather than waiting for the last tile to finish, and this algorithm scales very easily with the number of cores.
+Algorithms typically segment the image into "tiles" which can be rendered independently. However, Mandelbrot-Qt takes a different approach by using a thread pool to process one pixel at a time. This might seem suboptimal, but the overheads of doing this are quite small relative to the computation required for each pixel. This also means that all threads are fully occupied, rather than waiting for the last tile to finish, and this algorithm scales very easily with the number of cores.
 
 ## Colour map
 

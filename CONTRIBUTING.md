@@ -1,8 +1,8 @@
-# Contributing to Mandelbrot and MandelbrotQt
+# Contributing to Mandelbrot and Mandelbrot-Qt
 
 How to get in touch: Typically [open an issue](https://github.com/calum74/mandelbrot-qt/issues/new). You can also find me as `@drcalum` on Bluesky.
 
-Contributions are very welcome! To contribute to MandelbrotQt, typically create a pull-request with your changes. There are other ways to contribute:
+Contributions are very welcome! To contribute to Mandelbrot-Qt, typically create a pull-request with your changes. There are other ways to contribute:
 
 - Filing bug reports
 - Asking questions
@@ -16,7 +16,7 @@ When creating a PR, bear in mind,
 
 ## Building the software
 
-Trying to build anything with Qt is an utterly miserable and demoralising experience. MandelbrotQt using C++ and Qt, and is built using CMake.
+Trying to build anything with Qt is an utterly miserable and demoralising experience. Mandelbrot-Qt using C++ and Qt, and is built using CMake.
 
 On Linux:
 
@@ -38,7 +38,7 @@ You can also use QtCreator, Visual Studio, Visual Studio Code to open the CMake 
 
 ## Creating an installer
 
-The Actions workflows do create an installer, but this is only using the shared/dynamic Qt toolchain. We actually want to use the static Qt toolchain when distributing MandelbrotQt.
+The Actions workflows do create an installer, but this is only using the shared/dynamic Qt toolchain. We actually want to use the static Qt toolchain when distributing Mandelbrot-Qt.
 
 On Mac: Download the source code using the Qt installer https://www.qt.io/download-qt-installer-oss (e.g. version 6.8.1). 
 

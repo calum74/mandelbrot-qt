@@ -41,7 +41,7 @@
             "MIMode": "lldb"
         },
         {
-            "name": "MandelbrotQt",
+            "name": "Mandelbrot-Qt",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build.dir/mandelbrot-qt.app/Contents/MacOS/mandelbrot-qt",

@@ -2,11 +2,11 @@
 
 [![CMake on multiple platforms](https://github.com/calum74/mandelbrot-qt/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/calum74/mandelbrot-qt/actions/workflows/cmake-multi-platform.yml)
 
-MandelbrotQt is a desktop application to explore the Mandelbrot set. If you just want to look at fractals, go to the [releases](https://github.com/calum74/mandelbrot-qt/releases) page.
+Mandelbrot-Qt is a desktop application to explore the Mandelbrot set. If you just want to look at fractals, go to the [releases](https://github.com/calum74/mandelbrot-qt/releases) page.
 
 ## Running the software
 
-To install binaries for your plaform, just go to the [releases](https://github.com/calum74/mandelbrot-qt/releases) page. MandelbrotQt has binaries for MacOS, Windows, and Linux.
+To install binaries for your plaform, just go to the [releases](https://github.com/calum74/mandelbrot-qt/releases) page. Mandelbrot-Qt has binaries for MacOS, Windows, and Linux.
 
 ## How to use it
 
@@ -21,7 +21,7 @@ The menus contain other useful options:
 * To save an image, use copy and paste, or hit `S` to perform a quick-save of the current image to your desktop. There is no option to change the resolution, but you can resize the window.
 * To see the current coordinates, select "Go to..." from the menus, which tells you your current coords and allows you to set them.
 
-Auto-bailout: MandelbrotQt implements a heuristic to estimate the maximum number of iterations. If this is too low, then the image can contain excess black areas. You can disable auto-bailout by disabling "Automatic depth" option in the menu, and use `I` and `O` to increase or decrease the number of iterations.
+Auto-bailout: Mandelbrot-Qt implements a heuristic to estimate the maximum number of iterations. If this is too low, then the image can contain excess black areas. You can disable auto-bailout by disabling "Automatic depth" option in the menu, and use `I` and `O` to increase or decrease the number of iterations.
 
 ## What is a Mandelbrot set?
 
@@ -33,8 +33,8 @@ In brief, the Mandelbrot set is a type of "fractal", a mathematical object of un
 - What is the smallest minibrot you can find?
 - Make sure to explore all the different regions.
 
-## Contributing to MandelbrotQt
+## Contributing to Mandelbrot-Qt
 
 Contributions are very welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for further information.
 
-If you just want to learn how it works, check out the [implementation notes](docs/implementation.md).
+If you just want to learn how it works, check out the [implementation notes](doc/implementation.md).

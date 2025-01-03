@@ -17,7 +17,7 @@
    <enum>Qt::FocusPolicy::NoFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>MandelbrotQt</string>
+   <string>Mandelbrot-Qt</string>
   </property>
   <widget class="ViewerWidget" name="centralwidget">
    <property name="mouseTracking">
