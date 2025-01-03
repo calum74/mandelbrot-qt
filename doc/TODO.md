@@ -10,7 +10,6 @@ Bugs:
 
 Enhancements:
 - [ ] Display the gradient somewhere
-- [ ] When saving images, also save a log of coordinates
 
 Documentation and tidy:
 - [ ] Implementation notes
@@ -26,6 +25,7 @@ Create issues:
 - [ ] Speed up calculation
 - [ ] Remove glitches
 - [ ] Create benchmarks
+- [ ] Better palette control
 
 - [ ] Make sure to not recalculate calculated pixels (e.g. scroll)
 
