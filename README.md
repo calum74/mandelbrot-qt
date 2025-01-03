@@ -35,6 +35,6 @@ In brief, the Mandelbrot set is a type of "fractal", a mathematical object of un
 
 ## Contributing to MandelbrotQt
 
-Contributions are very welcome! See [CONTRIBUTING.md] for further information.
+Contributions are very welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for further information.
 
 If you just want to learn how it works, check out the [implementation notes](docs/implementation.md).
