@@ -18,24 +18,9 @@ Documentation and tidy:
   - Mandelbrot - list the classes and document them
 
 Create issues:
-- [ ] Set windows icon
-- [ ] Icon on Mac isn't rounded
-- [ ] Installer does not install start menu item on Windows
-- [ ] Add fractals
-- [ ] Speed up calculation
-- [ ] Remove glitches
 - [ ] Create benchmarks
-- [ ] Better palette control
 
 - [ ] Make sure to not recalculate calculated pixels (e.g. scroll)
-
-Future:
-- [ ] Export image
-- [ ] File load/save
-- [ ] Generate movie
-
-Mandeldrop bug:
-- Looks like there's an imprecision at -0.0000036023362057037546653,0.7137320572149256883936381,0.7137320572149256883936381,0.7137320572149256883936381
 
 - [ ] Implement general Taylor series expansion
 
