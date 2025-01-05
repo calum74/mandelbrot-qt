@@ -21,7 +21,6 @@ class RegistryImpl : public Registry {
       if (name == query)
         return &fractal;
     }
-    std::cout << "Didn't find anything\n";
     return {};
   }
 
