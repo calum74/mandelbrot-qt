@@ -15,6 +15,17 @@ class RegistryImpl : public Registry {
   std::vector<std::pair<std::string, const fractals::PointwiseFractal &>>
       fractals;
 
+  const PointwiseFractal *lookup(const std::string &query) const override {
+    std::cout << "Looking up '" << query << "'\n";
+    // !! Linear search
+    for (auto &[name, fractal] : fractals) {
+      if (name == query)
+        return &fractal;
+    }
+    std::cout << "Didn't find anything\n";
+    return {};
+  }
+
   std::vector<std::pair<std::string, const fractals::PointwiseFractal &>>
   listFractals() const override {
     return fractals;

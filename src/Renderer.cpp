@@ -4,6 +4,7 @@
 #include "fractal.hpp"
 #include "mandelbrot.hpp"
 #include "percentile.hpp"
+#include "registry.hpp"
 #include "rendering_sequence.hpp"
 #include "view_coords.hpp"
 
@@ -372,19 +373,31 @@ void Renderer::discovered_depth(int, double) {}
 class CalculatedFractalRenderer : public fractals::Renderer {
 public:
   view_coords coords;
+  Registry &registry;
 
-  CalculatedFractalRenderer(const PointwiseFractal &f) : factory(&f) {
+  CalculatedFractalRenderer(Registry &reg, const PointwiseFractal &f)
+      : registry(reg), factory(&f) {
     coords = initial_coords();
   }
 
-  void load(std::istream &is, Viewport &vp) override { is >> coords; }
+  void load(std::istream &is, Viewport &vp) override {
+    is >> coords;
+    std::string name;
+    std::getline(is, name);
+    std::getline(is, name);
+    auto new_fractal = registry.lookup(name);
+
+    if (new_fractal)
+      factory = new_fractal;
+  }
 
   void save(std::ostream &os) const override {
 
     int zeros = fractals::count_fractional_zeros(coords.r);
     int width = 4 + zeros * 0.30103;
 
-    os << coords;
+    os << coords << std::endl;
+    os << factory->name() << std::endl;
   }
 
   view_coords get_coords() const override { return coords; }
@@ -472,7 +485,7 @@ void Renderer::load(std::istream &is, Viewport &vp) {}
 
 void Renderer::save(std::ostream &os) const {}
 
-std::unique_ptr<fractals::Renderer> fractals::make_renderer() {
+std::unique_ptr<fractals::Renderer> fractals::make_renderer(Registry &reg) {
   return std::make_unique<AsyncRenderer>(
-      std::make_unique<CalculatedFractalRenderer>(mandelbrot_fractal));
+      std::make_unique<CalculatedFractalRenderer>(reg, mandelbrot_fractal));
 }

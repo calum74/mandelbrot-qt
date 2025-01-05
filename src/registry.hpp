@@ -15,6 +15,8 @@ public:
   virtual std::vector<
       std::pair<std::string, const fractals::PointwiseFractal &>>
   listFractals() const = 0;
+
+  virtual const PointwiseFractal *lookup(const std::string &name) const = 0;
 };
 
 // Perhaps this isn't useful

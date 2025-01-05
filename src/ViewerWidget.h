@@ -8,10 +8,13 @@
 #include "Renderer.hpp"
 #include "Viewport.hpp"
 #include "fractal.hpp"
+#include "registry.hpp"
 
 class ViewerWidget : public QWidget {
   Q_OBJECT
   QImage image;
+
+  std::unique_ptr<fractals::Registry> registry;
 
   // Note destruction order - renderer must be destroyed after viewport
   std::unique_ptr<fractals::Renderer> renderer;

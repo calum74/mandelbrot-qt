@@ -8,6 +8,7 @@ class Viewport;
 class ColourMap;
 class view_coords;
 class PointwiseFractal;
+class Registry;
 
 class Renderer {
 public:
@@ -83,5 +84,5 @@ public:
   virtual void load(std::istream &is, Viewport &vp);
 };
 
-std::unique_ptr<Renderer> make_renderer();
+std::unique_ptr<Renderer> make_renderer(Registry &);
 } // namespace fractals
