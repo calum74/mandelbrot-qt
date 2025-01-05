@@ -8,6 +8,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QResizeEvent>
+#include <QStandardPaths>
 #include <QWheelEvent>
 
 #include "mandelbrot.hpp"
@@ -243,9 +244,11 @@ void ViewerWidget::enableThreading(bool value) {
 }
 
 void ViewerWidget::quickSave() {
-  auto home = getenv("HOME");
-  if (home) {
-    auto desktop = std::filesystem::path{home} / "Desktop";
+  auto desktop_list =
+      QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
+
+  if (!desktop_list.empty()) {
+    auto desktop = std::filesystem::path{desktop_list[0].toStdString()};
     auto prefix = "fractal ";
     std::filesystem::path image_filename;
 
