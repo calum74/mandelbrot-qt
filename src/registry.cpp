@@ -16,7 +16,6 @@ class RegistryImpl : public Registry {
       fractals;
 
   const PointwiseFractal *lookup(const std::string &query) const override {
-    std::cout << "Looking up '" << query << "'\n";
     // !! Linear search
     for (auto &[name, fractal] : fractals) {
       if (name == query)
