@@ -9,6 +9,8 @@
 
 #include <cassert>
 #include <future>
+#include <iomanip>
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -75,6 +77,14 @@ public:
       : underlying_fractal{std::move(underlying_fractal)} {}
 
   ~AsyncRenderer() { stop_current_calculation(); }
+
+  void load(std::istream &is, Viewport &vp) override {
+    stop_current_calculation();
+    underlying_fractal->load(is, vp);
+    redraw(vp);
+  }
+
+  void save(std::ostream &os) const override { underlying_fractal->save(os); }
 
   void increase_iterations(Viewport &vp) override {
     stop_current_calculation();
@@ -367,6 +377,16 @@ public:
     coords = initial_coords();
   }
 
+  void load(std::istream &is, Viewport &vp) override { is >> coords; }
+
+  void save(std::ostream &os) const override {
+
+    int zeros = fractals::count_fractional_zeros(coords.r);
+    int width = 4 + zeros * 0.30103;
+
+    os << coords;
+  }
+
   view_coords get_coords() const override { return coords; }
 
   bool set_coords(const view_coords &w, Viewport &vp) override {
@@ -447,6 +467,10 @@ void fractals::Viewport::invalidateAllPixels() {
       (*this)(i, j) = with_extra((*this)(i, j), 127);
     }
 }
+
+void Renderer::load(std::istream &is, Viewport &vp) {}
+
+void Renderer::save(std::ostream &os) const {}
 
 std::unique_ptr<fractals::Renderer> fractals::make_renderer() {
   return std::make_unique<AsyncRenderer>(

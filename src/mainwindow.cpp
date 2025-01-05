@@ -37,6 +37,10 @@ MainWindow::MainWindow(QWidget *parent)
           &ViewerWidget::quickSave);
   connect(ui->actionScale_palette, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::scalePalette);
+  connect(ui->actionOpen, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::open);
+  connect(ui->actionSave, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::save);
 
   QIcon icon(":/new/prefix1/icon.ico");
   QApplication::setWindowIcon(icon);

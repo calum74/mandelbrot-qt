@@ -1,5 +1,6 @@
 #pragma once
 #include <atomic>
+#include <iostream>
 #include <memory>
 
 namespace fractals {
@@ -76,6 +77,10 @@ public:
   virtual void set_threading(int threads);
 
   virtual void get_depth_range(double &min, double &percentile, double &max);
+
+  virtual void save(std::ostream &os) const;
+
+  virtual void load(std::istream &is, Viewport &vp);
 };
 
 std::unique_ptr<Renderer> make_renderer();

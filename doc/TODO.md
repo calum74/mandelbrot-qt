@@ -1,8 +1,35 @@
 # Task list
 
-Tasks:
-- [ ] Documentation and notes
-- [ ] Create a new release. Build Qt statically on a new VM.
+Short term goals:
+- [ ] Quick save not working on Windows
+  Use QStandardPaths::DesktopLocation
+- [ ] Load/save images by implementing a proper save state
+  Renderer::loadState(istream)
+  Renderer::saveState(ostream)
+- [ ] Enhance contrast algorithm by sorting all of the pixels
+  - Keep the array of doubles instead of throwing them away
+  - Split the
+  - Each time we reach a new depth, we append to the "depths" array.
+  - Each time we fail to reach a depth, we'll pop from the "depths" array
+- Create a new colourMap class that handles this.
+  - Implicitly gathers statistics?? Cool but mad.
+
+```c++
+class LinearColourMap
+{
+  void startImage()
+
+  RGB lookup(double d) {
+  }
+
+};
+```
+
+
+Today:
+- [ ] Windows machine with static Qt
+  - Use cmake-qt 
+- [ ] Create a new release.
 
 Bugs:
 - [ ] Glitch on main mandelbrot when resizing window sometimes
@@ -10,19 +37,15 @@ Bugs:
 
 Enhancements:
 - [ ] Display the gradient somewhere
+- [ ] Create benchmarks
+- [ ] Make sure to not recalculate calculated pixels (e.g. scroll)
+- [ ] Implement general Taylor series expansion
 
 Documentation and tidy:
-- [ ] Implementation notes
 - [ ] Further code tidy
 - [ ] More unit tests, for example, orbits
   - Mandelbrot - list the classes and document them
 
-Create issues:
-- [ ] Create benchmarks
-
-- [ ] Make sure to not recalculate calculated pixels (e.g. scroll)
-
-- [ ] Implement general Taylor series expansion
 
 
 # Log term tasks

@@ -56,6 +56,8 @@ public:
   std::vector<std::pair<std::string, const fractals::PointwiseFractal &>>
   listFractals();
 
+  void saveToFile(const QString &image_filename);
+
 public slots:
   void copyCoords();
   void recolourPalette();
@@ -65,6 +67,8 @@ public slots:
   void enableAutoDepth(bool checked);
   void quickSave();
   void scalePalette();
+  void open();
+  void save();
 
 signals:
   void startCalculating(double width, int maxIterations);
