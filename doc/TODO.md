@@ -1,11 +1,7 @@
 # Task list
 
 Short term goals:
-- [ ] Quick save not working on Windows
-  Use QStandardPaths::DesktopLocation
-- [ ] Load/save images by implementing a proper save state
-  Renderer::loadState(istream)
-  Renderer::saveState(ostream)
+- [ ] File save format needs versioning and ability to store colour gradient
 - [ ] Enhance contrast algorithm by sorting all of the pixels
   - Keep the array of doubles instead of throwing them away
   - Split the
