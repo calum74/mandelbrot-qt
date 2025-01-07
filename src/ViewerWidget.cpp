@@ -14,6 +14,7 @@
 
 #include "mandelbrot.hpp"
 #include "registry.hpp"
+#include "view_parameters.hpp"
 
 #include <filesystem>
 #include <iomanip>
@@ -270,10 +271,12 @@ void ViewerWidget::quickSave() {
 }
 
 void ViewerWidget::saveToFile(const QString &image_filename) {
-  auto coords = renderer->get_coords();
+  fractals::view_parameters params;
+  renderer->save(params);
+  colourMap->save(params);
 
   std::stringstream ss;
-  renderer->save(ss);
+  ss << params;
 
   image.setText("MandelbrotQt", ss.str().c_str());
   image.save(image_filename, "png");
@@ -300,7 +303,10 @@ void ViewerWidget::open() {
     if (!text.isEmpty()) {
       // Successfully loaded metadata
       std::stringstream ss(text.toStdString());
-      renderer->load(ss, viewport);
+      fractals::view_parameters params;
+      ss >> params;
+      renderer->load(params, viewport);
+      colourMap->load(params);
       calculate();
     } else {
       // TODO: Pop up a dialog box

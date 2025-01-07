@@ -7,6 +7,7 @@
 #include "registry.hpp"
 #include "rendering_sequence.hpp"
 #include "view_coords.hpp"
+#include "view_parameters.hpp"
 
 #include <cassert>
 #include <future>
@@ -79,13 +80,15 @@ public:
 
   ~AsyncRenderer() { stop_current_calculation(); }
 
-  void load(std::istream &is, Viewport &vp) override {
+  void load(const view_parameters &params, Viewport &vp) override {
     stop_current_calculation();
-    underlying_fractal->load(is, vp);
+    underlying_fractal->load(params, vp);
     redraw(vp);
   }
 
-  void save(std::ostream &os) const override { underlying_fractal->save(os); }
+  void save(view_parameters &params) const override {
+    underlying_fractal->save(params);
+  }
 
   void increase_iterations(Viewport &vp) override {
     stop_current_calculation();
@@ -380,24 +383,17 @@ public:
     coords = initial_coords();
   }
 
-  void load(std::istream &is, Viewport &vp) override {
-    is >> coords;
-    std::string name;
-    std::getline(is, name);
-    std::getline(is, name);
-    auto new_fractal = registry.lookup(name);
+  void load(const view_parameters &params, Viewport &vp) override {
+    coords = params.coords;
+    auto new_fractal = registry.lookup(params.fractal_name);
 
     if (new_fractal)
       factory = new_fractal;
   }
 
-  void save(std::ostream &os) const override {
-
-    int zeros = fractals::count_fractional_zeros(coords.r);
-    int width = 4 + zeros * 0.30103;
-
-    os << coords << std::endl;
-    os << factory->name() << std::endl;
+  void save(view_parameters &params) const override {
+    params.coords = coords;
+    params.fractal_name = factory->name();
   }
 
   view_coords get_coords() const override { return coords; }
@@ -481,9 +477,9 @@ void fractals::Viewport::invalidateAllPixels() {
     }
 }
 
-void Renderer::load(std::istream &is, Viewport &vp) {}
+void Renderer::load(const view_parameters &params, Viewport &vp) {}
 
-void Renderer::save(std::ostream &os) const {}
+void Renderer::save(view_parameters &params) const {}
 
 std::unique_ptr<fractals::Renderer> fractals::make_renderer(Registry &reg) {
   return std::make_unique<AsyncRenderer>(

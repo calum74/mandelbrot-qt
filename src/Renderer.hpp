@@ -9,6 +9,7 @@ class ColourMap;
 class view_coords;
 class PointwiseFractal;
 class Registry;
+class view_parameters;
 
 class Renderer {
 public:
@@ -79,9 +80,9 @@ public:
 
   virtual void get_depth_range(double &min, double &percentile, double &max);
 
-  virtual void save(std::ostream &os) const;
+  virtual void save(view_parameters &params) const;
 
-  virtual void load(std::istream &is, Viewport &vp);
+  virtual void load(const view_parameters &params, Viewport &vp);
 };
 
 std::unique_ptr<Renderer> make_renderer(Registry &);

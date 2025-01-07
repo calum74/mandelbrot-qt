@@ -1,4 +1,5 @@
 #include "ColourMapImpl.hpp"
+#include "view_parameters.hpp"
 #include <random>
 
 // Good ones: 31, 83, 97, 106, 112
@@ -29,18 +30,32 @@ void fractals::ColourMapImpl::setRange(double min, double max) {
 
 void fractals::ColourMapImpl::randomize() {
   seed++;
+  create_colours();
+}
+
+void fractals::ColourMapImpl::create_colours() {
   // If we want to find a new seed, log it here
   // std::cout << "Colour is " << seed << std::endl;
   std::mt19937 e{seed};
-  std::uniform_int_distribution<int> r256(0, 256);
 
   // Create 20 random colours
   std::vector<RGB> newColours(20);
   for (auto &c : newColours) {
-    c = make_rgb(r256(e), r256(e), r256(e));
+    c = e() & 0xffffff;
   }
 
   colours = std::move(newColours);
+}
+
+void fractals::ColourMapImpl::load(const view_parameters &params) {
+  seed = params.colour_seed;
+  k = params.colour_gradient;
+  create_colours();
+}
+
+void fractals::ColourMapImpl::save(view_parameters &params) const {
+  params.colour_seed = seed;
+  params.colour_gradient = k;
 }
 
 std::unique_ptr<fractals::ColourMap> fractals::make_colourmap() {
