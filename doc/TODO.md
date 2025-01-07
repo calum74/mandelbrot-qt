@@ -16,35 +16,6 @@ Short term goals:
 
 Auto gradient - each time we reach a new zoom level, we put the new pixels in a different gradient?
 
-
-
-```c++
-// We create a variable gradient which
-// attempts to smooth out the gradient between low- and high- gradient areas
-// based on grouping points into equally-sized bins.
-class ProportionalColourMap
-{
-  void startImage()
-
-  RGB lookup(double d) {
-    points.push_back(d);
-
-    // How to perform the lookup???
-  }
-
-  void recalibrate() override
-  {
-    // Perform colouration based on the previous image, ready for the next image
-  }
-
-  void incremental_calibrate() override
-  {
-    // End of image, so we can adjust our calibration to higher depths
-  }
-};
-```
-
-
 Today:
 - [ ] Windows machine with static Qt
   - Use cmake-qt 
