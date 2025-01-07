@@ -3,7 +3,7 @@
 #include <memory>
 
 namespace fractals {
-class view_parameters;
+struct view_parameters;
 
 class ColourMap {
 public:

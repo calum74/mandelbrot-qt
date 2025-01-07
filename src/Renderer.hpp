@@ -9,7 +9,7 @@ class ColourMap;
 class view_coords;
 class PointwiseFractal;
 class Registry;
-class view_parameters;
+struct view_parameters;
 
 class Renderer {
 public:
