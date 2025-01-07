@@ -94,12 +94,12 @@ void MainWindow::completed(double d, int min_depth, int max_depth, double avg,
 
 void MainWindow::openGoToDialog() {
   GoToDialog dialog;
-  QString x, y, r, i;
-  ui->centralwidget->getCoords(x, y, r, i);
-  dialog.setCoords(x, y, r, i);
+  fractals::view_parameters params;
+  ui->centralwidget->getCoords(params);
+  dialog.setCoords(params);
   if (dialog.exec()) {
-    dialog.getCoords(x, y, r, i);
-    ui->centralwidget->setCoords(x, y, r, i);
+    dialog.getCoords(params);
+    ui->centralwidget->setCoords(params);
   }
 }
 

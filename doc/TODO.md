@@ -1,11 +1,11 @@
 # Task list
 
 Short term goals:
-- Currently limited to 1e-261 radius
-- [ ] class ViewParameters
-- [ ] File save format needs versioning and ability to store colour palette and gradient
+- [ ] Go to window to also set the colour map and gradient
+- [ ] Currently limited to 1e-261 radius
+- [ ] Still some zoom inaccuracy on Mandeldrop around 1e-20
 
-- [ ] Ensure that the colour scheme is consistent between platforms. (default_rng may be wrong).
+- [ ] Ensure that the colour scheme is consistent between platforms.
 - [ ] Find a new default seed
 - [ ] Enhance contrast algorithm by sorting all of the pixels
   - Keep the array of doubles instead of throwing them away
@@ -13,6 +13,10 @@ Short term goals:
   - Each time we reach a new depth, we append to the "depths" array.
   - Each time we fail to reach a depth, we'll pop from the "depths" array
 - Create a new colourMap class that handles this.
+
+Auto gradient - each time we reach a new zoom level, we put the new pixels in a different gradient?
+
+
 
 ```c++
 // We create a variable gradient which

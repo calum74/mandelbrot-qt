@@ -1,6 +1,7 @@
 #ifndef GOTODIALOG_H
 #define GOTODIALOG_H
 
+#include "view_parameters.hpp"
 #include <QDialog>
 
 namespace Ui {
@@ -14,9 +15,8 @@ public:
   explicit GoToDialog(QWidget *parent = nullptr);
   ~GoToDialog();
 
-  void getCoords(QString &x, QString &y, QString &r, QString &i) const;
-  void setCoords(const QString &x, const QString &y, const QString &r,
-                 const QString &i);
+  void getCoords(fractals::view_parameters &params) const;
+  void setCoords(const fractals::view_parameters &params);
 
 private:
   Ui::GoToDialog *ui;

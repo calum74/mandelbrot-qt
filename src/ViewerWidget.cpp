@@ -151,66 +151,14 @@ void ViewerWidget::copyCoords()
   clipboard->setMimeData(data);
 }
 
-void ViewerWidget::getCoords(QString &x, QString &y, QString &r,
-                             QString &i) const {
-  auto c = renderer->get_coords();
-
-  int zeros = fractals::count_fractional_zeros(c.r);
-  int width = 3 + zeros * 0.30103;
-
-  {
-    std::stringstream ss;
-    ss << std::setprecision(width) << c.x << std::endl;
-    x = ss.str().c_str();
-  }
-
-  {
-    std::stringstream ss;
-    ss << std::setprecision(width) << c.y << std::endl;
-    y = ss.str().c_str();
-  }
-
-  {
-    std::stringstream ss;
-    ss << std::setprecision(width) << c.r << std::endl;
-    r = ss.str().c_str();
-  }
-
-  {
-    std::stringstream ss;
-    ss << c.max_iterations << std::endl;
-    i = ss.str().c_str();
-  }
+void ViewerWidget::getCoords(fractals::view_parameters &params) const {
+  renderer->save(params);
+  colourMap->save(params);
 }
 
-bool ViewerWidget::setCoords(const QString &x, const QString &y,
-                             const QString &r, const QString &i) {
-  fractals::view_coords coords;
-
-  fractals::view_coords::value_type cx;
-  fractals::view_coords::value_type cy;
-  fractals::view_coords::value_type cr;
-
-  {
-    std::istringstream ss(x.toStdString());
-    ss >> coords.x;
-  }
-
-  {
-    std::istringstream ss(y.toStdString());
-    ss >> coords.y;
-  }
-  {
-    std::istringstream ss(r.toStdString());
-    ss >> coords.r;
-  }
-
-  {
-    std::istringstream ss(i.toStdString());
-    ss >> coords.max_iterations;
-  }
-
-  renderer->set_coords(coords, viewport);
+bool ViewerWidget::setCoords(const fractals::view_parameters &params) {
+  colourMap->load(params);
+  renderer->load(params, viewport);
   calculate();
   return true;
 }

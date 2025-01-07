@@ -52,9 +52,8 @@ public:
   void increaseIterations();
   void decreaseIterations();
 
-  void getCoords(QString &x, QString &y, QString &r, QString &i) const;
-  bool setCoords(const QString &x, const QString &y, const QString &r,
-                 const QString &i);
+  void getCoords(fractals::view_parameters &params) const;
+  bool setCoords(const fractals::view_parameters &params);
 
   std::vector<std::pair<std::string, const fractals::PointwiseFractal &>>
   listFractals();
