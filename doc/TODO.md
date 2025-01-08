@@ -1,8 +1,17 @@
 # Task list
 
 Short term goals:
-- [ ] Go to window to also set the colour map and gradient
+- [ ] MSIX installer
+- [ ] Crash on Windows resizing window
+- [ ] Debug on Windows
+- [ ] Error messages in tests on Windwos
+
+
 - [ ] Currently limited to 1e-261 radius
+
+
+
+- [ ] Go to window to also set the colour map and gradient
 - [ ] Still some zoom inaccuracy on Mandeldrop around 1e-20
 
 - [ ] Ensure that the colour scheme is consistent between platforms.

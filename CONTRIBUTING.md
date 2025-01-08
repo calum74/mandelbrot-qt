@@ -36,6 +36,10 @@ Install Qt from https://www.qt.io/download-qt-installer-oss. If you install QtCr
 
 You can also use QtCreator, Visual Studio, Visual Studio Code to open the CMake project.
 
+`C:\Qt\6.8.1\msvc2022_64\bin\qt-cmake`
+
+
+
 ## Creating an installer
 
 The Actions workflows do create an installer, but this is only using the shared/dynamic Qt toolchain. We actually want to use the static Qt toolchain when distributing Mandelbrot-Qt.
