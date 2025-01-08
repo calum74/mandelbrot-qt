@@ -6,11 +6,11 @@ namespace fractals {
 A region to render. It is essentially a buffer of pixels
 */
 struct Viewport {
-  int width, height;
+  int width=0, height=0;
 
   // The buffer to receive the pixels, stored in row-order.
   // data must be width*height elements large.
-  RGB *data;
+  RGB *data=0;
 
   RGB &operator()(int x, int y) { return data[x + y * width]; }
   RGB operator()(int x, int y) const { return data[x + y * width]; }
