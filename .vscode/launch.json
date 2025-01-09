@@ -41,6 +41,18 @@
             "MIMode": "lldb"
         },
         {
+            "name": "Benchmark",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build.dir/mandelbrot/test/bench",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb"
+        },
+        {
             "name": "Mandelbrot-Qt",
             "type": "cppdbg",
             "request": "launch",

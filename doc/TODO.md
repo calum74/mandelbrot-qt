@@ -1,20 +1,26 @@
 # Task list
 
+For cubic, still a lot of inaccuracies
+Better heuristics on imprecision. Still could get glitches on cubic which only appear on 4 terms.
+
 Short term goals:
 - [ ] MSIX installer
-- [ ] Crash on Windows resizing window
-- [ ] Debug on Windows
-- [ ] Error messages in tests on Windwos
 
+Ideas:
+- [ ] `[` and `]` keys to change the gradient
+- [ ] Instant recolour
+- [ ] Performance improvements
 
+Blockers:
+- [ ] Windows installer
+- [ ] Building Qt from source on Windows still does not work
+
+Bugs:
 - [ ] Currently limited to 1e-261 radius
-
-
-
-- [ ] Go to window to also set the colour map and gradient
+- [ ] Looks like the wrong resolution is chosen
 - [ ] Still some zoom inaccuracy on Mandeldrop around 1e-20
 
-- [ ] Ensure that the colour scheme is consistent between platforms.
+Colouring:
 - [ ] Find a new default seed
 - [ ] Enhance contrast algorithm by sorting all of the pixels
   - Keep the array of doubles instead of throwing them away
@@ -22,8 +28,7 @@ Short term goals:
   - Each time we reach a new depth, we append to the "depths" array.
   - Each time we fail to reach a depth, we'll pop from the "depths" array
 - Create a new colourMap class that handles this.
-
-Auto gradient - each time we reach a new zoom level, we put the new pixels in a different gradient?
+- Auto gradient - each time we reach a new zoom level, we put the new pixels in a different gradient?
 
 Today:
 - [ ] Windows machine with static Qt
@@ -45,7 +50,16 @@ Documentation and tidy:
 - [ ] More unit tests, for example, orbits
   - Mandelbrot - list the classes and document them
 
+# Performance ideas
 
+- [ ] Read up on state of the art again
+- [ ] Look at where the performance is currently going
+- [ ] Dealing with very large number of iterations
+- [ ] Dealing with very deep zooms. E.g. scaledSmallNumber  
+- [ ] Would adding another Taylor series term help?
+- [ ] Can we partially evaluate the Taylor series??
+- [ ] Does choice of reference orbit matter?
+- [ ] Can we combine 2 reference orbits?
 
 # Log term tasks
 
