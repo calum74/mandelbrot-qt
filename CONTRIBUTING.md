@@ -32,13 +32,9 @@ sudo make install
 
 On Windows/Mac:
 
-Install Qt from https://www.qt.io/download-qt-installer-oss. If you install QtCreator and build the project
+Install Qt from https://www.qt.io/download-qt-installer-oss. If you install QtCreator then it should be able to just open your project (`CMakeLists.txt`) and build it.
 
-You can also use QtCreator, Visual Studio, Visual Studio Code to open the CMake project.
-
-`C:\Qt\6.8.1\msvc2022_64\bin\qt-cmake`
-
-
+If Cmake fails, try running the specific generator for your platform, e.g. `C:\Qt\6.8.1\msvc2022_64\bin\qt-cmake`.
 
 ## Creating an installer
 
@@ -52,7 +48,7 @@ cmake --build . --parallel
 cmake --install .
 ```
 
-Then, reconfigure cmake to use the static Qt build
+Then, reconfigure cmake to use the static Qt build,
 
 ```
 mkdir mandelbrot-qt-static
