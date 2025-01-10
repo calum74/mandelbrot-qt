@@ -1,7 +1,29 @@
 # Task list
 
-For cubic, still a lot of inaccuracies
+Plan for today:
+1. Log the maximum precision in the reference orbit
+2. Devise a higher precision `double`. For example
+
+- [ ] Gradient calculation looks to be a bit wrong and gives a blank screen. "Enhance" is broken
+
+```c++
+template<typename Real, typename Exp>
+class higher_precision_real
+{
+public:
+
+private:
+  Real value;
+  Exp exponent;
+};
+```
+
 Better heuristics on imprecision. Still could get glitches on cubic which only appear on 4 terms.
+Glitch in Fractal29
+Performance problems at very deep zooms - are we running out of precision in the Taylor series terms
+Need a higher precision number
+- [ ] Detect maximal valid entry
+
 
 Short term goals:
 - [ ] MSIX installer
