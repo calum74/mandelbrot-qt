@@ -1,5 +1,24 @@
 # Task list
 
+- [ ] Use previous position as a starting-point for the skip-iterations
+- [ ] Zoom beyond 10e-300
+- [ ] Be less strict about rejecting invalid iteration counts
+- [ ] Set the center orbit to be on the Mandelbrot for the best precision
+  E.g. off-center, average 85760 skipped iterations
+  Better center, average 
+
+- [x] Imprecision at 10e-150 in Fractal 42.
+
+
+
+- [ ] Load file to change the menu
+
+
+- [ ] Only use the exponented real for the Taylor series coefficients, but the regular iteration is with doubles.
+- [ ] New time has doubled, so look at that.
+  Why are different number of iterations skipped??
+- [ ] Write-up of Taylor series
+
 Plan for today:
 1. Log the maximum precision in the reference orbit
 2. Devise a higher precision `double`. For example
