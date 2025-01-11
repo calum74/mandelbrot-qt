@@ -35,7 +35,7 @@ ViewerWidget::~ViewerWidget() { renderer.reset(); }
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
 
 void ViewerWidget::calculate() {
-  startCalculating(renderer->width(), renderer->iterations());
+  startCalculating(renderer->log_width(), renderer->iterations());
 
   assert(image.width() > 0);
 

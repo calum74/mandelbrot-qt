@@ -2,6 +2,7 @@
 #include "ColourMap.hpp"
 #include "Viewport.hpp"
 #include "fractal.hpp"
+#include "high_exponent_real.hpp"
 #include "mandelbrot.hpp"
 #include "percentile.hpp"
 #include "registry.hpp"
@@ -232,7 +233,7 @@ public:
         auto t1 = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> d = t1 - t0;
 
-        view.finished(width(), view_min, view_max,
+        view.finished(log_width(), view_min, view_max,
                       underlying_fractal->get_average_iterations(),
                       underlying_fractal->get_average_skipped_iterations(),
                       d.count());
@@ -339,7 +340,7 @@ public:
     vp.region_updated(0, 0, vp.width, vp.height);
   }
 
-  double width() const override { return underlying_fractal->width(); }
+  double log_width() const override { return underlying_fractal->log_width(); }
 
   bool automaticallyAdjustDepth = true;
 
@@ -449,7 +450,9 @@ public:
     coords = coords.scroll(vp.width, vp.height, dx, dy);
   }
 
-  double width() const override { return convert<double>(coords.r); }
+  double log_width() const override {
+    return fractals::log(convert<high_exponent_real<>>(coords.r));
+  }
 
   void set_aspect_ratio(int, int) override {}
 

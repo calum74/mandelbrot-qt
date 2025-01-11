@@ -2,7 +2,9 @@
 #include "gotodialog.h"
 #include "ui_mainwindow.h"
 #include <QKeyEvent>
+#include <cmath>
 #include <iomanip>
+#include <numbers>
 #include <sstream>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -70,10 +72,23 @@ void MainWindow::changeFractal(ChangeFractalAction *src,
   ui->centralwidget->changeFractal(fractal);
 }
 
+void log_radius(std::ostream &os, double log_base_e) {
+  // Renders a number ln(x) in engineering form
+  auto log_base_10 = log_base_e * std::numbers::log10e;
+
+  double int_part, frac_part = std::pow(10, std::modf(log_base_10, &int_part));
+  while (frac_part < 1) {
+    frac_part *= 10;
+    int_part--;
+  }
+  os << std::setprecision(2) << frac_part << "e" << (int)int_part;
+}
+
 void MainWindow::startCalculating(double d, int iterations) {
   std::stringstream ss;
-  ss << "Calculating radius " << std::setprecision(2) << d << " to "
-     << iterations << " iterations";
+  ss << "Calculating radius ";
+  log_radius(ss, d);
+  ss << " to " << iterations << " iterations";
 
   ui->statusbar->showMessage(ss.str().c_str());
 }
@@ -81,8 +96,10 @@ void MainWindow::startCalculating(double d, int iterations) {
 void MainWindow::completed(double d, int min_depth, int max_depth, double avg,
                            double skipped, double time) {
   std::stringstream ss;
-  ss << "Radius " << std::setprecision(2) << d << " completed in " << time
-     << " seconds, depth " << min_depth << "-" << max_depth;
+  ss << "Radius ";
+  log_radius(ss, d);
+  ss << " completed in " << time << " seconds, depth " << min_depth << "-"
+     << max_depth;
 
   // Log the number of iterations skipped if you want
   // (also, could display this somehow)

@@ -1,8 +1,22 @@
 # Task list
 
+Next steps:
+- There's a blatant crash/unit test failure
+- [x] Zoom level not shown. (not as a double)
+- There's now a rendering glitch in the form of a cross beyond e-322
+- [ ] Sudden jumps in the radius likely to be a conversion error (HP -> high_exponent)
+- Scrolling doesn't work any more
+
+
+Reuse the reference orbit from the previous calculation as there's no need to recalculate it every time we zoom??
+
+Optimization:
+- [ ] Be less strict about rejecting invalid iteration counts
+- [ ] Look into deeper zooms
+- [ ] Visualize skipped iterations
+
 - [ ] Use previous position as a starting-point for the skip-iterations
 - [ ] Zoom beyond 10e-300
-- [ ] Be less strict about rejecting invalid iteration counts
 - [ ] Set the center orbit to be on the Mandelbrot for the best precision
   E.g. off-center, average 85760 skipped iterations
   Better center, average 

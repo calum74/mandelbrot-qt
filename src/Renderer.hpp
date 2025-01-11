@@ -38,7 +38,7 @@ public:
   virtual void set_aspect_ratio(int new_width, int new_height) = 0;
 
   // Get an approximate width of the fractal for display purposes.
-  virtual double width() const = 0;
+  virtual double log_width() const = 0;
 
   // virtual void reset(Viewport &vp) = 0;
 
