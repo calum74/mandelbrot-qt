@@ -83,6 +83,10 @@ public:
   virtual void save(view_parameters &params) const;
 
   virtual void load(const view_parameters &params, Viewport &vp);
+
+  virtual void center(Viewport &vp);
+
+  virtual void zoom_in(Viewport &vp);
 };
 
 std::unique_ptr<Renderer> make_renderer(Registry &);

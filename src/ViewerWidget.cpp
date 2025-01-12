@@ -271,6 +271,12 @@ void ViewerWidget::save() {
   }
 }
 
-void ViewerWidget::center() {}
+void ViewerWidget::center() {
+  renderer->center(viewport);
+  calculate();
+}
 
-void ViewerWidget::zoomIn() {}
+void ViewerWidget::zoomIn() {
+  renderer->zoom_in(viewport);
+  calculate();
+}

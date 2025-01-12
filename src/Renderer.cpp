@@ -58,6 +58,10 @@ void Renderer::increase_iterations(Viewport &) {}
 
 void Renderer::decrease_iterations(Viewport &) {}
 
+void Renderer::center(Viewport &vp) {}
+
+void Renderer::zoom_in(Viewport &vp) {}
+
 void Renderer::redraw(Viewport &vp) {
   for (int j = 0; j < vp.height; ++j)
     for (int i = 0; i < vp.width; ++i)
@@ -175,7 +179,7 @@ public:
       while (seq.next(x, y, s, c) && stride == s) {
         double depth = output[x + y * vp.width];
         // Todo: handle depth=0 properly (currently ignored)
-        auto d2 = depth * depth * depth;
+        auto d2 = std::pow(depth, 4);
         total_x += x * d2;
         total_y += y * d2;
         total_depth += d2;
@@ -274,6 +278,16 @@ public:
       return true;
     }
     return false;
+  }
+
+  void center(Viewport &vp) override {
+    if (center_x > 0 && center_y > 0)
+      scroll(center_x - vp.width / 2, center_y - vp.height / 2, vp);
+  }
+
+  void zoom_in(Viewport &vp) override {
+    if (center_x > 0 && center_y > 0)
+      zoom(0.5, center_x, center_y, vp);
   }
 
   RGB grey = make_rgbx(100, 100, 100, 127);
