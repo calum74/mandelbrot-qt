@@ -66,6 +66,8 @@
      <string>Go</string>
     </property>
     <addaction name="actionHome"/>
+    <addaction name="actionZoom_in"/>
+    <addaction name="actionCenter"/>
     <addaction name="separator"/>
     <addaction name="actionGoTo"/>
    </widget>
@@ -241,6 +243,22 @@
   <action name="actionSave_2">
    <property name="text">
     <string>Save...</string>
+   </property>
+  </action>
+  <action name="actionZoom_in">
+   <property name="text">
+    <string>Zoom in</string>
+   </property>
+   <property name="shortcut">
+    <string>Z</string>
+   </property>
+  </action>
+  <action name="actionCenter">
+   <property name="text">
+    <string>Center</string>
+   </property>
+   <property name="shortcut">
+    <string>C</string>
    </property>
   </action>
  </widget>

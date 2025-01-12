@@ -161,15 +161,24 @@ public:
     double min_depth = 0, max_depth = 0;
     std::vector<double> depths;
 
+    // Used for finding the center
+    // Basically we'll weight each point
+    // Average x = total_x/total_depth
+    double total_x = 0, total_y = 0, total_depth = 0;
+
     void layer_complete(int stride) override {
       // Transfer and interpolate to the current viewport
-
       fractals::rendering_sequence seq(vp.width, vp.height, 16);
       seq.start_at_stride(stride);
       int x, y, s;
       bool c;
       while (seq.next(x, y, s, c) && stride == s) {
         double depth = output[x + y * vp.width];
+        // Todo: handle depth=0 properly (currently ignored)
+        auto d2 = depth * depth * depth;
+        total_x += x * d2;
+        total_y += y * d2;
+        total_depth += d2;
         vp(x, y) = cm(depth);
         if (depth > 0) {
           depths.push_back(depth);
@@ -201,6 +210,7 @@ public:
   };
 
   int threads = 4;
+  int center_x = 0, center_y = 0;
 
   void calculate_region_in_thread(fractals::Viewport &vp, const ColourMap &cm,
                                   std::atomic<bool> &stop) {
@@ -209,7 +219,11 @@ public:
     seq.calculate(threads, stop);
     view_min = seq.min_depth;
     view_max = seq.max_depth;
+    center_x = seq.total_x / seq.total_depth;
+    center_y = seq.total_y / seq.total_depth;
     depths = std::move(seq.depths);
+    std::cout << "Center X = " << center_x << std::endl;
+    std::cout << "Center Y = " << center_y << std::endl;
   }
 
   double view_min, view_max, view_percentile_max;

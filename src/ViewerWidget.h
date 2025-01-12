@@ -71,6 +71,8 @@ public slots:
   void scalePalette();
   void open();
   void save();
+  void center();
+  void zoomIn();
 
 signals:
   void startCalculating(double width, int maxIterations);

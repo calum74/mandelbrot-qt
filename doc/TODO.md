@@ -1,19 +1,68 @@
 # Task list
 
-Next steps:
-- There's a blatant crash/unit test failure
-- [x] Zoom level not shown. (not as a double)
-- There's now a rendering glitch in the form of a cross beyond e-322
-- [ ] Sudden jumps in the radius likely to be a conversion error (HP -> high_exponent)
-- Scrolling doesn't work any more
+Center-finding
+- C and Z buttons
 
+Smooth zoom. When we stretch the view, try to avoid stretching artefacts.
+Perhaps don't show pixels at all resolutions?
+
+We take the "average x", weighted by depth.
+
+
+
+Implement a bookmarks feature.
+Have a saved library of interesting fractals to look at.
+
+
+Center-finding:
+- Just add the depths on each row and column.
+- Pick the row or column with the highest total depth.
+- Maybe average it by 
+
+- [ ] Implement "biassed reals"
+- [ ] Refactor mandelbrot parameters, for example use real_number.
+Maybe there's a hard-coded way to express the delta range? So we can scale all deltas by M, e.g. bias them all by 500.
+
+
+
+
+```
+struct library_item
+{
+  std::string section, name, description, algorithm, x, y, r;
+  int colour_scheme;
+  double colour_gradient;
+};
+```
+Use gradient to point to the center.
+`C` button shifts image to the center if possible.
+`Z` button zooms and centers.
+- Just look at the very deepest parts
+- Or look at the gradient
+
+Auto-enhance image if it's too dim - the range is unsuitable
+
+
+Next steps:
+- Deep zooms e-550 have glitches near mandelbrots. e.g. fractal60, fractal66.
+  - This could be another precision glitch. Is this from the Taylor series? (And how to fix???) When calculating epsilon, do I need to combine high_precision_real and high_exponent_real in some way?
+
+- Need a better abstraction for "size" and "precision" of a number, and just create traits
+
+- Think about whether we can use an int_64 as the main part of the high_exponent_real
+
+- Use concepts for
+  `CReal`
+  `CComplex`
+
+- Optimize the terms calculation a bit. Can get a closed form for the fourth term?
 
 Reuse the reference orbit from the previous calculation as there's no need to recalculate it every time we zoom??
 
 Optimization:
 - [ ] Be less strict about rejecting invalid iteration counts
 - [ ] Look into deeper zooms
-- [ ] Visualize skipped iterations
+- [ ] Visualize skipped iterations. Could be a clue into where to place the reference orbit
 
 - [ ] Use previous position as a starting-point for the skip-iterations
 - [ ] Zoom beyond 10e-300

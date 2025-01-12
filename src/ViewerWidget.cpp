@@ -270,3 +270,7 @@ void ViewerWidget::save() {
     saveToFile(str);
   }
 }
+
+void ViewerWidget::center() {}
+
+void ViewerWidget::zoomIn() {}
