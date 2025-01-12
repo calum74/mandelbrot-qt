@@ -1,8 +1,13 @@
 # Task list
 
+## Biassed reals
+
+
+
+
+
 Center-finding
-- C and Z buttons
-- Center finding isn't very robust.
+- Zoom *2 should invalidate more pixels?
 
 
 
@@ -13,7 +18,7 @@ We take the "average x", weighted by depth.
 
 
 
-Implement a bookmarks feature.
+# Implement a bookmarks feature.
 Have a saved library of interesting fractals to look at.
 
 
@@ -22,7 +27,6 @@ Center-finding:
 - Pick the row or column with the highest total depth.
 - Maybe average it by 
 
-- [ ] Implement "biassed reals"
 - [ ] Refactor mandelbrot parameters, for example use real_number.
 Maybe there's a hard-coded way to express the delta range? So we can scale all deltas by M, e.g. bias them all by 500.
 

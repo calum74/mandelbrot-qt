@@ -280,3 +280,8 @@ void ViewerWidget::zoomIn() {
   renderer->zoom(0.5, move_x, move_y, viewport);
   calculate();
 }
+
+void ViewerWidget::zoomOut() {
+  renderer->zoom(2.0, move_x, move_y, viewport);
+  calculate();
+}

@@ -67,6 +67,7 @@
     </property>
     <addaction name="actionHome"/>
     <addaction name="actionZoom_in"/>
+    <addaction name="actionZoom_out"/>
     <addaction name="actionCenter"/>
     <addaction name="separator"/>
     <addaction name="actionGoTo"/>
@@ -251,6 +252,14 @@
    </property>
    <property name="shortcut">
     <string>Z</string>
+   </property>
+  </action>
+  <action name="actionZoom_out">
+   <property name="text">
+    <string>Zoom out</string>
+   </property>
+   <property name="shortcut">
+    <string>X</string>
    </property>
   </action>
   <action name="actionCenter">
