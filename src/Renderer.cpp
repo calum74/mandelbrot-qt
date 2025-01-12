@@ -149,6 +149,8 @@ public:
     underlying_fractal->start_async_calculation(vp, stop);
   }
 
+  int center_x = 0, center_y = 0;
+
   // We're going hold an array of all non-zero depths
   std::vector<double> depths;
 
@@ -163,12 +165,8 @@ public:
           underlying_fractal(underlying_fractal), cm(cm), vp(vp) {}
 
     double min_depth = 0, max_depth = 0;
+    int center_x = 0, center_y = 0;
     std::vector<double> depths;
-
-    // Used for finding the center
-    // Basically we'll weight each point
-    // Average x = total_x/total_depth
-    double total_x = 0, total_y = 0, total_depth = 0;
 
     void layer_complete(int stride) override {
       // Transfer and interpolate to the current viewport
@@ -178,11 +176,6 @@ public:
       bool c;
       while (seq.next(x, y, s, c) && stride == s) {
         double depth = output[x + y * vp.width];
-        // Todo: handle depth=0 properly (currently ignored)
-        auto d2 = std::pow(depth, 4);
-        total_x += x * d2;
-        total_y += y * d2;
-        total_depth += d2;
         vp(x, y) = cm(depth);
         if (depth > 0) {
           depths.push_back(depth);
@@ -199,6 +192,22 @@ public:
 #endif
       }
 
+      seq.start_at_stride(stride);
+      long long total_x = 0, total_y = 0, total = 0;
+      auto discovered_depth =
+          *util::top_percentile(depths.begin(), depths.end(), 0.97);
+      while (seq.next(x, y, s, c) && stride == s) {
+        // Re-scan the points to find a center
+        double depth = output[x + y * vp.width];
+        if (depth == 0 || depth >= discovered_depth) {
+          total_x += x;
+          total_y += y;
+          total++;
+        }
+      }
+      center_x = total_x / total;
+      center_y = total_y / total;
+
       vp.region_updated(0, 0, vp.width, vp.height);
     }
 
@@ -214,7 +223,6 @@ public:
   };
 
   int threads = 4;
-  int center_x = 0, center_y = 0;
 
   void calculate_region_in_thread(fractals::Viewport &vp, const ColourMap &cm,
                                   std::atomic<bool> &stop) {
@@ -223,11 +231,10 @@ public:
     seq.calculate(threads, stop);
     view_min = seq.min_depth;
     view_max = seq.max_depth;
-    center_x = seq.total_x / seq.total_depth;
-    center_y = seq.total_y / seq.total_depth;
+    center_x = seq.center_x;
+    center_y = seq.center_y;
+
     depths = std::move(seq.depths);
-    std::cout << "Center X = " << center_x << std::endl;
-    std::cout << "Center Y = " << center_y << std::endl;
   }
 
   double view_min, view_max, view_percentile_max;
@@ -259,10 +266,10 @@ public:
 
       if (automaticallyAdjustDepth && depths.begin() < depths.end()) {
         auto discovered_depth =
-            util::top_percentile(depths.begin(), depths.end(), 0.999);
-        view_percentile_max = *discovered_depth;
+            *util::top_percentile(depths.begin(), depths.end(), 0.999);
+        view_percentile_max = discovered_depth;
         view.discovered_depth(std::distance(depths.begin(), depths.end()),
-                              *discovered_depth);
+                              discovered_depth);
       }
     });
   }
@@ -286,8 +293,7 @@ public:
   }
 
   void zoom_in(Viewport &vp) override {
-    if (center_x > 0 && center_y > 0)
-      zoom(0.5, center_x, center_y, vp);
+    zoom(0.5, vp.width / 2, vp.height / 2, vp);
   }
 
   RGB grey = make_rgbx(100, 100, 100, 127);

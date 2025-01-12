@@ -277,6 +277,6 @@ void ViewerWidget::center() {
 }
 
 void ViewerWidget::zoomIn() {
-  renderer->zoom_in(viewport);
+  renderer->zoom(0.5, move_x, move_y, viewport);
   calculate();
 }

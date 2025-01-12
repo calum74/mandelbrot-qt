@@ -2,6 +2,9 @@
 
 Center-finding
 - C and Z buttons
+- Center finding isn't very robust.
+
+
 
 Smooth zoom. When we stretch the view, try to avoid stretching artefacts.
 Perhaps don't show pixels at all resolutions?
