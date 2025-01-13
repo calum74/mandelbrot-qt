@@ -19,6 +19,7 @@
 
 using namespace fractals;
 
+// !! Not used
 RGB blend(RGB c1, RGB c2, int w1, int w2) {
   return make_rgb((red(c1) * w1 + red(c2) * w2) / (w1 + w2),
                   (green(c1) * w1 + green(c2) * w2) / (w1 + w2),
@@ -73,26 +74,39 @@ void Renderer::enable_auto_depth(bool value) {}
 void Renderer::set_threading(int threads) {}
 
 class AsyncRenderer : public Renderer {
-  std::unique_ptr<Renderer> underlying_fractal;
+
+  const PointwiseFractal *current_fractal;
+  view_coords coords;
+  Registry &registry;
   std::future<void> current_calculation;
   std::atomic<bool> stop;
+  std::unique_ptr<PointwiseCalculation> calculation;
 
   std::chrono::time_point<std::chrono::high_resolution_clock> t0;
 
 public:
-  AsyncRenderer(std::unique_ptr<Renderer> underlying_fractal)
-      : underlying_fractal{std::move(underlying_fractal)} {}
+  AsyncRenderer(const PointwiseFractal &fractal, Registry &registry)
+      : current_fractal(&fractal), registry(registry) {
+    coords = initial_coords();
+  }
 
   ~AsyncRenderer() { stop_current_calculation(); }
 
   void load(const view_parameters &params, Viewport &vp) override {
     stop_current_calculation();
-    underlying_fractal->load(params, vp);
+
+    coords = params.coords;
+    auto new_fractal = registry.lookup(params.fractal_name);
+
+    if (new_fractal)
+      current_fractal = new_fractal;
+
     redraw(vp);
   }
 
   void save(view_parameters &params) const override {
-    underlying_fractal->save(params);
+    params.coords = coords;
+    params.fractal_name = current_fractal->name();
   }
 
   void increase_iterations(Viewport &vp) override {
@@ -105,7 +119,7 @@ public:
           c = with_extra(vp(i, j), 127);
         }
       }
-    underlying_fractal->increase_iterations(vp);
+    coords.max_iterations *= 2;
   }
 
   void decrease_iterations(Viewport &vp) override {
@@ -114,28 +128,29 @@ public:
       for (int i = 0; i < vp.width; ++i) {
         vp(i, j) = with_extra(vp(i, j), 127);
       }
-    underlying_fractal->decrease_iterations(vp);
+    coords.max_iterations /= 2;
   }
 
   double get_average_iterations() const override {
-    return underlying_fractal->get_average_iterations();
+    return calculation->average_iterations();
   }
 
   double get_average_skipped_iterations() const override {
-    return underlying_fractal->get_average_skipped_iterations();
+    return calculation->average_skipped();
+  }
+
+  void discovered_depth(int points, double discovered_depth) override {
+    if (points > 1000)                              // Fudge factor
+      coords.max_iterations = discovered_depth * 2; // Fudge factor
   }
 
   void set_fractal(const fractals::PointwiseFractal &f) override {
     stop_current_calculation();
-    underlying_fractal->set_fractal(f);
+    current_fractal = &f;
   }
 
-  void discovered_depth(int points, double discovered_depth) override {
-    underlying_fractal->discovered_depth(points, discovered_depth);
-  }
-
-  double calculate_point(int w, int h, int x, int y) override {
-    return underlying_fractal->calculate_point(w, h, x, y);
+  view_coords initial_coords() const override {
+    return current_fractal->initial_coords();
   }
 
   void stop_current_calculation() {
@@ -145,24 +160,20 @@ public:
     stop = false;
   }
 
-  void start_async_calculation(Viewport &vp, std::atomic<bool> &stop) override {
-    underlying_fractal->start_async_calculation(vp, stop);
-  }
-
   int center_x = 0, center_y = 0;
 
-  // We're going hold an array of all non-zero depths
+  // An array of all non-zero depths (?? Needed)
   std::vector<double> depths;
 
   class my_rendering_sequence
       : public fractals::buffered_rendering_sequence<double> {
 
   public:
-    my_rendering_sequence(Renderer &underlying_fractal, const ColourMap &cm,
-                          Viewport &vp)
+    my_rendering_sequence(const PointwiseCalculation &calculation,
+                          const ColourMap &cm, Viewport &vp)
         : fractals::buffered_rendering_sequence<double>(vp.width, vp.height,
                                                         16),
-          underlying_fractal(underlying_fractal), cm(cm), vp(vp) {}
+          calculation(calculation), cm(cm), vp(vp) {}
 
     double min_depth = 0, max_depth = 0;
     int center_x = 0, center_y = 0;
@@ -215,11 +226,11 @@ public:
 
     double get_point(int x, int y) override {
       // TODO: Avoid recalculating known points
-      return underlying_fractal.calculate_point(vp.width, vp.height, x, y);
+      return calculation.calculate(x, y);
     }
 
   private:
-    Renderer &underlying_fractal;
+    const PointwiseCalculation &calculation;
     const ColourMap &cm;
     Viewport &vp;
   };
@@ -229,7 +240,7 @@ public:
   void calculate_region_in_thread(fractals::Viewport &vp, const ColourMap &cm,
                                   std::atomic<bool> &stop) {
 
-    my_rendering_sequence seq(*underlying_fractal, cm, vp);
+    my_rendering_sequence seq(*calculation, cm, vp);
     seq.calculate(threads, stop);
     view_min = seq.min_depth;
     view_max = seq.max_depth;
@@ -248,7 +259,8 @@ public:
     stop = false;
 
     current_calculation = std::async([&]() {
-      underlying_fractal->start_async_calculation(view, stop);
+      calculation =
+          current_fractal->create(coords, view.width, view.height, stop);
 
       t0 = std::chrono::high_resolution_clock::now();
       view_min = 0;
@@ -261,9 +273,8 @@ public:
         std::chrono::duration<double> d = t1 - t0;
 
         view.finished(log_width(), view_min, view_max,
-                      underlying_fractal->get_average_iterations(),
-                      underlying_fractal->get_average_skipped_iterations(),
-                      d.count());
+                      calculation->average_iterations(),
+                      calculation->average_skipped(), d.count());
       }
 
       if (automaticallyAdjustDepth && depths.begin() < depths.end()) {
@@ -279,15 +290,27 @@ public:
   bool zoom(double r, int cx, int cy, Viewport &vp) override {
     stop_current_calculation();
 
-    if (underlying_fractal->zoom(r, cx, cy, vp)) {
+    auto new_coords = coords.zoom(r, vp.width, vp.height, cx, cy);
 
-      remap_viewport(vp, cx * (1 - r), cy * (1 - r), r);
-
-      vp.region_updated(0, 0, vp.width, vp.height);
-      return true;
+    if (!current_fractal->valid_for(new_coords)) {
+      return false;
     }
-    return false;
+
+    coords = new_coords;
+
+    remap_viewport(vp, cx * (1 - r), cy * (1 - r), r);
+
+    vp.region_updated(0, 0, vp.width, vp.height);
+    return true;
   }
+
+  view_coords get_coords() const override { return coords; }
+
+  double log_width() const override {
+    return fractals::log(convert<high_exponent_real<>>(coords.r));
+  }
+
+  int iterations() const override { return coords.max_iterations; }
 
   void center(Viewport &vp) override {
     if (center_x > 0 && center_y > 0)
@@ -347,36 +370,24 @@ public:
 
   void set_aspect_ratio(int new_width, int new_height) override {
     stop_current_calculation();
-    underlying_fractal->set_aspect_ratio(new_width, new_height);
   }
-
-  view_coords get_coords() const override {
-    return underlying_fractal->get_coords();
-  }
-
-  view_coords initial_coords() const override {
-    return underlying_fractal->initial_coords();
-  }
-
-  int iterations() const override { return underlying_fractal->iterations(); }
 
   bool set_coords(const view_coords &c, Viewport &vp) override {
     redraw(vp);
-    return underlying_fractal->set_coords(c, vp);
+    coords = c; // TODO: Update aspect ratio
+    return true;
   }
 
   void scroll(int dx, int dy, Viewport &vp) override {
     stop_current_calculation();
 
     // TODO: Only recalculate necessary regions
-    underlying_fractal->scroll(dx, dy, vp);
+    coords = coords.scroll(vp.width, vp.height, dx, dy);
 
     remap_viewport(vp, dx, dy, 1.0);
 
     vp.region_updated(0, 0, vp.width, vp.height);
   }
-
-  double log_width() const override { return underlying_fractal->log_width(); }
 
   bool automaticallyAdjustDepth = true;
 
@@ -412,99 +423,7 @@ void Renderer::discovered_depth(int, double) {}
 
 class CalculatedFractalRenderer : public fractals::Renderer {
 public:
-  view_coords coords;
-  Registry &registry;
-
-  CalculatedFractalRenderer(Registry &reg, const PointwiseFractal &f)
-      : registry(reg), factory(&f) {
-    coords = initial_coords();
-  }
-
-  void load(const view_parameters &params, Viewport &vp) override {
-    coords = params.coords;
-    auto new_fractal = registry.lookup(params.fractal_name);
-
-    if (new_fractal)
-      factory = new_fractal;
-  }
-
-  void save(view_parameters &params) const override {
-    params.coords = coords;
-    params.fractal_name = factory->name();
-  }
-
-  view_coords get_coords() const override { return coords; }
-
-  bool set_coords(const view_coords &w, Viewport &vp) override {
-    coords = w; // TODO: Update aspect ratio
-    return true;
-  }
-
-  void start_async_calculation(Viewport &vp, std::atomic<bool> &stop) override {
-    calculation = factory->create(coords, vp.width, vp.height, stop);
-  }
-
-  double get_average_iterations() const override {
-    return calculation->average_iterations();
-  }
-
-  double get_average_skipped_iterations() const override {
-    return calculation->average_skipped();
-  }
-
-  double calculate_point(int w, int h, int x, int y) override {
-    return calculation->calculate(x, y);
-  }
-
-  void discovered_depth(int points, double discovered_depth) override {
-    if (points > 1000)                              // Fudge factor
-      coords.max_iterations = discovered_depth * 2; // Fudge factor
-  }
-
-  void increase_iterations(Viewport &vp) override {
-    coords.max_iterations *= 2;
-  }
-
-  // Also marks the relevant pixels to redraw in the viewport
-  void decrease_iterations(Viewport &vp) override {
-    coords.max_iterations /= 2;
-  }
-
-  bool zoom(double r0, int cx, int cy, Viewport &vp) override {
-
-    auto new_coords = coords.zoom(r0, vp.width, vp.height, cx, cy);
-
-    if (!factory->valid_for(new_coords)) {
-      return false;
-    }
-
-    coords = new_coords;
-    return true;
-  }
-
-  void scroll(int dx, int dy, Viewport &vp) override {
-    coords = coords.scroll(vp.width, vp.height, dx, dy);
-  }
-
-  double log_width() const override {
-    return fractals::log(convert<high_exponent_real<>>(coords.r));
-  }
-
-  void set_aspect_ratio(int, int) override {}
-
-  int iterations() const override { return coords.max_iterations; }
-
-  view_coords initial_coords() const override {
-    return factory->initial_coords();
-  }
-
-  void set_fractal(const fractals::PointwiseFractal &f) override {
-    factory = &f;
-  }
-
 private:
-  const PointwiseFractal *factory;
-  std::unique_ptr<PointwiseCalculation> calculation;
 };
 
 void fractals::Renderer::set_fractal(const fractals::PointwiseFractal &) {}
@@ -521,6 +440,5 @@ void Renderer::load(const view_parameters &params, Viewport &vp) {}
 void Renderer::save(view_parameters &params) const {}
 
 std::unique_ptr<fractals::Renderer> fractals::make_renderer(Registry &reg) {
-  return std::make_unique<AsyncRenderer>(
-      std::make_unique<CalculatedFractalRenderer>(reg, mandelbrot_fractal));
+  return std::make_unique<AsyncRenderer>(mandelbrot_fractal, reg);
 }

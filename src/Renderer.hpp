@@ -15,15 +15,6 @@ class Renderer {
 public:
   virtual ~Renderer() = default;
 
-  // Perform any expensive one-off initialization like
-  // computing an orbit.
-  virtual void start_async_calculation(Viewport &vp,
-                                       std::atomic<bool> &stop) = 0;
-
-  // Calculate a single point
-  // Returns the depth, potentially smoothed
-  virtual double calculate_point(int w, int h, int x, int y) = 0;
-
   // Also update the viewport and interpolates it so it can be rendered
   // straight away.
   // returns false if the action is invalid for the current fractal, for example
@@ -37,10 +28,8 @@ public:
   // the fractal remains the same.
   virtual void set_aspect_ratio(int new_width, int new_height) = 0;
 
-  // Get an approximate width of the fractal for display purposes.
+  // Get an approximate (log of) width of the fractal for display purposes.
   virtual double log_width() const = 0;
-
-  // virtual void reset(Viewport &vp) = 0;
 
   // Returns immediately, and vp will get called back at some time in the
   // future.

@@ -1,6 +1,6 @@
 # Task list
 
-- [ ] Don't aggressively normalize `high_exponent_real`
+- [x] Don't aggressively normalize `high_exponent_real`
 - [ ] Update all the other fractals to use new data types
 - [ ] Too many artefacts when scaling and zooming.
   Instead, the "view" contains a pixel size.
@@ -8,7 +8,7 @@
   Still figure out
 - [ ] Rendering sequence to literally map integers to coords and sizes.
   Make it an O(1) operation.
-  
+- [ ] AsyncRenderer to contain only a Pointwise fractal and nothing else.
 - [ ] Reuse orbit and calculate new reference orbit async 
 
 ## Performance improvements
