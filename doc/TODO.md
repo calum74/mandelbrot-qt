@@ -1,13 +1,20 @@
 # Task list
 
+- [ ] Don't aggressively normalize `high_exponent_real`
+- [ ] Update all the other fractals to use new data types
+- [ ] Too many artefacts when scaling and zooming.
+  Instead, the "view" contains a pixel size.
+  When the pixels in the view are larger than the new pixels, replace them.
+  Still figure out
+- [ ] Rendering sequence to literally map integers to coords and sizes.
+  Make it an O(1) operation.
+  
+- [ ] Reuse orbit and calculate new reference orbit async 
+
 ## Performance improvements
 
 - [ ] Speed up relative_orbit when using `high_exponent_number` for deep zooms
 
-- [ ] Speed up Taylor series calculation.
-
-
-  - 
 - [ ] Colour 122 is nice
 
 - [ ] Refactor mandelbrot parameters, for example use real_number.
@@ -17,19 +24,12 @@ Maybe there's a hard-coded way to express the delta range? So we can scale all d
   `CReal`
   `CComplex`
 
-- Optimize the terms calculation a bit. Can get a closed form for the fourth term?
-
 Optimization:
 - [ ] Be less strict about rejecting invalid iteration counts
 - [ ] Look into deeper zooms
 - [ ] Visualize skipped iterations. Could be a clue into where to place the reference orbit
 
 Reuse the reference orbit from the previous calculation as there's no need to recalculate it every time we zoom??
-
-- [ ] Series calcualtion is a bit slow.
-- [ ] Is it really a Taylor series?
-
-- [ ] More efficient Taylor series
 
 ## Implement a bookmarks feature.
 Have a saved library of interesting fractals to look at.

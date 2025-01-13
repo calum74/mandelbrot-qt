@@ -194,19 +194,21 @@ public:
 
       seq.start_at_stride(stride);
       long long total_x = 0, total_y = 0, total = 0;
-      auto discovered_depth =
-          *util::top_percentile(depths.begin(), depths.end(), 0.97);
-      while (seq.next(x, y, s, c) && stride == s) {
-        // Re-scan the points to find a center
-        double depth = output[x + y * vp.width];
-        if (depth == 0 || depth >= discovered_depth) {
-          total_x += x;
-          total_y += y;
-          total++;
+      if (depths.size()) {
+        auto discovered_depth =
+            *util::top_percentile(depths.begin(), depths.end(), 0.97);
+        while (seq.next(x, y, s, c) && stride == s) {
+          // Re-scan the points to find a center
+          double depth = output[x + y * vp.width];
+          if (depth == 0 || depth >= discovered_depth) {
+            total_x += x;
+            total_y += y;
+            total++;
+          }
         }
+        center_x = total_x / total;
+        center_y = total_y / total;
       }
-      center_x = total_x / total;
-      center_y = total_y / total;
 
       vp.region_updated(0, 0, vp.width, vp.height);
     }
