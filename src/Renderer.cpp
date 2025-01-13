@@ -45,9 +45,9 @@ void interpolate_region(Viewport &vp, int x0, int y0, int h) {
 #endif
 
   // Solid colour
-  for (int j = 0; j <= h; ++j)
-    for (int i = 0; i <= h; ++i) {
-      int error = (i == 0 || i == h) && (j == 0 || j == h) ? 0 : h;
+  for (int j = 0; j < h; ++j)
+    for (int i = 0; i < h; ++i) {
+      int error = (i == 0 || i == h) && (j == 0 || j == h) ? 0 : i + j;
       /* if ((i < h || j < h) && (i > 0 || j > 0)) */
       auto &p = vp(x0 + i, y0 + j);
       if (error < extra(p))
@@ -187,20 +187,23 @@ public:
       bool c;
       while (seq.next(x, y, s, c) && stride == s) {
         double depth = output[x + y * vp.width];
-        vp(x, y) = cm(depth);
-        if (depth > 0) {
-          depths.push_back(depth);
-          if (depth > max_depth)
-            max_depth = depth;
-          if (depth < min_depth || min_depth == 0)
-            min_depth = depth;
-        }
+
+        if (!std::isnan(depth)) {
+          vp(x, y) = cm(depth);
+          if (depth > 0) {
+            depths.push_back(depth);
+            if (depth > max_depth)
+              max_depth = depth;
+            if (depth < min_depth || min_depth == 0)
+              min_depth = depth;
+          }
 #if 1 // Useful to be able to disable this for debugging
         if (stride > 1 && x > 0 && y > 0) {
           // Interpolate the region
           interpolate_region(vp, x - stride, y - stride, stride);
         }
 #endif
+        }
       }
 
       seq.start_at_stride(stride);
@@ -226,6 +229,8 @@ public:
 
     double get_point(int x, int y) override {
       // TODO: Avoid recalculating known points
+      if (extra(vp(x, y)) == 0)
+        return 0.0 / 0.0;
       return calculation.calculate(x, y);
     }
 

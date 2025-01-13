@@ -1,5 +1,7 @@
 # Task list
 
+- [ ] Surely we should colour "around" a point rather than just below/right
+
 - [x] Don't aggressively normalize `high_exponent_real`
 - [ ] Update all the other fractals to use new data types
 - [ ] Too many artefacts when scaling and zooming.
@@ -8,10 +10,26 @@
   Still figure out
 - [ ] Rendering sequence to literally map integers to coords and sizes.
   Make it an O(1) operation.
-- [ ] AsyncRenderer to contain only a Pointwise fractal and nothing else.
+
 - [ ] Reuse orbit and calculate new reference orbit async 
 
+Rendering: We keep a view stored (as doubles), together with its coordinates and pixel size.
+When we zoom, we first display the outer window to the required scaling.
+As soon as we get data on the inner zoom, we choose whether to replace the current view with the data.
+
+Limit scrolling to wait for rendering to catch up?
+
+- [ ] Multiple top-level windows
+- [ ] Look at time since we rendered last plane
+
 ## Performance improvements
+
+- [ ] Understand reference orbits better
+  - What is the "orbit utilization" - how many i
+  - What percentage of iterations
+
+- [ ] Multiple reference orbits - pick the one that gives the best depth.
+- When the orbit underperforms, consider adding a new orbital calculation
 
 - [ ] Speed up relative_orbit when using `high_exponent_number` for deep zooms
 

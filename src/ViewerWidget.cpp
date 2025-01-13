@@ -55,7 +55,6 @@ void ViewerWidget::draw() {
 }
 
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
-
   // Should stop the current calculation 
   renderer->set_aspect_ratio(event->size().width(), event->size().height());
 
@@ -65,6 +64,7 @@ void ViewerWidget::resizeEvent(QResizeEvent *event) {
   viewport.data = (fractals::RGB *)image.bits();
   viewport.width = image.width();
   viewport.height = image.height();
+  viewport.invalidateAllPixels();
   calculate();
 }
 

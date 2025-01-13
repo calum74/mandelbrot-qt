@@ -67,3 +67,8 @@ Algorithms typically segment the image into "tiles" which can be rendered indepe
 
 Ordinal mapping. A potentially new idea. All points get sorted by their escape distance.
 
+# Things that I have learned
+
+1. I had no idea
+2. Zoom in on the current cursor position
+3. Writing directly to image buffers was a great idea.
