@@ -1,4 +1,17 @@
 # Task list
+    
+- Investigate magic
+Either the epsilon is wrong, or the terms are wrong. Or an offset is wrong.
+
+
+
+
+
+- Investigate clusters
+
+- [ ] Split up orbit.hpp
+
+- [ ] Make it nicer to adapt Mandelbrot to Mandeldrop
 
 - [ ] Surely we should colour "around" a point rather than just below/right
 
@@ -24,9 +37,52 @@ Limit scrolling to wait for rendering to catch up?
 
 ## Performance improvements
 
+The reason for poorer performance is because the reference orbit is too far away. This becomes more critical in complicated and deep regions, where the series can lose precision quite quickly, resulting in the number of saved iterations diminishing rapidly.
+
+The solution is to create a new reference orbit close to the point being calculated. Rather than compute the high precision orbit itself, we can compute a relative orbit using perturbation theory, relative to (say) the orbit in the center of the image.
+
+Sometimes the new orbit needs to be computed using high precision numbers because the original reference orbit runs out of precision (or, can it be restarted using the trick???).
+
+We can also compute Taylor series terms for the new reference orbit, so that the new reference orbit can be used to compute nearby points.
+
+As soon as the performance of the current orbit starts to deteriorate, given by the fact that it lost precision relative to the number of iterations, we can use this fact to start another reference orbit.
+
+The calculation is that it's cheaper to create a new reference orbit than to carry on iterating on a sub-optimal orbit that's too far away.s
+
+## Orbital management
+
+The problem is in finding the best orbit, and managing this in a multi-threaded setting.
+
+
+
+- [ ] Go absurdly deep once finished. E.g. 1e-10000.z
+
+
+The solution is to create a `taylor_series_orbit` from a relative orbit.
+
+
+Idea: We want to create multiple reference orbits.
+1. Create one high precision orbit
+2. Create multiple reference orbits from the high precision orbit
+3. Generate series for each of these relative orbits.
+4. Detect when the current orbit is underperforming, and switch to a new orbit
+
+
+
+
 - [ ] Understand reference orbits better
-  - What is the "orbit utilization" - how many i
+  - What is the "orbit utilization"
   - What percentage of iterations
+  - When is it cheaper to compute a new reference orbit?
+  - Can we create a reference of a reference?
+  - Can other reference orbit "split" from the old one?
+
+- [ ] Can we "skip forward" n iterations? Is there a closed form for that??? Can we approximate the "skip forward" action using its own Taylor series??
+  - What about skipping epsilon forward?
+
+- [ ] Ability to change algorithms and not reset the coordinates (Needed to check validity of certain assumptions).
+
+Basically it's the depth of range that causes big problems. Computing up to the minimum is usually fine.
 
 - [ ] Multiple reference orbits - pick the one that gives the best depth.
 - When the orbit underperforms, consider adding a new orbital calculation
