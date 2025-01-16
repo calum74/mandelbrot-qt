@@ -149,6 +149,10 @@ public:
     current_fractal = &f;
   }
 
+  const fractals::PointwiseFractal &get_fractal() const override {
+    return *current_fractal;
+  }
+
   view_coords initial_coords() const override {
     return current_fractal->initial_coords();
   }

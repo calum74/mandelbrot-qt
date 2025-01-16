@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Attach to Mandelbrot-Qt",
+            "type": "cppdbg",
+            "request": "attach",
+            "program": "${workspaceFolder}/build.dir/src/mandelbrot-qt.app/Contents/MacOS/mandelbrot-qt",
+            "MIMode": "lldb"
+        },
+        {
             "name": "Tutorial",
             "type": "cppdbg",
             "request": "launch",

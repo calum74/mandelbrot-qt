@@ -55,7 +55,7 @@ void ViewerWidget::draw() {
 }
 
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
-  // Should stop the current calculation 
+  // Should stop the current calculation
   renderer->set_aspect_ratio(event->size().width(), event->size().height());
 
   viewport.invalidateAllPixels();
@@ -129,8 +129,7 @@ void ViewerWidget::decreaseIterations() {
   calculate();
 }
 
-void ViewerWidget::copyCoords()
-{
+void ViewerWidget::copyCoords() {
   auto c = renderer->get_coords();
 
   auto cx = c.x;
@@ -176,8 +175,11 @@ void ViewerWidget::resetCurrentFractal() {
 }
 
 void ViewerWidget::changeFractal(const fractals::PointwiseFractal &fractal) {
+  std::string old_family = renderer->get_fractal().family();
   renderer->set_fractal(fractal);
-  renderer->set_coords(renderer->initial_coords(), viewport);
+
+  if (old_family != fractal.family())
+    renderer->set_coords(renderer->initial_coords(), viewport);
   renderer->redraw(viewport);
   calculate();
 }

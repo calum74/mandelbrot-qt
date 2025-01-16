@@ -1,9 +1,15 @@
 # Task list
-    
+
+Why does the maximum number of iterations still escape so high? It shouldn't 
+
+
 - Investigate magic
 Either the epsilon is wrong, or the terms are wrong. Or an offset is wrong.
 
-
+- [ ] Cache reference orbits, and recompute them in a thread.
+  Pass 1: Recompute it using deltas
+  Pass 2: Recompute it from the base orbit.
+- [ ] Ability to switch views without resetting coordinates 
 
 
 
