@@ -80,7 +80,7 @@ class AsyncRenderer : public Renderer {
   Registry &registry;
   std::future<void> current_calculation;
   std::atomic<bool> stop;
-  std::unique_ptr<PointwiseCalculation> calculation;
+  std::shared_ptr<PointwiseCalculation> calculation;
 
   std::chrono::time_point<std::chrono::high_resolution_clock> t0;
 
