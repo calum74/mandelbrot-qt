@@ -1,38 +1,21 @@
 # Task list
 
-Tomorrow: 
-- Build out the thread function with more orbits!
+Features:
+- [ ] Better center and mandelbrot finder
+- [ ] Auto-enhance detail?
 
+
+- A "depth" histogram - allow us to see features at different depths.
+
+- [ ] Delete the experiment, and instead repurpose the experiment for different view parameters.
+
+- [ ] fractals:: namespace is stupid
 
 - [ ] A few deep glitches, perhaps due to relative orbits?
-
-
-Architecture to:
-1) Kick off a thread function
-2) Store the orbit manager between invocations.
-
-I'm going to park the idea on the orbit-tree. Restarting the Taylor series has no logic basis.
-
-Problem is figuring out when to generate the reference orbits. We want
-
-1. To cache the previous reference orbit and reuse it, even between frames (High exponent double)
-2. To be able to use the old closest orbit whilst we're calculating the new closest orbits
-3. Calculate primary & secondary reference orbits in the background thread.
-4. Automatically generate reference orbits until we are told to stop, up to a certain resolution
-
-
-
-
-
-
-- [ ] Cache reference orbits, and recompute them in a thread.
-  Pass 1: Recompute it using deltas
-  Pass 2: Recompute it from the base orbit.
-- [x] Ability to switch views without resetting coordinates 
 - [ ] Bug: when we load a file we need to update the menus to select the correct item
-- [ ] Render timings should also include the setup timing.
 
-- Investigate clusters
+
+- [ ] Render timings should also include the setup timing.
 
 - [ ] Split up orbit.hpp
 
