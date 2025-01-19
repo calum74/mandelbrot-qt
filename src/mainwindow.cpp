@@ -111,8 +111,8 @@ void MainWindow::completed(double d, int min_depth, int max_depth, double avg,
 
   // Log the number of iterations skipped if you want
   // (also, could display this somehow)
-  std::cout << "Average " << avg << " iterations\n";
-  std::cout << "Skipped " << skipped << " iterations\n";
+  // std::cout << "Average " << avg << " iterations\n";
+  // std::cout << "Skipped " << skipped << " iterations\n";
 
   ui->statusbar->showMessage(ss.str().c_str());
   if (ui->actionAutozoom->isChecked())
