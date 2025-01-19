@@ -245,7 +245,7 @@ public:
     double get_point(int x, int y) override {
       // TODO: Avoid recalculating known points
       if (extra(vp(x, y)) == 0)
-        return 0.0 / 0.0;
+        return std::numeric_limits<double>::quiet_NaN();
       return calculation.calculate(x, y);
     }
 
