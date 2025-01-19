@@ -287,3 +287,13 @@ void ViewerWidget::zoomOut() {
   renderer->zoom(2.0, move_x, move_y, viewport);
   calculate();
 }
+
+void ViewerWidget::autoZoom() {
+  renderer->auto_step(viewport);
+  calculate();
+}
+
+void ViewerWidget::autoZoomContinue() {
+  renderer->auto_step_continue(viewport);
+  calculate();
+}

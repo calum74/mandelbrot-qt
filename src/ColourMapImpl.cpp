@@ -5,13 +5,13 @@
 // Good ones: 31, 83, 97, 106, 112
 // We initialze the random number generator with a seed that produces
 // attractive colours.
-fractals::ColourMapImpl::ColourMapImpl() : seed(112) { randomize(); }
+fractals::ColourMapImpl::ColourMapImpl() : seed(122) { randomize(); }
 
 fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   if (d == 0)
     return make_rgb(0, 0, 0);
 
-  d = std::pow((d + offset) * k, gamma);
+  d = pow(d, gamma) * gradient;
   int i = d;
   auto f = d - i;
   i %= colours.size();
@@ -25,7 +25,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
 }
 
 void fractals::ColourMapImpl::setRange(double min, double max) {
-  k = 10.0 / (max - min);
+  gradient = 10.0 / (max - min);
 }
 
 void fractals::ColourMapImpl::randomize() {
@@ -49,13 +49,13 @@ void fractals::ColourMapImpl::create_colours() {
 
 void fractals::ColourMapImpl::load(const view_parameters &params) {
   seed = params.colour_seed;
-  k = params.colour_gradient;
+  gradient = params.colour_gradient;
   create_colours();
 }
 
 void fractals::ColourMapImpl::save(view_parameters &params) const {
   params.colour_seed = seed;
-  params.colour_gradient = k;
+  params.colour_gradient = gradient;
 }
 
 std::unique_ptr<fractals::ColourMap> fractals::make_colourmap() {

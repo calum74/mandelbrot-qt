@@ -71,6 +71,7 @@
     <addaction name="actionCenter"/>
     <addaction name="separator"/>
     <addaction name="actionGoTo"/>
+    <addaction name="actionAutozoom"/>
    </widget>
    <addaction name="menuExample"/>
    <addaction name="menuOptions"/>
@@ -268,6 +269,17 @@
    </property>
    <property name="shortcut">
     <string>C</string>
+   </property>
+  </action>
+  <action name="actionAutozoom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Autozoom</string>
+   </property>
+   <property name="shortcut">
+    <string>A</string>
    </property>
   </action>
  </widget>

@@ -77,6 +77,10 @@ public:
   virtual void center(Viewport &vp);
 
   virtual void zoom_in(Viewport &vp);
+
+  virtual void auto_step(Viewport &vp) = 0;
+
+  virtual void auto_step_continue(Viewport &vp) = 0;
 };
 
 std::unique_ptr<Renderer> make_renderer(Registry &);

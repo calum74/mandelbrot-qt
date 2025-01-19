@@ -167,7 +167,17 @@ public:
   int center_x = 0, center_y = 0;
 
   // An array of all non-zero depths (?? Needed)
-  std::vector<double> depths;
+
+  struct depth_value {
+    double depth;
+    int x;
+    int y;
+    bool operator<(const depth_value &other) const {
+      return depth < other.depth;
+    }
+  };
+
+  std::vector<depth_value> depths;
 
   class my_rendering_sequence
       : public fractals::buffered_rendering_sequence<double> {
@@ -181,7 +191,7 @@ public:
 
     double min_depth = 0, max_depth = 0;
     int center_x = 0, center_y = 0;
-    std::vector<double> depths;
+    std::vector<depth_value> depths;
 
     void layer_complete(int stride) override {
       // Transfer and interpolate to the current viewport
@@ -195,9 +205,10 @@ public:
         if (!std::isnan(depth)) {
           vp(x, y) = cm(depth);
           if (depth > 0) {
-            depths.push_back(depth);
-            if (depth > max_depth)
+            depths.push_back({depth, x, y});
+            if (depth > max_depth) {
               max_depth = depth;
+            }
             if (depth < min_depth || min_depth == 0)
               min_depth = depth;
           }
@@ -214,7 +225,7 @@ public:
       long long total_x = 0, total_y = 0, total = 0;
       if (depths.size()) {
         auto discovered_depth =
-            *util::top_percentile(depths.begin(), depths.end(), 0.97);
+            util::top_percentile(depths.begin(), depths.end(), 0.97)->depth;
         while (seq.next(x, y, s, c) && stride == s) {
           // Re-scan the points to find a center
           double depth = output[x + y * vp.width];
@@ -245,6 +256,7 @@ public:
   };
 
   int threads = 4;
+  int max_x = 0, max_y = 0;
 
   void calculate_region_in_thread(fractals::Viewport &vp, const ColourMap &cm,
                                   std::atomic<bool> &stop) {
@@ -288,7 +300,7 @@ public:
 
       if (automaticallyAdjustDepth && depths.begin() < depths.end()) {
         auto discovered_depth =
-            *util::top_percentile(depths.begin(), depths.end(), 0.999);
+            util::top_percentile(depths.begin(), depths.end(), 0.999)->depth;
         view_percentile_max = discovered_depth;
         view.discovered_depth(std::distance(depths.begin(), depths.end()),
                               discovered_depth);
@@ -322,12 +334,47 @@ public:
   int iterations() const override { return coords.max_iterations; }
 
   void center(Viewport &vp) override {
-    if (center_x > 0 && center_y > 0)
-      scroll(center_x - vp.width / 2, center_y - vp.height / 2, vp);
+    if (max_x > 0 && max_y > 0)
+      scroll(max_x - vp.width / 2, max_y - vp.height / 2, vp);
   }
 
   void zoom_in(Viewport &vp) override {
     zoom(0.5, vp.width / 2, vp.height / 2, vp);
+  }
+
+  int auto_remaining = 0;
+  int auto_x, auto_y;
+
+  void auto_step_continue(Viewport &vp) override {
+    stop_current_calculation();
+
+    if (auto_remaining > 0) {
+      auto_remaining--;
+      zoom(0.75, auto_x, auto_y, vp);
+      return;
+    } else {
+      auto_step(vp);
+    }
+  }
+
+  void auto_step(Viewport &vp) override {
+    stop_current_calculation();
+
+    /*
+        if (center_x > 0 && center_y > 0) {
+          auto_x =
+          zoom(0.85, center_x, center_y, vp);
+          return;
+        }
+    */
+    if (!depths.empty()) {
+
+      auto p = util::top_percentile(depths.begin(), depths.end(), 0.9999);
+      auto_x = p->x;
+      auto_y = p->y;
+      auto_remaining = 10;
+      auto_step_continue(vp);
+    }
   }
 
   RGB grey = make_rgbx(100, 100, 100, 127);

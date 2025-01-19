@@ -1,8 +1,36 @@
 # Task list
 
+Autozoom:
+- Can sometimes get lost
+- Smooth autozoom would be lovely.
+
+
 Features:
+
 - [ ] Better center and mandelbrot finder
-- [ ] Auto-enhance detail?
+
+- [ ] Auto-enhance colours
+  How to make this a smooth/auto experience?
+
+Create 100 buckets.
+Sort the array and create the percentiles.
+
+New colouring algorithm:
+- Create an array with one RGB value per iteration.
+- To sort it, 
+
+Task: Find some very close minibrots? What is the closest they can come?
+
+
+
+
+Interesting fact: All centers are on closed orbits, with a fixed period.
+Minibrots are when orbits return to the same point over and over.
+Look at where an interior point ends up.
+We can find similar minibrots by simply following them one iteration.
+
+
+
 
 
 - A "depth" histogram - allow us to see features at different depths.

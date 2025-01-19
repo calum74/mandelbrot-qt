@@ -7,7 +7,7 @@ namespace fractals {
 class ColourMapImpl : public ColourMap {
 public:
   std::vector<RGB> colours;
-  double gamma = 0.8, k = 0.1, offset = 0.0;
+  double gradient = 0.08, gamma = 0.8;
   unsigned int seed;
 
   ColourMapImpl();

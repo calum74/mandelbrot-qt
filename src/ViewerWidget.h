@@ -74,6 +74,8 @@ public slots:
   void center();
   void zoomIn();
   void zoomOut();
+  void autoZoom();
+  void autoZoomContinue();
 
 signals:
   void startCalculating(double width, int maxIterations);
