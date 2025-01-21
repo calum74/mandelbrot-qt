@@ -1,5 +1,7 @@
 # Task list
 
+Papercuts:
+- Zoom initially does nothing after a regular zoom
 Smooth zoom to here.
 
 - [ ] Estimate rendering time based on partial pixels. Give render time as seconds per pixel.

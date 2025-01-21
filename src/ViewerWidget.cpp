@@ -125,7 +125,7 @@ void ViewerWidget::MyViewport::discovered_depth(int points,
                                                 double time) {
   if (widget->renderer)
     widget->renderer->discovered_depth(points, discovered_depth);
-  widget->setSpeedEstimate(discovered_depth);
+  widget->setSpeedEstimate(time);
 }
 
 void ViewerWidget::increaseIterations() {
@@ -306,8 +306,7 @@ void ViewerWidget::zoomIn() {
 }
 
 void ViewerWidget::smoothZoomIn() {
-  renderFinished2();  // Copy what we've got so far
-  cancelAnimations(); // ???????
+  cancelAnimations();
   if (!zooming) {
     zooming = true;
     calculationFinished = false;
@@ -321,6 +320,8 @@ void ViewerWidget::smoothZoomIn() {
     zoom_duration = std::chrono::milliseconds(
         int(estimatedSecondsPerPixel * 1000 * viewport.width *
             viewport.height)); // Stupid stupid std::chrono
+
+    // zoom_duration = 50ms; // Override for speed
 
     assert(computedImage.width() > 0);
 

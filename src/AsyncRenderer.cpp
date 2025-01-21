@@ -364,8 +364,8 @@ void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
 }
 
 double fractals::AsyncRenderer::my_rendering_sequence::get_point(int x, int y) {
-  ++calculated_pixels;
   if (extra(vp(x, y)) == 0)
     return std::numeric_limits<double>::quiet_NaN();
+  ++calculated_pixels;
   return calculation.calculate(x, y);
 }
