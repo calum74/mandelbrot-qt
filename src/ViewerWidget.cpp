@@ -329,8 +329,9 @@ void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
       int(estimatedSecondsPerPixel * 1000 * viewport.width * viewport.height *
           1.05)); // Stupid stupid std::chrono
 
-  if (zoom_duration < 10ms || zoom_duration > 20s)
-    std::cout << "Warning: bad zoom duration\n";
+  // Stop the zoom duration getting too out of hand
+  if (zoom_duration < 100ms)
+    zoom_duration = 100ms;
 
   if (fixZoomSpeed)
     zoom_duration = 500ms; // Override for speed

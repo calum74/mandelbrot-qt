@@ -268,8 +268,16 @@ void fractals::map_viewport(const Viewport &src, Viewport &dest, double dx,
         auto orig = src(i2, j2);
         auto p1 = orig;
 #endif
-        dest(i, j) =
-            zoom_eq ? orig : with_extra(orig, zoom_out ? 20 : extra(orig) + 1);
+        if (zoom_eq)
+          dest(i, j) = orig;
+        else if (zoom_out)
+          dest(i, j) = with_extra(orig, 20);
+        else {
+          auto ex = extra(orig) + 1; // Prevent
+          if (ex > 20)
+            ex = 20;
+          dest(i, j) = with_extra(orig, ex);
+        }
       } else
         dest(i, j) = grey;
     }

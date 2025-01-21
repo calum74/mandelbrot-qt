@@ -7,6 +7,8 @@ Jobs for today:
 - [x] Add a 5% buffer??
 - [ ] Zoom glitches - seem to be some rendering issues since we write directly to the image
   If we render at the wrong time, will show nonsense.
+  When we zoom too fast, we don't show anything in the status bar
+  Looks like the error is overflowingz
 2. Speed of zoom?
   - Slow (1000ms)
   - Fast (150ms)
