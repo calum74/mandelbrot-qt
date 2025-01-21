@@ -322,9 +322,10 @@ void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
   previousImage = image;
   using namespace std::literals::chrono_literals;
   zoom_start = std::chrono::system_clock::now();
+  // Add a 5% buffer to reduce stuttering
   zoom_duration = std::chrono::milliseconds(
-      int(estimatedSecondsPerPixel * 1000 * viewport.width *
-          viewport.height)); // Stupid stupid std::chrono
+      int(estimatedSecondsPerPixel * 1000 * viewport.width * viewport.height *
+          1.05)); // Stupid stupid std::chrono
 
   if (zoom_duration < 10ms || zoom_duration > 20s)
     std::cout << "Warning: bad zoom duration\n";

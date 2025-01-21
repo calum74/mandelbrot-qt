@@ -3,21 +3,16 @@
 Jobs for today:
 1. Zoom in to a given point
 - [ ] Doesn't stop (Use logdepth) for this.
+- [ ] Stop animation with a click or something
+- [x] Add a 5% buffer??
+- [ ] Zoom glitches - seem to be some rendering issues since we write directly to the image
+  If we render at the wrong time, will show nonsense.
 2. Speed of zoom?
   - Slow (1000ms)
   - Fast (150ms)
   - Quality
 
-- Set the X&Y
-- Set the radius to 2.0
-- Set the center to w/2, h/2
-- On animation, zoom on the center point each time.
 
-Bugs:
-- [x] Update iteration counts
-- [x] As zoom as you navigate, you kill the zoom and can't restart it
-- [x] Adapt zoom speed to iteration counts.
-- [x] Need to wait for previous zoom before being able to zoom again.
 - [ ] Scrolling messes up last_render time and all sorts of things
 
 Features:
