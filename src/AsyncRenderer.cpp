@@ -208,6 +208,31 @@ void fractals::AsyncRenderer::auto_step(Viewport &vp) {
   }
 }
 
+constexpr fractals::RGB grey = fractals::make_rgbx(100, 100, 100, 127);
+
+void fractals::map_viewport(const Viewport &src, Viewport &dest, double dx,
+                            double dy, double r) {
+
+  // One day, we might be able to remap to a different size
+  assert(src.width == dest.width);
+  assert(src.height == dest.height);
+
+  bool zoom_eq = r == 1.0;
+  bool zoom_out = r > 1.0;
+
+  for (int j = 0; j < dest.height; ++j)
+    for (int i = 0; i < dest.width; ++i) {
+      int i2 = r * i + dx;
+      int j2 = r * j + dy;
+      if (i2 >= 0 && i2 < dest.width && j2 >= 0 && j2 < dest.height) {
+        auto orig = src(i2, j2);
+        dest(i, j) =
+            zoom_eq ? orig : with_extra(orig, zoom_out ? 20 : extra(orig) + 1);
+      } else
+        dest(i, j) = grey;
+    }
+}
+
 void fractals::AsyncRenderer::remap_viewport(Viewport &vp, double dx, double dy,
                                              double r) const {
 
@@ -230,21 +255,12 @@ void fractals::AsyncRenderer::remap_viewport(Viewport &vp, double dx, double dy,
   */
 
   std::vector<RGB> new_contents(vp.width * vp.height, grey);
-  bool zoom_eq = r == 1.0;
-  bool zoom_out = r > 1.0;
 
-  for (int j = 0; j < vp.height; ++j)
-    for (int i = 0; i < vp.width; ++i) {
-      int i2 = r * i + dx;
-      int j2 = r * j + dy;
-      if (i2 >= 0 && i2 < vp.width && j2 >= 0 && j2 < vp.height) {
-        auto orig = vp(i2, j2);
-        new_contents[i + j * vp.width] =
-            zoom_eq ? orig : with_extra(orig, zoom_out ? 20 : extra(orig) + 1);
-      } else
-        new_contents[i + j * vp.width] = grey;
-    }
-
+  Viewport dest;
+  dest.width = vp.width;
+  dest.height = vp.height;
+  dest.data = new_contents.data();
+  map_viewport(vp, dest, dx, dy, r);
   std::copy(new_contents.begin(), new_contents.end(), vp.data);
 }
 

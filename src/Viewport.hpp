@@ -32,4 +32,8 @@ struct Viewport {
   virtual void discovered_depth(int points, double discovered_depth);
 };
 
+// Perform a pixel-by-pixel remapping and interpolation from src to dest.
+void map_viewport(const Viewport &src, Viewport &dest, double dx, double dy,
+                  double r);
+
 } // namespace fractals

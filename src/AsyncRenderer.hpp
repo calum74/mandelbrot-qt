@@ -1,7 +1,5 @@
 #pragma once
 
-#include "RGB.hpp"
-
 #include "Renderer.hpp"
 #include "fractal.hpp"
 #include "rendering_sequence.hpp"
@@ -114,7 +112,6 @@ public:
   void auto_step_continue(Viewport &vp) override;
 
   void auto_step(Viewport &vp) override;
-  RGB grey = make_rgbx(100, 100, 100, 127);
 
   void remap_viewport(Viewport &vp, double dx, double dy, double r) const;
 

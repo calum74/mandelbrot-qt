@@ -3,8 +3,8 @@
 
 namespace fractals {
 using RGB = std::int32_t;
-inline RGB make_rgb(int r, int g, int b) { return (r << 16) | (g << 8) | b; }
-inline RGB make_rgbx(int r, int g, int b, int x) {
+constexpr RGB make_rgb(int r, int g, int b) { return (r << 16) | (g << 8) | b; }
+constexpr RGB make_rgbx(int r, int g, int b, int x) {
   return (x << 24) | (r << 16) | (g << 8) | b;
 }
 inline int red(RGB i) { return 0xff & (i >> 16); }

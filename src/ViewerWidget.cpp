@@ -325,6 +325,8 @@ void ViewerWidget::updateFrame() {
     else {
       // Project the current view into the frame
       auto zoom_ratio = std::pow(0.5, time_ratio);
+      // renderer->zoom_viewport(previousImage, view, animate_x, animate_y);
+      // update();
     }
   } else {
     // Update the current view using the
