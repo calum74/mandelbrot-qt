@@ -58,6 +58,7 @@ void ViewerWidget::draw() {
 }
 
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
+  cancelAnimations();
   // Should stop the current calculation
   renderer->set_aspect_ratio(event->size().width(), event->size().height());
 
@@ -78,6 +79,7 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
   if (r < 0.5)
     r = 0.5;
   if (r != 1.0) {
+    cancelAnimations();
     renderer->zoom(r, event->position().x(), event->position().y(), viewport);
     calculate();
   }
@@ -85,6 +87,7 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
 
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
   if (event->buttons() & Qt::LeftButton) {
+    cancelAnimations();
     renderer->scroll(press_x - event->pos().x(), press_y - event->pos().y(),
                      viewport);
     calculate();
@@ -124,11 +127,13 @@ void ViewerWidget::MyViewport::discovered_depth(int points,
 }
 
 void ViewerWidget::increaseIterations() {
+  cancelAnimations();
   renderer->increase_iterations(viewport);
   calculate();
 }
 
 void ViewerWidget::decreaseIterations() {
+  cancelAnimations();
   renderer->decrease_iterations(viewport);
   calculate();
 }
@@ -161,6 +166,7 @@ void ViewerWidget::getCoords(fractals::view_parameters &params) const {
 }
 
 bool ViewerWidget::setCoords(const fractals::view_parameters &params) {
+  cancelAnimations();
   colourMap->load(params);
   renderer->load(params, viewport);
   calculate();
@@ -168,17 +174,21 @@ bool ViewerWidget::setCoords(const fractals::view_parameters &params) {
 }
 
 void ViewerWidget::recolourPalette() {
+  cancelAnimations();
   colourMap->randomize();
   renderer->redraw(viewport);
   calculate();
 }
 
 void ViewerWidget::resetCurrentFractal() {
+  cancelAnimations();
   renderer->set_coords(renderer->initial_coords(), viewport);
   calculate();
 }
 
 void ViewerWidget::changeFractal(const fractals::PointwiseFractal &fractal) {
+  cancelAnimations();
+
   std::string old_family = renderer->get_fractal_family();
   renderer->set_fractal(fractal);
 
@@ -238,6 +248,7 @@ void ViewerWidget::saveToFile(const QString &image_filename) {
 }
 
 void ViewerWidget::scalePalette() {
+  cancelAnimations();
   double min, p, max;
   renderer->get_depth_range(min, p, max);
   if (p > 0)
@@ -260,6 +271,8 @@ void ViewerWidget::open() {
       std::stringstream ss(text.toStdString());
       fractals::view_parameters params;
       ss >> params;
+      cancelAnimations();
+
       renderer->load(params, viewport);
       colourMap->load(params);
       calculate();
@@ -278,19 +291,22 @@ void ViewerWidget::save() {
 }
 
 void ViewerWidget::center() {
+  cancelAnimations();
+
   renderer->center(viewport);
   calculate();
 }
 
 void ViewerWidget::zoomIn() {
+  cancelAnimations();
   renderer->zoom(0.5, move_x, move_y, viewport);
   calculate();
 }
 
 void ViewerWidget::smoothZoomIn() {
-
+  renderFinished2();  // Copy what we've got so far
+  cancelAnimations(); // ???????
   if (!zooming) {
-
     zooming = true;
     calculationFinished = false;
     computedImage = image;
@@ -300,7 +316,8 @@ void ViewerWidget::smoothZoomIn() {
     previousImage = image;
     using namespace std::literals::chrono_literals;
     zoom_start = std::chrono::system_clock::now();
-    zoom_duration = 100ms;
+    zoom_duration = std::chrono::milliseconds(
+        int(lastRenderTime * 1000)); // Stupid stupid std::chrono
 
     assert(computedImage.width() > 0);
 
@@ -317,6 +334,9 @@ void ViewerWidget::smoothZoomIn() {
 }
 
 void ViewerWidget::updateFrame() {
+  if (!zooming)
+    return;
+
   auto now = std::chrono::system_clock::now();
   double time_ratio =
       std::chrono::duration<double>(now - zoom_start) / zoom_duration;
@@ -352,12 +372,16 @@ void ViewerWidget::BackgroundViewport::finished(double width, int min_depth,
                                                 int max_depth, double avg,
                                                 double skipped,
                                                 double render_time) {
+  if (!widget->zooming)
+    return;
   widget->backgroundRenderFinished();
   widget->lastRenderTime = render_time;
   widget->completed(width, min_depth, max_depth, avg, skipped, render_time);
 }
 
 void ViewerWidget::renderFinished2() {
+  if (!zooming)
+    return;
   std::copy(background_viewport.data,
             background_viewport.data +
                 background_viewport.width * background_viewport.height,
@@ -366,7 +390,6 @@ void ViewerWidget::renderFinished2() {
 }
 
 void ViewerWidget::backgroundRenderFinished() {
-  zooming = false;
   calculationFinished = true;
 
   // !! This test is fragile
@@ -374,6 +397,7 @@ void ViewerWidget::backgroundRenderFinished() {
   auto now = std::chrono::system_clock::now();
   if (std::chrono::duration<double>(now - zoom_start) >= zoom_duration) {
     renderFinished2();
+    zooming = false;
   }
 }
 
@@ -384,6 +408,7 @@ void ViewerWidget::BackgroundViewport::discovered_depth(
 }
 
 void ViewerWidget::zoomOut() {
+  cancelAnimations();
   renderer->zoom(2.0, move_x, move_y, viewport);
   calculate();
 }
@@ -397,3 +422,5 @@ void ViewerWidget::autoZoomContinue() {
   renderer->auto_step_continue(viewport);
   calculate();
 }
+
+void ViewerWidget::cancelAnimations() { zooming = false; }

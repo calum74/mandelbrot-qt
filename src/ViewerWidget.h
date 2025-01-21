@@ -56,6 +56,8 @@ class ViewerWidget : public QWidget {
 
   std::atomic<int> pending_redraw;
 
+  void cancelAnimations();
+
 public:
   explicit ViewerWidget(QWidget *parent = nullptr);
   ~ViewerWidget() override;
