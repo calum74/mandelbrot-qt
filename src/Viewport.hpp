@@ -29,7 +29,8 @@ struct Viewport {
                         double render_time);
 
   // Can be called even if stopped
-  virtual void discovered_depth(int points, double discovered_depth);
+  virtual void discovered_depth(int points, double discovered_depth,
+                                double seconds_per_point);
 };
 
 // Perform a pixel-by-pixel remapping and interpolation from src to dest.

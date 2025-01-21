@@ -98,6 +98,7 @@ void fractals::AsyncRenderer::calculate_region_in_thread(
   view_max = seq.max_depth;
   center_x = seq.center_x;
   center_y = seq.center_y;
+  calculated_pixels = seq.calculated_pixels;
 
   depths = std::move(seq.depths);
 }
@@ -118,9 +119,9 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
     view_max = 0;
     view_percentile_max = 0;
     calculate_region_in_thread(view, cm, stop);
+    auto t1 = std::chrono::high_resolution_clock::now();
     if (!stop) {
       view.region_updated(0, 0, view.width, view.height);
-      auto t1 = std::chrono::high_resolution_clock::now();
       std::chrono::duration<double> d = t1 - t0;
 
       view.finished(log_width(), view_min, view_max,
@@ -132,8 +133,9 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
       auto discovered_depth =
           util::top_percentile(depths.begin(), depths.end(), 0.999)->depth;
       view_percentile_max = discovered_depth;
-      view.discovered_depth(std::distance(depths.begin(), depths.end()),
-                            discovered_depth);
+      view.discovered_depth(
+          std::distance(depths.begin(), depths.end()), discovered_depth,
+          std::chrono::duration<double>(t1 - t0).count() / calculated_pixels);
     }
   });
 }
@@ -362,6 +364,7 @@ void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
 }
 
 double fractals::AsyncRenderer::my_rendering_sequence::get_point(int x, int y) {
+  ++calculated_pixels;
   if (extra(vp(x, y)) == 0)
     return std::numeric_limits<double>::quiet_NaN();
   return calculation.calculate(x, y);

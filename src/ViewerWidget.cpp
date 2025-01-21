@@ -121,9 +121,11 @@ void ViewerWidget::MyViewport::finished(double width, int min_depth,
 }
 
 void ViewerWidget::MyViewport::discovered_depth(int points,
-                                                double discovered_depth) {
+                                                double discovered_depth,
+                                                double time) {
   if (widget->renderer)
     widget->renderer->discovered_depth(points, discovered_depth);
+  widget->setSpeedEstimate(discovered_depth);
 }
 
 void ViewerWidget::increaseIterations() {
@@ -317,7 +319,8 @@ void ViewerWidget::smoothZoomIn() {
     using namespace std::literals::chrono_literals;
     zoom_start = std::chrono::system_clock::now();
     zoom_duration = std::chrono::milliseconds(
-        int(lastRenderTime * 1000)); // Stupid stupid std::chrono
+        int(estimatedSecondsPerPixel * 1000 * viewport.width *
+            viewport.height)); // Stupid stupid std::chrono
 
     assert(computedImage.width() > 0);
 
@@ -402,9 +405,10 @@ void ViewerWidget::backgroundRenderFinished() {
 }
 
 void ViewerWidget::BackgroundViewport::discovered_depth(
-    int points, double discovered_depth) {
+    int points, double discovered_depth, double seconds_per_pixel) {
   if (widget->renderer)
     widget->renderer->discovered_depth(points, discovered_depth);
+  widget->setSpeedEstimate(seconds_per_pixel);
 }
 
 void ViewerWidget::zoomOut() {
@@ -423,6 +427,15 @@ void ViewerWidget::autoZoomContinue() {
   calculate();
 }
 
-void ViewerWidget::cancelAnimations() { zooming = false; }
+void ViewerWidget::cancelAnimations() {
+  if (zooming) {
+    renderFinished2();
+    zooming = false;
+  }
+}
 
 void ViewerWidget::animateToHere() {}
+
+void ViewerWidget::setSpeedEstimate(double secondsPerPixel) {
+  estimatedSecondsPerPixel = secondsPerPixel;
+}

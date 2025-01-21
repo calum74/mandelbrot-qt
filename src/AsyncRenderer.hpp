@@ -62,6 +62,7 @@ public:
   };
 
   std::vector<depth_value> depths;
+  std::uint64_t calculated_pixels;
 
   class my_rendering_sequence
       : public fractals::buffered_rendering_sequence<double> {
@@ -73,6 +74,7 @@ public:
     double min_depth = 0, max_depth = 0;
     int center_x = 0, center_y = 0;
     std::vector<depth_value> depths;
+    std::uint64_t calculated_pixels = 0;
 
     void layer_complete(int stride) override;
 

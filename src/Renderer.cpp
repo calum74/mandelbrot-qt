@@ -72,7 +72,7 @@ double fractals::Renderer::get_average_skipped_iterations() const { return 0; }
 
 void fractals::Viewport::region_updated(int x, int y, int w, int h) {}
 
-void fractals::Viewport::discovered_depth(int, double) {}
+void fractals::Viewport::discovered_depth(int, double, double) {}
 
 void fractals::Viewport::finished(double, int, int, double, double, double) {}
 

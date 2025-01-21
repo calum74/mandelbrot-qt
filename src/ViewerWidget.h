@@ -22,6 +22,7 @@ class ViewerWidget : public QWidget {
   int zoom_x, zoom_y;
 
   double lastRenderTime = 1.0;
+  double estimatedSecondsPerPixel = 0.0001;
   QTimer renderingTimer;
 
   std::unique_ptr<fractals::Registry> registry;
@@ -34,7 +35,8 @@ class ViewerWidget : public QWidget {
     void region_updated(int x, int y, int w, int h) override;
     void finished(double width, int min_depth, int max_depth, double avg,
                   double skipped, double render_time) override;
-    void discovered_depth(int points, double discovered_depth) override;
+    void discovered_depth(int points, double discovered_depth,
+                          double time_per_pixel) override;
 
   } viewport;
 
@@ -43,7 +45,8 @@ class ViewerWidget : public QWidget {
     void region_updated(int x, int y, int w, int h) override;
     void finished(double width, int min_depth, int max_depth, double avg,
                   double skipped, double render_time) override;
-    void discovered_depth(int points, double discovered_depth) override;
+    void discovered_depth(int points, double discovered_depth,
+                          double time) override;
   } background_viewport;
 
   std::unique_ptr<fractals::ColourMap> colourMap;
@@ -57,6 +60,7 @@ class ViewerWidget : public QWidget {
   std::atomic<int> pending_redraw;
 
   void cancelAnimations();
+  void setSpeedEstimate(double secondsPerPixel);
 
 public:
   explicit ViewerWidget(QWidget *parent = nullptr);

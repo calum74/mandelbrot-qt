@@ -3,6 +3,7 @@
 Smooth zoom to here.
 
 - [ ] Estimate rendering time based on partial pixels. Give render time as seconds per pixel.
+- [ ] Autozoom to use smooth rendering
 
 - Cancel animations
 - Rendering bugs: Recolouring image doesn't work so well if we do it mid-zoom
