@@ -51,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent)
           &ViewerWidget::zoomOut);
   connect(ui->actionAutozoom, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::autoZoom);
+  connect(ui->actionAnimate_to_here, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::animateToHere);
 
   QIcon icon(":/new/prefix1/icon.ico");
   QApplication::setWindowIcon(icon);

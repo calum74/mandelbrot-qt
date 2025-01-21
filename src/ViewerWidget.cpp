@@ -424,3 +424,5 @@ void ViewerWidget::autoZoomContinue() {
 }
 
 void ViewerWidget::cancelAnimations() { zooming = false; }
+
+void ViewerWidget::animateToHere() {}

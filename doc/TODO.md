@@ -1,14 +1,17 @@
 # Task list
 
-Smooth zoom to here
+Smooth zoom to here.
+
+- [ ] Estimate rendering time based on partial pixels. Give render time as seconds per pixel.
+
 - Cancel animations
 - Rendering bugs: Recolouring image doesn't work so well if we do it mid-zoom
 
 Bugs:
 - [x] Update iteration counts
-- [ ] As zoom as you navigate, you kill the zoom and can't restart it
+- [x] As zoom as you navigate, you kill the zoom and can't restart it
 - [x] Adapt zoom speed to iteration counts.
-- [ ] Need to wait for previous zoom before being able to zoom again.
+- [x] Need to wait for previous zoom before being able to zoom again.
 - [ ] Scrolling messes up last_render time and all sorts of things
 
 Features:

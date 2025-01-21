@@ -72,6 +72,7 @@
     <addaction name="separator"/>
     <addaction name="actionGoTo"/>
     <addaction name="actionAutozoom"/>
+    <addaction name="actionAnimate_to_here"/>
    </widget>
    <addaction name="menuExample"/>
    <addaction name="menuOptions"/>
@@ -280,6 +281,11 @@
    </property>
    <property name="shortcut">
     <string>A</string>
+   </property>
+  </action>
+  <action name="actionAnimate_to_here">
+   <property name="text">
+    <string>Animate to here</string>
    </property>
   </action>
  </widget>

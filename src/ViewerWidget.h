@@ -102,6 +102,8 @@ public slots:
   void backgroundRenderFinished();
   void updateFrame();
 
+  void animateToHere();
+
 signals:
   void startCalculating(double width, int maxIterations);
   void completed(double width, int min_depth, int max_depth, double, double,
