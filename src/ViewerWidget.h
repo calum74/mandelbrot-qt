@@ -19,6 +19,7 @@ class ViewerWidget : public QWidget {
   bool calculationFinished = false;
   std::chrono::time_point<std::chrono::system_clock> zoom_start;
   std::chrono::duration<double> zoom_duration;
+  int zoom_x, zoom_y;
 
   double lastRenderTime;
   QTimer renderingTimer;

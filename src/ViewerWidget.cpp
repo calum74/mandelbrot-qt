@@ -293,6 +293,8 @@ void ViewerWidget::smoothZoomIn() {
     zooming = true;
     calculationFinished = false;
     computedImage = image;
+    zoom_x = move_x;
+    zoom_y = move_y;
 
     previousImage = image;
     using namespace std::literals::chrono_literals;
@@ -306,7 +308,7 @@ void ViewerWidget::smoothZoomIn() {
     background_viewport.width = computedImage.width();
     background_viewport.height = computedImage.height();
 
-    renderer->zoom(0.5, move_x, move_y, background_viewport);
+    renderer->zoom(0.5, zoom_x, zoom_y, background_viewport);
     startCalculating(renderer->log_width(), renderer->iterations());
     renderer->calculate_async(background_viewport, *colourMap);
     renderingTimer.start(10);
@@ -317,20 +319,26 @@ void ViewerWidget::updateFrame() {
   auto now = std::chrono::system_clock::now();
   double time_ratio =
       std::chrono::duration<double>(now - zoom_start) / zoom_duration;
-  std::cout << "Time to update " << (100 * time_ratio) << "%\n";
+  // std::cout << "Time to update " << (100 * time_ratio) << "%\n";
   if (time_ratio >= 1) {
     // Maybe carry on zooming to the next frame
     if (calculationFinished)
       renderFinished2();
     else {
-      // Project the current view into the frame
-      auto zoom_ratio = std::pow(0.5, time_ratio);
-      // renderer->zoom_viewport(previousImage, view, animate_x, animate_y);
-      // update();
     }
   } else {
     // Update the current view using the
     // The scaling ratio isn't actually linear !!
+    // Project the current view into the frame
+    auto zoom_ratio = std::pow(0.5, time_ratio);
+    fractals::Viewport previousVp;
+    previousVp.data = (fractals::RGB *)previousImage.bits();
+    previousVp.width = previousImage.width();
+    previousVp.height = previousImage.height();
+
+    fractals::map_viewport(previousVp, viewport, zoom_x * (1 - zoom_ratio),
+                           zoom_y * (1 - zoom_ratio), zoom_ratio);
+    update();
 
     renderingTimer.start(10);
   }

@@ -1,5 +1,8 @@
 # Task list
 
+Bugs:
+- [ ] Update iteration counts
+
 Plan for today:
 1. Create an AnimatedRenderer with additional timing capabilities
 2. Smooth zoom to final point
