@@ -1,16 +1,11 @@
 #pragma once
 
-// TODO: Move some of these into AsyncRenderer.cpp when possible
-#include "ColourMap.hpp"
+#include "RGB.hpp"
+
 #include "Renderer.hpp"
-#include "Viewport.hpp"
 #include "fractal.hpp"
-#include "high_exponent_real.hpp"
-#include "percentile.hpp"
-#include "registry.hpp"
 #include "rendering_sequence.hpp"
 #include "view_coords.hpp"
-#include "view_parameters.hpp"
 
 #include <future>
 

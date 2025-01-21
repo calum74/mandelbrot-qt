@@ -1,23 +1,8 @@
 #include "Renderer.hpp"
-#include "ColourMap.hpp"
-#include "Viewport.hpp"
-#include "fractal.hpp"
-#include "high_exponent_real.hpp"
-#include "mandelbrot.hpp"
-#include "percentile.hpp"
-#include "registry.hpp"
-#include "rendering_sequence.hpp"
-#include "view_coords.hpp"
-#include "view_parameters.hpp"
 
 #include "AsyncRenderer.hpp"
-
-#include <cassert>
-#include <future>
-#include <iomanip>
-#include <iostream>
-#include <memory>
-#include <vector>
+#include "Viewport.hpp"
+#include "mandelbrot.hpp"
 
 using namespace fractals;
 
@@ -90,11 +75,6 @@ void Viewport::discovered_depth(int, double) {}
 void fractals::Viewport::finished(double, int, int, double, double, double) {}
 
 void Renderer::discovered_depth(int, double) {}
-
-class CalculatedFractalRenderer : public fractals::Renderer {
-public:
-private:
-};
 
 void fractals::Renderer::set_fractal(const fractals::PointwiseFractal &) {}
 

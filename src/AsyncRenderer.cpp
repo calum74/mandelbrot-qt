@@ -1,5 +1,12 @@
 #include "AsyncRenderer.hpp"
 
+#include "ColourMap.hpp"
+#include "Viewport.hpp"
+#include "high_exponent_real.hpp"
+#include "percentile.hpp"
+#include "registry.hpp"
+#include "view_parameters.hpp"
+
 fractals::AsyncRenderer::AsyncRenderer(const PointwiseFractal &fractal,
                                        Registry &registry)
     : current_fractal(&fractal), registry(registry) {
