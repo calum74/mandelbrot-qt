@@ -141,10 +141,12 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
   });
 }
 
-bool fractals::AsyncRenderer::zoom(double r, int cx, int cy, Viewport &vp) {
+bool fractals::AsyncRenderer::zoom(double r, int cx, int cy, bool lockCenter,
+                                   Viewport &vp) {
   stop_current_calculation();
 
-  auto new_coords = coords.zoom(r, vp.width, vp.height, cx, cy);
+  auto new_coords =
+      lockCenter ? coords.zoom(r) : coords.zoom(r, vp.width, vp.height, cx, cy);
 
   if (!current_fractal->valid_for(new_coords)) {
     return false;
@@ -176,7 +178,7 @@ void fractals::AsyncRenderer::center(Viewport &vp) {
 }
 
 void fractals::AsyncRenderer::zoom_in(Viewport &vp) {
-  zoom(0.5, vp.width / 2, vp.height / 2, vp);
+  zoom(0.5, vp.width / 2, vp.height / 2, true, vp);
 }
 
 void fractals::AsyncRenderer::auto_step_continue(Viewport &vp) {
@@ -184,7 +186,7 @@ void fractals::AsyncRenderer::auto_step_continue(Viewport &vp) {
 
   if (auto_remaining > 0) {
     auto_remaining--;
-    zoom(0.75, auto_x, auto_y, vp);
+    zoom(0.75, auto_x, auto_y, false, vp);
     return;
   } else {
     auto_step(vp);

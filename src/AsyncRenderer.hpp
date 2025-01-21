@@ -96,7 +96,7 @@ public:
 
   void calculate_async(fractals::Viewport &view, const ColourMap &cm) override;
 
-  bool zoom(double r, int cx, int cy, Viewport &vp) override;
+  bool zoom(double r, int cx, int cy, bool lockCenter, Viewport &vp) override;
 
   view_coords get_coords() const override;
 

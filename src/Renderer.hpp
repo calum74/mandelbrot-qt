@@ -20,7 +20,8 @@ public:
   // returns false if the action is invalid for the current fractal, for example
   // if the resolution is no longer suitable. If false is returned, then the
   // current view is unchanged. Can also prevent zooming out.
-  virtual bool zoom(double r, int cx, int cy, Viewport &vp) = 0;
+  virtual bool zoom(double r, int cx, int cy, bool lockCenter,
+                    Viewport &vp) = 0;
   virtual void scroll(int dx, int dy, Viewport &vp) = 0;
 
   // !! This should be called "resize(Viewport & old, Viewport & new)"

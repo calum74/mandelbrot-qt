@@ -2,10 +2,15 @@
 
 Jobs for today:
 1. Zoom in to a given point
-2. Interpolate pixels when remapping viewport.
+- [ ] Why should it zoom from the wrong start position
+- [ ] Initial zoom speed is too slow
+- [ ] Ends up in the wrong place
+- [ ] Doesn't stop (Use logdepth) for this.
 
-- Cancel animations
-- Rendering bugs: Recolouring image doesn't work so well if we do it mid-zoom
+- Set the X&Y
+- Set the radius to 2.0
+- Set the center to w/2, h/2
+- On animation, zoom on the center point each time.
 
 Bugs:
 - [x] Update iteration counts

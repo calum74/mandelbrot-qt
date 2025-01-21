@@ -83,7 +83,8 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
     r = 0.5;
   if (r != 1.0) {
     cancelAnimations();
-    renderer->zoom(r, event->position().x(), event->position().y(), viewport);
+    renderer->zoom(r, event->position().x(), event->position().y(), false,
+                   viewport);
     calculate();
   }
 }
@@ -121,6 +122,8 @@ void ViewerWidget::MyViewport::finished(double width, int min_depth,
                                         double skipped, double render_time) {
   widget->lastRenderTime = render_time;
   widget->completed(width, min_depth, max_depth, avg, skipped, render_time);
+
+  widget->renderingFinishedSignal();
 }
 
 void ViewerWidget::MyViewport::discovered_depth(int points,
@@ -304,11 +307,11 @@ void ViewerWidget::center() {
 
 void ViewerWidget::zoomIn() {
   cancelAnimations();
-  renderer->zoom(0.5, move_x, move_y, viewport);
+  renderer->zoom(0.5, move_x, move_y, false, viewport);
   calculate();
 }
 
-void ViewerWidget::smoothZoomTo(int x, int y) {
+void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
   zooming = true;
   calculationFinished = false;
   zoomTimeout = false;
@@ -334,7 +337,7 @@ void ViewerWidget::smoothZoomTo(int x, int y) {
   background_viewport.width = computedImage.width();
   background_viewport.height = computedImage.height();
 
-  renderer->zoom(0.5, zoom_x, zoom_y, background_viewport);
+  renderer->zoom(0.5, zoom_x, zoom_y, lockCenter, background_viewport);
   startCalculating(renderer->log_width(), renderer->iterations());
   renderer->calculate_async(background_viewport, *colourMap);
   renderingTimer.start(10);
@@ -343,7 +346,7 @@ void ViewerWidget::smoothZoomTo(int x, int y) {
 void ViewerWidget::smoothZoomIn() {
   cancelAnimations();
   if (!zooming) {
-    smoothZoomTo(move_x, move_y);
+    smoothZoomTo(move_x, move_y, false);
   }
 }
 
@@ -425,7 +428,7 @@ void ViewerWidget::BackgroundViewport::discovered_depth(
 
 void ViewerWidget::zoomOut() {
   cancelAnimations();
-  renderer->zoom(2.0, move_x, move_y, viewport);
+  renderer->zoom(2.0, move_x, move_y, false, viewport);
   calculate();
 }
 
@@ -434,7 +437,7 @@ void ViewerWidget::autoZoom() {
   int x, y;
   if (renderer->get_auto_zoom(x, y)) {
     current_animation = AnimationType::autozoom;
-    smoothZoomTo(x, y);
+    smoothZoomTo(x, y, false);
   } else {
     std::cout << "Autozoom continue failed\n";
   }
@@ -454,7 +457,15 @@ void ViewerWidget::cancelAnimations() {
   }
 }
 
-void ViewerWidget::animateToHere() {}
+void ViewerWidget::animateToHere() {
+  cancelAnimations();
+  current_animation = AnimationType::zoomtopoint;
+  auto c = renderer->get_coords();
+  c.r = 2.0;
+  c.max_iterations = 500;
+  renderer->set_coords(c, viewport);
+  calculate();
+}
 
 void ViewerWidget::setSpeedEstimate(double secondsPerPixel) {
   estimatedSecondsPerPixel = secondsPerPixel;
@@ -463,5 +474,7 @@ void ViewerWidget::setSpeedEstimate(double secondsPerPixel) {
 void ViewerWidget::renderingFinishedSlot() {
   if (current_animation == AnimationType::autozoom) {
     autoZoom();
+  } else if (current_animation == AnimationType::zoomtopoint) {
+    smoothZoomTo(viewport.width / 2, viewport.height / 2, true);
   }
 }

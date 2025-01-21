@@ -25,7 +25,7 @@ class ViewerWidget : public QWidget {
   enum class AnimationType {
     none,
     autozoom,
-    depthzoom
+    zoomtopoint
   } current_animation = AnimationType::none;
 
   double lastRenderTime = 1.0;
@@ -69,7 +69,7 @@ class ViewerWidget : public QWidget {
   void cancelAnimations();
   void setSpeedEstimate(double secondsPerPixel);
   void beginNextAnimation();
-  void smoothZoomTo(int x, int y);
+  void smoothZoomTo(int x, int y, bool lockCenter);
 
 public:
   explicit ViewerWidget(QWidget *parent = nullptr);
