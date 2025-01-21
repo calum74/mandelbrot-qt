@@ -6,20 +6,12 @@
 
 // !! Not used
 
-namespace fractals {
-RGB blend(RGB c1, RGB c2, int w1, int w2) {
-  return make_rgb((red(c1) * w1 + red(c2) * w2) / (w1 + w2),
-                  (green(c1) * w1 + green(c2) * w2) / (w1 + w2),
-                  (blue(c1) * w1 + blue(c2) * w2) / (w1 + w2));
-}
-} // namespace fractals
-
 void fractals::interpolate_region(Viewport &vp, int x0, int y0, int h) {
   auto c00 = vp(x0, y0);
   auto c10 = vp(x0 + h, y0);
   auto c01 = vp(x0, y0 + h);
   auto c11 = vp(x0 + h, y0 + h);
-  auto average = blend(blend(c00, c10, 1, 1), blend(c01, c11, 1, 1), 1, 1);
+  // auto average = blend(blend(c00, c10, 1, 1), blend(c01, c11, 1, 1), 1, 1);
 
   // If all 4 corners have the same colour, claim that the filled in colour is
   // accurate and does not need to be recalculated 1 means more speed 0 means
