@@ -28,6 +28,9 @@ ViewerWidget::ViewerWidget(QWidget *parent)
       renderer{fractals::make_renderer(*registry)} {
 
   register_fractals(*registry);
+
+  renderingTimer.setSingleShot(true);
+  connect(&renderingTimer, &QTimer::timeout, this, &ViewerWidget::updateFrame);
 }
 
 ViewerWidget::~ViewerWidget() { renderer.reset(); }
@@ -282,6 +285,87 @@ void ViewerWidget::zoomIn() {
   renderer->zoom(0.5, move_x, move_y, viewport);
   calculate();
 }
+
+void ViewerWidget::smoothZoomIn() {
+
+  if (!zooming) {
+
+    zooming = true;
+    calculationFinished = false;
+    computedImage = image;
+
+    previousImage = image;
+    using namespace std::literals::chrono_literals;
+    zoom_start = std::chrono::system_clock::now();
+    zoom_duration = 500ms;
+
+    assert(computedImage.width() > 0);
+
+    background_viewport.widget = this;
+    background_viewport.data = (fractals::RGB *)computedImage.bits();
+    background_viewport.width = computedImage.width();
+    background_viewport.height = computedImage.height();
+
+    renderer->zoom(0.5, move_x, move_y, background_viewport);
+    startCalculating(renderer->log_width(), renderer->iterations());
+    renderer->calculate_async(background_viewport, *colourMap);
+    renderingTimer.start(10);
+  }
+}
+
+void ViewerWidget::updateFrame() {
+  auto now = std::chrono::system_clock::now();
+  double time_ratio =
+      std::chrono::duration<double>(now - zoom_start) / zoom_duration;
+  std::cout << "Time to update " << (100 * time_ratio) << "%\n";
+  if (time_ratio >= 1) {
+    // Maybe carry on zooming to the next frame
+    if (calculationFinished)
+      renderFinished2();
+    else {
+      // Project the current view into the frame
+      auto zoom_ratio = std::pow(0.5, time_ratio);
+    }
+  } else {
+    // Update the current view using the
+    // The scaling ratio isn't actually linear !!
+
+    renderingTimer.start(10);
+  }
+}
+
+void ViewerWidget::BackgroundViewport::region_updated(int x, int y, int w,
+                                                      int h) {}
+
+void ViewerWidget::BackgroundViewport::finished(double width, int min_depth,
+                                                int max_depth, double avg,
+                                                double skipped,
+                                                double render_time) {
+  widget->backgroundRenderFinished();
+}
+
+void ViewerWidget::renderFinished2() {
+  std::copy(background_viewport.data,
+            background_viewport.data +
+                background_viewport.width * background_viewport.height,
+            viewport.data);
+  update();
+}
+
+void ViewerWidget::backgroundRenderFinished() {
+  zooming = false;
+  calculationFinished = true;
+
+  // !! This test is fragile
+
+  auto now = std::chrono::system_clock::now();
+  if (std::chrono::duration<double>(now - zoom_start) >= zoom_duration) {
+    renderFinished2();
+  }
+}
+
+void ViewerWidget::BackgroundViewport::discovered_depth(
+    int points, double discovered_depth) {}
 
 void ViewerWidget::zoomOut() {
   renderer->zoom(2.0, move_x, move_y, viewport);

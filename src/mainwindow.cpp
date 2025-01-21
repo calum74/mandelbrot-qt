@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->actionCenter, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::center);
   connect(ui->actionZoom_in, &QAction::triggered, ui->centralwidget,
-          &ViewerWidget::zoomIn);
+          &ViewerWidget::smoothZoomIn);
   connect(ui->actionZoom_out, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::zoomOut);
   connect(ui->actionAutozoom, &QAction::triggered, ui->centralwidget,

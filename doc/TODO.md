@@ -1,14 +1,88 @@
 # Task list
 
+Plan for today:
+1. Refactor AsyncRender into header files
+2. Create an AnimatedRanderer with additional timing capabilities
+3. Smooth zoom to final point
+
+4. Implement bookmarks using json
+  Zoom to a bookmark
+
 Autozoom:
 - Can sometimes get lost
-- Smooth autozoom would be lovely.
+
+- [ ] When reusing an orbit, make sure that we update the number of iterations, particularly for a deep zoom
+
+- [ ] Generate smooth animation to here
+  - Zoom/calculate at the same time
+  - UI shows a zoom state that's fully interpolated from the previous view
+  - Try to get 60fps or something
+  - Meantime, we're calculating the actual viewport on a separate viewport.
+  - When we reach the end, we'll wait for rendering to finish
+  - Then display the new viewport and carry on zooming.
+- [ ] Lock to position.
+
+Implementation:
+- Enter a "zoom mode" whereby the saved viewport is used for all rendering.
+- Parameters:
+  - Start time, expected end time
+  - Framerate
+- Create a small buffer on expected end time based on current image.
+- Store 3 viewports:
+  1. The current image
+  2. The zoomed image
+  3. The computed image
+- As soon as the end time is reached, wait until the image is rendered.
+
+- [ ] Implement a "smooth zoom" button initially
+
+
+- Renderer::continue_smooth_zoom(double time) // Every 16ms
+  - Calculates the 
+
+
+Autocolourmap:
+- 2 modes: auto and manual
+
+
+- [ ] Stop autozoom if the image depth is too low (e.g. 10)
+
+- Create an array
+- Pop from array when we don't have any more colours in the range
+- Problem is that we've already rendered the pixels
+
+Cm::set_pixels(double[])
+
+Manual mode:
+- Pass the array of pixels to the colourmap.
+- Or, create an array of percentiles (100).
+
+
+
+
+
+
+
+# Other
+
+- [ ] Rendering glitches on power 3 mandelbrot
+
+- [ ] Get a deeper series by looking more closely at the divergence criteria
+- [ ] Get a deeper orbit by adding more terms?
+- [ ] Auto algorithm gets stuck in a mandelbrot
+- [ ] To auto-zoom to the edge, zoom to a point that's 10 higher than the mimimum.
+
+
+- [ ] Center button doesn't work when you scroll
+
+Bookmarks.json file.
+- Store the radius in engineering form.
+- Store numbers in 
 
 
 Features:
 
 - [ ] Better center and mandelbrot finder
-
 - [ ] Auto-enhance colours
   How to make this a smooth/auto experience?
 

@@ -16,6 +16,10 @@ set(PROJECT_SOURCES
         mainwindow.ui
         Renderer.hpp
         Renderer.cpp
+        AsyncRenderer.hpp
+        AsyncRenderer.cpp
+        AnimatedRenderer.hpp
+        AnimatedRenderer.cpp
         ColourMapImpl.cpp
         ColourMap.hpp
         ColourMapImpl.hpp

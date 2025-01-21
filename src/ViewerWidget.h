@@ -2,6 +2,7 @@
 #define VIEWERWIDGET_H
 
 #include <QImage>
+#include <QTimer>
 #include <QWidget>
 
 #include "ColourMap.hpp"
@@ -12,7 +13,15 @@
 
 class ViewerWidget : public QWidget {
   Q_OBJECT
-  QImage image;
+  QImage image, computedImage, previousImage;
+
+  bool zooming = false;
+  bool calculationFinished = false;
+  std::chrono::time_point<std::chrono::system_clock> zoom_start;
+  std::chrono::duration<double> zoom_duration;
+
+  double lastRenderTime;
+  QTimer renderingTimer;
 
   std::unique_ptr<fractals::Registry> registry;
 
@@ -24,9 +33,17 @@ class ViewerWidget : public QWidget {
     void region_updated(int x, int y, int w, int h) override;
     void finished(double width, int min_depth, int max_depth, double avg,
                   double skipped, double render_time) override;
-    virtual void discovered_depth(int points, double discovered_depth) override;
+    void discovered_depth(int points, double discovered_depth) override;
 
   } viewport;
+
+  struct BackgroundViewport : public fractals::Viewport {
+    ViewerWidget *widget;
+    void region_updated(int x, int y, int w, int h) override;
+    void finished(double width, int min_depth, int max_depth, double avg,
+                  double skipped, double render_time) override;
+    void discovered_depth(int points, double discovered_depth) override;
+  } background_viewport;
 
   std::unique_ptr<fractals::ColourMap> colourMap;
 
@@ -59,6 +76,7 @@ public:
   listFractals();
 
   void saveToFile(const QString &image_filename);
+  void renderFinished2();
 
 public slots:
   void copyCoords();
@@ -76,6 +94,10 @@ public slots:
   void zoomOut();
   void autoZoom();
   void autoZoomContinue();
+
+  void smoothZoomIn();
+  void backgroundRenderFinished();
+  void updateFrame();
 
 signals:
   void startCalculating(double width, int maxIterations);
