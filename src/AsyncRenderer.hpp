@@ -14,7 +14,7 @@ void interpolate_region(Viewport &vp, int x0, int y0, int h);
 
 class AsyncRenderer : public Renderer {
 
-  const PointwiseCalculationFactory *current_fractal;
+  std::shared_ptr<PointwiseCalculationFactory> current_fractal;
   view_coords coords;
   Registry &registry;
   std::future<void> current_calculation;
@@ -24,7 +24,7 @@ class AsyncRenderer : public Renderer {
   std::chrono::time_point<std::chrono::high_resolution_clock> t0;
 
 public:
-  AsyncRenderer(const PointwiseCalculationFactory &fractal, Registry &registry);
+  AsyncRenderer(const PointwiseFractal &fractal, Registry &registry);
 
   ~AsyncRenderer();
 
@@ -42,9 +42,9 @@ public:
 
   void discovered_depth(int points, double discovered_depth) override;
 
-  void set_fractal(const fractals::PointwiseCalculationFactory &f) override;
+  void set_fractal(const fractals::PointwiseFractal &f) override;
 
-  const fractals::PointwiseCalculationFactory &get_fractal() const override;
+  const char *get_fractal_family() const override;
 
   view_coords initial_coords() const override;
 

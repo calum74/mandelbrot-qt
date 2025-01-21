@@ -177,9 +177,8 @@ void ViewerWidget::resetCurrentFractal() {
   calculate();
 }
 
-void ViewerWidget::changeFractal(
-    const fractals::PointwiseCalculationFactory &fractal) {
-  std::string old_family = renderer->get_fractal().family();
+void ViewerWidget::changeFractal(const fractals::PointwiseFractal &fractal) {
+  std::string old_family = renderer->get_fractal_family();
   renderer->set_fractal(fractal);
 
   if (old_family != fractal.family())
@@ -188,8 +187,7 @@ void ViewerWidget::changeFractal(
   calculate();
 }
 
-std::vector<
-    std::pair<std::string, const fractals::PointwiseCalculationFactory &>>
+std::vector<std::pair<std::string, const fractals::PointwiseFractal &>>
 ViewerWidget::listFractals() {
   return registry->listFractals();
 }

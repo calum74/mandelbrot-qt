@@ -7,9 +7,9 @@
 #include "registry.hpp"
 #include "view_parameters.hpp"
 
-fractals::AsyncRenderer::AsyncRenderer(
-    const PointwiseCalculationFactory &fractal, Registry &registry)
-    : current_fractal(&fractal), registry(registry) {
+fractals::AsyncRenderer::AsyncRenderer(const PointwiseFractal &fractal,
+                                       Registry &registry)
+    : current_fractal(fractal.create()), registry(registry) {
   coords = initial_coords();
 }
 
@@ -23,7 +23,7 @@ void fractals::AsyncRenderer::load(const view_parameters &params,
   auto new_fractal = registry.lookup(params.fractal_name);
 
   if (new_fractal)
-    current_fractal = new_fractal;
+    current_fractal = new_fractal->create();
 
   redraw(vp);
 }
@@ -69,15 +69,13 @@ void fractals::AsyncRenderer::discovered_depth(int points,
     coords.max_iterations = discovered_depth * 2; // Fudge factor
 }
 
-void fractals::AsyncRenderer::set_fractal(
-    const fractals::PointwiseCalculationFactory &f) {
+void fractals::AsyncRenderer::set_fractal(const fractals::PointwiseFractal &f) {
   stop_current_calculation();
-  current_fractal = &f;
+  current_fractal = f.create();
 }
 
-const fractals::PointwiseCalculationFactory &
-fractals::AsyncRenderer::get_fractal() const {
-  return *current_fractal;
+const char *fractals::AsyncRenderer::get_fractal_family() const {
+  return current_fractal->family();
 }
 
 fractals::view_coords fractals::AsyncRenderer::initial_coords() const {

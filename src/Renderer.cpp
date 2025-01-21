@@ -78,8 +78,8 @@ void fractals::Viewport::finished(double, int, int, double, double, double) {}
 
 void fractals::Renderer::discovered_depth(int, double) {}
 
-void fractals::Renderer::set_fractal(
-    const fractals::PointwiseCalculationFactory &) {}
+// Arguable these should be pure virtual functions
+void fractals::Renderer::set_fractal(const fractals::PointwiseFractal &) {}
 
 void fractals::Viewport::invalidateAllPixels() {
   for (auto j = 0; j < height; ++j)
