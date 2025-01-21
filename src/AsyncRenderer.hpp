@@ -75,70 +75,15 @@ public:
 
   public:
     my_rendering_sequence(const PointwiseCalculation &calculation,
-                          const ColourMap &cm, Viewport &vp)
-        : fractals::buffered_rendering_sequence<double>(vp.width, vp.height,
-                                                        16),
-          calculation(calculation), cm(cm), vp(vp) {}
+                          const ColourMap &cm, Viewport &vp);
 
     double min_depth = 0, max_depth = 0;
     int center_x = 0, center_y = 0;
     std::vector<depth_value> depths;
 
-    void layer_complete(int stride) override {
-      // Transfer and interpolate to the current viewport
-      fractals::rendering_sequence seq(vp.width, vp.height, 16);
-      seq.start_at_stride(stride);
-      int x, y, s;
-      bool c;
-      while (seq.next(x, y, s, c) && stride == s) {
-        double depth = output[x + y * vp.width];
+    void layer_complete(int stride) override;
 
-        if (!std::isnan(depth)) {
-          vp(x, y) = cm(depth);
-          if (depth > 0) {
-            depths.push_back({depth, x, y});
-            if (depth > max_depth) {
-              max_depth = depth;
-            }
-            if (depth < min_depth || min_depth == 0)
-              min_depth = depth;
-          }
-#if 1 // Useful to be able to disable this for debugging
-          if (stride > 1 && x > 0 && y > 0) {
-            // Interpolate the region
-            interpolate_region(vp, x - stride, y - stride, stride);
-          }
-#endif
-        }
-      }
-
-      seq.start_at_stride(stride);
-      long long total_x = 0, total_y = 0, total = 0;
-      if (depths.size()) {
-        auto discovered_depth =
-            util::top_percentile(depths.begin(), depths.end(), 0.97)->depth;
-        while (seq.next(x, y, s, c) && stride == s) {
-          // Re-scan the points to find a center
-          double depth = output[x + y * vp.width];
-          if (depth == 0 || depth >= discovered_depth) {
-            total_x += x;
-            total_y += y;
-            total++;
-          }
-        }
-        center_x = total_x / total;
-        center_y = total_y / total;
-      }
-
-      vp.region_updated(0, 0, vp.width, vp.height);
-    }
-
-    double get_point(int x, int y) override {
-      // TODO: Avoid recalculating known points
-      if (extra(vp(x, y)) == 0)
-        return std::numeric_limits<double>::quiet_NaN();
-      return calculation.calculate(x, y);
-    }
+    double get_point(int x, int y) override;
 
   private:
     const PointwiseCalculation &calculation;
