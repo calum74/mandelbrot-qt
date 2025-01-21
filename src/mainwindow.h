@@ -27,7 +27,7 @@ public:
                    double time);
     void openGoToDialog();
     void changeFractal(class ChangeFractalAction *src,
-                       const fractals::PointwiseFractal &fractal);
+                       const fractals::PointwiseCalculationFactory &fractal);
 
   private:
     Ui::MainWindow *ui;
@@ -38,17 +38,18 @@ class ChangeFractalAction : public QAction {
   Q_OBJECT
 public:
   ChangeFractalAction(const char *name,
-                      const fractals::PointwiseFractal &fractal, bool checked);
+                      const fractals::PointwiseCalculationFactory &fractal,
+                      bool checked);
 
 signals:
   void changeFractal(ChangeFractalAction *src,
-                     const fractals::PointwiseFractal &);
+                     const fractals::PointwiseCalculationFactory &);
 
 private slots:
   void select(bool checked);
 
 private:
-  const fractals::PointwiseFractal &fractal;
+  const fractals::PointwiseCalculationFactory &fractal;
 };
 
 #endif // MAINWINDOW_H

@@ -7,15 +7,18 @@ namespace {
 using namespace fractals;
 
 class RegistryImpl : public Registry {
-  void add(const PointwiseFractal &f) override {
+  void add(const PointwiseCalculationFactory &f) override {
     fractals.push_back(
-        std::pair<std::string, const PointwiseFractal &>{f.name(), f});
+        std::pair<std::string, const PointwiseCalculationFactory &>{f.name(),
+                                                                    f});
   }
 
-  std::vector<std::pair<std::string, const fractals::PointwiseFractal &>>
+  std::vector<
+      std::pair<std::string, const fractals::PointwiseCalculationFactory &>>
       fractals;
 
-  const PointwiseFractal *lookup(const std::string &query) const override {
+  const PointwiseCalculationFactory *
+  lookup(const std::string &query) const override {
     // !! Linear search
     for (auto &[name, fractal] : fractals) {
       if (name == query)
@@ -24,7 +27,8 @@ class RegistryImpl : public Registry {
     return {};
   }
 
-  std::vector<std::pair<std::string, const fractals::PointwiseFractal &>>
+  std::vector<
+      std::pair<std::string, const fractals::PointwiseCalculationFactory &>>
   listFractals() const override {
     return fractals;
   }

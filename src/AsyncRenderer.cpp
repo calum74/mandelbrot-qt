@@ -7,8 +7,8 @@
 #include "registry.hpp"
 #include "view_parameters.hpp"
 
-fractals::AsyncRenderer::AsyncRenderer(const PointwiseFractal &fractal,
-                                       Registry &registry)
+fractals::AsyncRenderer::AsyncRenderer(
+    const PointwiseCalculationFactory &fractal, Registry &registry)
     : current_fractal(&fractal), registry(registry) {
   coords = initial_coords();
 }
@@ -69,12 +69,14 @@ void fractals::AsyncRenderer::discovered_depth(int points,
     coords.max_iterations = discovered_depth * 2; // Fudge factor
 }
 
-void fractals::AsyncRenderer::set_fractal(const fractals::PointwiseFractal &f) {
+void fractals::AsyncRenderer::set_fractal(
+    const fractals::PointwiseCalculationFactory &f) {
   stop_current_calculation();
   current_fractal = &f;
 }
 
-const fractals::PointwiseFractal &fractals::AsyncRenderer::get_fractal() const {
+const fractals::PointwiseCalculationFactory &
+fractals::AsyncRenderer::get_fractal() const {
   return *current_fractal;
 }
 

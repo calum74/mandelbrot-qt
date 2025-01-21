@@ -72,7 +72,8 @@ public:
   void getCoords(fractals::view_parameters &params) const;
   bool setCoords(const fractals::view_parameters &params);
 
-  std::vector<std::pair<std::string, const fractals::PointwiseFractal &>>
+  std::vector<
+      std::pair<std::string, const fractals::PointwiseCalculationFactory &>>
   listFractals();
 
   void saveToFile(const QString &image_filename);
@@ -82,7 +83,7 @@ public slots:
   void copyCoords();
   void recolourPalette();
   void resetCurrentFractal();
-  void changeFractal(const fractals::PointwiseFractal &fractal);
+  void changeFractal(const fractals::PointwiseCalculationFactory &fractal);
   void enableThreading(bool checked);
   void enableAutoDepth(bool checked);
   void quickSave();

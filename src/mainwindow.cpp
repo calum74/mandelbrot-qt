@@ -75,8 +75,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::changeFractal(ChangeFractalAction *src,
-                               const fractals::PointwiseFractal &fractal) {
+void MainWindow::changeFractal(
+    ChangeFractalAction *src,
+    const fractals::PointwiseCalculationFactory &fractal) {
   ui->centralwidget->changeFractal(fractal);
 }
 
@@ -131,7 +132,8 @@ void MainWindow::openGoToDialog() {
 }
 
 ChangeFractalAction::ChangeFractalAction(
-    const char *name, const fractals::PointwiseFractal &fractal, bool checked)
+    const char *name, const fractals::PointwiseCalculationFactory &fractal,
+    bool checked)
     : QAction{name}, fractal{fractal} {
   setCheckable(true);
   setChecked(checked);
