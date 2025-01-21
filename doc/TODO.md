@@ -2,6 +2,9 @@
 
 Bugs:
 - [ ] Update iteration counts
+- [ ] As zoom as you navigate, you kill the zoom and can't restart it
+- [ ] Adapt zoom speed to iteration counts.
+- [ ] Need to wait for previous zoom before being able to zoom again.
 
 Plan for today:
 1. Create an AnimatedRenderer with additional timing capabilities

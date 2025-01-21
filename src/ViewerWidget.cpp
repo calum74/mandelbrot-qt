@@ -113,6 +113,7 @@ void ViewerWidget::MyViewport::region_updated(int x, int y, int w, int h) {
 void ViewerWidget::MyViewport::finished(double width, int min_depth,
                                         int max_depth, double avg,
                                         double skipped, double render_time) {
+  widget->lastRenderTime = render_time;
   widget->completed(width, min_depth, max_depth, avg, skipped, render_time);
 }
 
@@ -299,7 +300,7 @@ void ViewerWidget::smoothZoomIn() {
     previousImage = image;
     using namespace std::literals::chrono_literals;
     zoom_start = std::chrono::system_clock::now();
-    zoom_duration = 500ms;
+    zoom_duration = 100ms;
 
     assert(computedImage.width() > 0);
 
@@ -352,6 +353,8 @@ void ViewerWidget::BackgroundViewport::finished(double width, int min_depth,
                                                 double skipped,
                                                 double render_time) {
   widget->backgroundRenderFinished();
+  widget->lastRenderTime = render_time;
+  widget->completed(width, min_depth, max_depth, avg, skipped, render_time);
 }
 
 void ViewerWidget::renderFinished2() {
@@ -375,7 +378,10 @@ void ViewerWidget::backgroundRenderFinished() {
 }
 
 void ViewerWidget::BackgroundViewport::discovered_depth(
-    int points, double discovered_depth) {}
+    int points, double discovered_depth) {
+  if (widget->renderer)
+    widget->renderer->discovered_depth(points, discovered_depth);
+}
 
 void ViewerWidget::zoomOut() {
   renderer->zoom(2.0, move_x, move_y, viewport);

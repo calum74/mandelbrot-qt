@@ -21,7 +21,7 @@ class ViewerWidget : public QWidget {
   std::chrono::duration<double> zoom_duration;
   int zoom_x, zoom_y;
 
-  double lastRenderTime;
+  double lastRenderTime = 1.0;
   QTimer renderingTimer;
 
   std::unique_ptr<fractals::Registry> registry;
