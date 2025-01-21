@@ -4,6 +4,28 @@ Plan for today:
 1. Refactor AsyncRender into header files
 2. Create an AnimatedRanderer with additional timing capabilities
 3. Smooth zoom to final point
+Refactor:
+- Fractals create a calculation Factory which is non-const.
+- RenderingSequence
+
+```c++
+class rendering_sequence
+{
+  rendering_sequence(int width, int height, int start_size);
+
+  std::pair<int, int> layer(int layer_size);
+
+  struct iterator
+  {
+  };
+
+  const int x, y, w;
+  const bool starts_new_size;
+};
+
+rendering_sequence start_size(int total, int start_size, int sie);
+rendering_sequence end_size(int total_points
+```
 
 4. Implement bookmarks using json
   Zoom to a bookmark

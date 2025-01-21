@@ -1,5 +1,17 @@
 #pragma once
+
+// TODO: Move some of these into AsyncRenderer.cpp when possible
+#include "ColourMap.hpp"
 #include "Renderer.hpp"
+#include "Viewport.hpp"
+#include "fractal.hpp"
+#include "high_exponent_real.hpp"
+#include "percentile.hpp"
+#include "registry.hpp"
+#include "rendering_sequence.hpp"
+#include "view_coords.hpp"
+#include "view_parameters.hpp"
+
 #include <future>
 
 namespace fractals {
@@ -7,7 +19,7 @@ void interpolate_region(Viewport &vp, int x0, int y0, int h);
 
 class AsyncRenderer : public Renderer {
 
-  const fractals::PointwiseFractal *current_fractal;
+  const PointwiseFractal *current_fractal;
   view_coords coords;
   Registry &registry;
   std::future<void> current_calculation;
@@ -17,55 +29,19 @@ class AsyncRenderer : public Renderer {
   std::chrono::time_point<std::chrono::high_resolution_clock> t0;
 
 public:
-  AsyncRenderer(const PointwiseFractal &fractal, Registry &registry)
-      : current_fractal(&fractal), registry(registry) {
-    coords = initial_coords();
-  }
+  AsyncRenderer(const PointwiseFractal &fractal, Registry &registry);
 
-  ~AsyncRenderer() { stop_current_calculation(); }
+  ~AsyncRenderer();
 
-  void load(const view_parameters &params, Viewport &vp) override {
-    stop_current_calculation();
+  void load(const view_parameters &params, Viewport &vp) override;
 
-    coords = params.coords;
-    auto new_fractal = registry.lookup(params.fractal_name);
+  void save(view_parameters &params) const override;
 
-    if (new_fractal)
-      current_fractal = new_fractal;
+  void increase_iterations(Viewport &vp) override;
 
-    redraw(vp);
-  }
+  void decrease_iterations(Viewport &vp) override;
 
-  void save(view_parameters &params) const override {
-    params.coords = coords;
-    params.fractal_name = current_fractal->name();
-  }
-
-  void increase_iterations(Viewport &vp) override {
-    stop_current_calculation();
-    for (int j = 0; j < vp.height; ++j)
-      for (int i = 0; i < vp.width; ++i) {
-        auto &c = vp(i, j);
-        if (!c) {
-          // Only redraw final coloured points
-          c = with_extra(vp(i, j), 127);
-        }
-      }
-    coords.max_iterations *= 2;
-  }
-
-  void decrease_iterations(Viewport &vp) override {
-    stop_current_calculation();
-    for (int j = 0; j < vp.height; ++j)
-      for (int i = 0; i < vp.width; ++i) {
-        vp(i, j) = with_extra(vp(i, j), 127);
-      }
-    coords.max_iterations /= 2;
-  }
-
-  double get_average_iterations() const override {
-    return calculation->average_iterations();
-  }
+  double get_average_iterations() const override;
 
   double get_average_skipped_iterations() const override {
     return calculation->average_skipped();
