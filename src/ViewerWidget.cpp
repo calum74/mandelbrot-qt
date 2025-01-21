@@ -328,7 +328,9 @@ void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
 
   if (zoom_duration < 10ms || zoom_duration > 20s)
     std::cout << "Warning: bad zoom duration\n";
-  // zoom_duration = 150ms; // Override for speed
+
+  if (fixZoomSpeed)
+    zoom_duration = 500ms; // Override for speed
 
   assert(computedImage.width() > 0);
 
@@ -360,7 +362,7 @@ void ViewerWidget::updateFrame() {
   if (time_ratio >= 1) {
     zoomTimeout = true;
     // Maybe carry on zooming to the next frame
-    if (calculationFinished) {
+    if (calculationFinished || fixZoomSpeed) {
       renderFinished2();
       beginNextAnimation();
     }

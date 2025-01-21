@@ -2,10 +2,11 @@
 
 Jobs for today:
 1. Zoom in to a given point
-- [ ] Why should it zoom from the wrong start position
-- [ ] Initial zoom speed is too slow
-- [ ] Ends up in the wrong place
 - [ ] Doesn't stop (Use logdepth) for this.
+2. Speed of zoom?
+  - Slow (1000ms)
+  - Fast (150ms)
+  - Quality
 
 - Set the X&Y
 - Set the radius to 2.0

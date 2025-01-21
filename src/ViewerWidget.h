@@ -61,6 +61,8 @@ class ViewerWidget : public QWidget {
   // Track the previous position of the mouse cursor
   int press_x, press_y, move_x, move_y;
 
+  bool fixZoomSpeed = false;
+
   void calculate();
   void draw();
 
