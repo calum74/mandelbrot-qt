@@ -106,6 +106,8 @@ void ViewerWidget::mousePressEvent(QMouseEvent *event) {
   if (event->buttons() & Qt::LeftButton) {
     press_x = event->pos().x();
     press_y = event->pos().y();
+
+    stopAnimations();
   }
 }
 
@@ -466,6 +468,7 @@ void ViewerWidget::animateToHere() {
   auto c = renderer->get_coords();
   c.r = 2.0;
   c.max_iterations = 500;
+  zoomtopoint_limit = renderer->log_width();
   renderer->set_coords(c, viewport);
   calculate();
 }
@@ -478,6 +481,9 @@ void ViewerWidget::renderingFinishedSlot() {
   if (current_animation == AnimationType::autozoom) {
     autoZoom();
   } else if (current_animation == AnimationType::zoomtopoint) {
-    smoothZoomTo(viewport.width / 2, viewport.height / 2, true);
+    if (renderer->log_width() > zoomtopoint_limit)
+      smoothZoomTo(viewport.width / 2, viewport.height / 2, true);
   }
 }
+
+void ViewerWidget::stopAnimations() { cancelAnimations(); }

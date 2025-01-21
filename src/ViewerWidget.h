@@ -21,6 +21,7 @@ class ViewerWidget : public QWidget {
   std::chrono::time_point<std::chrono::system_clock> zoom_start;
   std::chrono::duration<double> zoom_duration;
   int zoom_x, zoom_y;
+  double zoomtopoint_limit;
 
   enum class AnimationType {
     none,
@@ -119,6 +120,7 @@ public slots:
   void updateFrame();
 
   void animateToHere();
+  void stopAnimations();
 
 signals:
   void startCalculating(double width, int maxIterations);

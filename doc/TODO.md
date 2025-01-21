@@ -2,8 +2,8 @@
 
 Jobs for today:
 1. Zoom in to a given point
-- [ ] Doesn't stop (Use logdepth) for this.
-- [ ] Stop animation with a click or something
+- [x] Doesn't stop (Use logdepth) for this.
+- [x] Stop animation with a click or something
 - [x] Add a 5% buffer??
 - [ ] Zoom glitches - seem to be some rendering issues since we write directly to the image
   If we render at the wrong time, will show nonsense.
@@ -12,6 +12,7 @@ Jobs for today:
   - Fast (150ms)
   - Quality
 
+- [ ] In animation, status bar is too noisy. Don't say "calculating" part.
 
 - [ ] Scrolling messes up last_render time and all sorts of things
 
