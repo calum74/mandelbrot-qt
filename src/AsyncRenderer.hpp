@@ -132,5 +132,7 @@ public:
   void set_threading(int threads) override;
 
   void get_depth_range(double &min, double &p, double &max) override;
+
+  bool get_auto_zoom(int &x, int &y) override;
 };
 } // namespace fractals

@@ -16,13 +16,20 @@ class ViewerWidget : public QWidget {
   QImage image, computedImage, previousImage;
 
   bool zooming = false;
-  bool calculationFinished = false;
+  std::atomic<bool> calculationFinished = false;
+  std::atomic<bool> zoomTimeout = false;
   std::chrono::time_point<std::chrono::system_clock> zoom_start;
   std::chrono::duration<double> zoom_duration;
   int zoom_x, zoom_y;
 
+  enum class AnimationType {
+    none,
+    autozoom,
+    depthzoom
+  } current_animation = AnimationType::none;
+
   double lastRenderTime = 1.0;
-  double estimatedSecondsPerPixel = 0.0001;
+  double estimatedSecondsPerPixel = 0;
   QTimer renderingTimer;
 
   std::unique_ptr<fractals::Registry> registry;
@@ -61,6 +68,8 @@ class ViewerWidget : public QWidget {
 
   void cancelAnimations();
   void setSpeedEstimate(double secondsPerPixel);
+  void beginNextAnimation();
+  void smoothZoomTo(int x, int y);
 
 public:
   explicit ViewerWidget(QWidget *parent = nullptr);

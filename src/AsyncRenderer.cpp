@@ -120,14 +120,6 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
     view_percentile_max = 0;
     calculate_region_in_thread(view, cm, stop);
     auto t1 = std::chrono::high_resolution_clock::now();
-    if (!stop) {
-      view.region_updated(0, 0, view.width, view.height);
-      std::chrono::duration<double> d = t1 - t0;
-
-      view.finished(log_width(), view_min, view_max,
-                    calculation->average_iterations(),
-                    calculation->average_skipped(), d.count());
-    }
 
     if (automaticallyAdjustDepth && depths.begin() < depths.end()) {
       auto discovered_depth =
@@ -136,6 +128,15 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
       view.discovered_depth(
           std::distance(depths.begin(), depths.end()), discovered_depth,
           std::chrono::duration<double>(t1 - t0).count() / calculated_pixels);
+    }
+
+    if (!stop) {
+      view.region_updated(0, 0, view.width, view.height);
+      std::chrono::duration<double> d = t1 - t0;
+
+      view.finished(log_width(), view_min, view_max,
+                    calculation->average_iterations(),
+                    calculation->average_skipped(), d.count());
     }
   });
 }
@@ -193,6 +194,7 @@ void fractals::AsyncRenderer::auto_step_continue(Viewport &vp) {
 void fractals::AsyncRenderer::auto_step(Viewport &vp) {
   stop_current_calculation();
 
+  // !! Can probably delete this function now
   /*
       if (center_x > 0 && center_y > 0) {
         auto_x =
@@ -208,6 +210,16 @@ void fractals::AsyncRenderer::auto_step(Viewport &vp) {
     auto_remaining = 10;
     auto_step_continue(vp);
   }
+}
+
+bool fractals::AsyncRenderer::get_auto_zoom(int &x, int &y) {
+  if (!depths.empty()) {
+    auto p = util::top_percentile(depths.begin(), depths.end(), 0.9999);
+    x = p->x;
+    y = p->y;
+    return true;
+  }
+  return false;
 }
 
 constexpr fractals::RGB grey = fractals::make_rgbx(100, 100, 100, 127);

@@ -305,35 +305,42 @@ void ViewerWidget::zoomIn() {
   calculate();
 }
 
+void ViewerWidget::smoothZoomTo(int x, int y) {
+  zooming = true;
+  calculationFinished = false;
+  zoomTimeout = false;
+  computedImage = image;
+  zoom_x = x;
+  zoom_y = y;
+
+  previousImage = image;
+  using namespace std::literals::chrono_literals;
+  zoom_start = std::chrono::system_clock::now();
+  zoom_duration = std::chrono::milliseconds(
+      int(estimatedSecondsPerPixel * 1000 * viewport.width *
+          viewport.height)); // Stupid stupid std::chrono
+
+  if (zoom_duration < 10ms || zoom_duration > 20s)
+    std::cout << "Warning: bad zoom duration\n";
+  // zoom_duration = 150ms; // Override for speed
+
+  assert(computedImage.width() > 0);
+
+  background_viewport.widget = this;
+  background_viewport.data = (fractals::RGB *)computedImage.bits();
+  background_viewport.width = computedImage.width();
+  background_viewport.height = computedImage.height();
+
+  renderer->zoom(0.5, zoom_x, zoom_y, background_viewport);
+  startCalculating(renderer->log_width(), renderer->iterations());
+  renderer->calculate_async(background_viewport, *colourMap);
+  renderingTimer.start(10);
+}
+
 void ViewerWidget::smoothZoomIn() {
   cancelAnimations();
   if (!zooming) {
-    zooming = true;
-    calculationFinished = false;
-    computedImage = image;
-    zoom_x = move_x;
-    zoom_y = move_y;
-
-    previousImage = image;
-    using namespace std::literals::chrono_literals;
-    zoom_start = std::chrono::system_clock::now();
-    zoom_duration = std::chrono::milliseconds(
-        int(estimatedSecondsPerPixel * 1000 * viewport.width *
-            viewport.height)); // Stupid stupid std::chrono
-
-    // zoom_duration = 50ms; // Override for speed
-
-    assert(computedImage.width() > 0);
-
-    background_viewport.widget = this;
-    background_viewport.data = (fractals::RGB *)computedImage.bits();
-    background_viewport.width = computedImage.width();
-    background_viewport.height = computedImage.height();
-
-    renderer->zoom(0.5, zoom_x, zoom_y, background_viewport);
-    startCalculating(renderer->log_width(), renderer->iterations());
-    renderer->calculate_async(background_viewport, *colourMap);
-    renderingTimer.start(10);
+    smoothZoomTo(move_x, move_y);
   }
 }
 
@@ -344,12 +351,12 @@ void ViewerWidget::updateFrame() {
   auto now = std::chrono::system_clock::now();
   double time_ratio =
       std::chrono::duration<double>(now - zoom_start) / zoom_duration;
-  // std::cout << "Time to update " << (100 * time_ratio) << "%\n";
   if (time_ratio >= 1) {
+    zoomTimeout = true;
     // Maybe carry on zooming to the next frame
-    if (calculationFinished)
+    if (calculationFinished) {
       renderFinished2();
-    else {
+      beginNextAnimation();
     }
   } else {
     // Update the current view using the
@@ -379,7 +386,7 @@ void ViewerWidget::BackgroundViewport::finished(double width, int min_depth,
   if (!widget->zooming)
     return;
   widget->backgroundRenderFinished();
-  widget->lastRenderTime = render_time;
+  widget->lastRenderTime = render_time; // Unused !! deleteme
   widget->completed(width, min_depth, max_depth, avg, skipped, render_time);
 }
 
@@ -396,12 +403,16 @@ void ViewerWidget::renderFinished2() {
 void ViewerWidget::backgroundRenderFinished() {
   calculationFinished = true;
 
-  // !! This test is fragile
-
-  auto now = std::chrono::system_clock::now();
-  if (std::chrono::duration<double>(now - zoom_start) >= zoom_duration) {
+  if (zoomTimeout) {
     renderFinished2();
     zooming = false;
+
+    beginNextAnimation();
+  }
+}
+
+void ViewerWidget::beginNextAnimation() {
+  if (current_animation == AnimationType::autozoom) {
   }
 }
 
@@ -419,16 +430,24 @@ void ViewerWidget::zoomOut() {
 }
 
 void ViewerWidget::autoZoom() {
-  renderer->auto_step(viewport);
-  calculate();
+  cancelAnimations();
+  int x, y;
+  if (renderer->get_auto_zoom(x, y)) {
+    current_animation = AnimationType::autozoom;
+    smoothZoomTo(x, y);
+  } else {
+    std::cout << "Autozoom continue failed\n";
+  }
 }
 
 void ViewerWidget::autoZoomContinue() {
-  renderer->auto_step_continue(viewport);
-  calculate();
+  //  renderer->auto_step_continue(viewport);
+  //  calculate();
 }
 
 void ViewerWidget::cancelAnimations() {
+  renderingTimer.stop();
+  current_animation = AnimationType::none;
   if (zooming) {
     renderFinished2();
     zooming = false;

@@ -1,5 +1,12 @@
 # Task list
 
+Deadlock caused by calculation thread creating a recursive calculation.
+=> Answer
+
+
+Autozoom stops unexpectedly.
+Even after the view updates, there's no "finished" signal and the statis bar is not updated.
+
 Papercuts:
 - Zoom initially does nothing after a regular zoom
 Smooth zoom to here.

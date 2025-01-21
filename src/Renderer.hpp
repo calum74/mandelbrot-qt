@@ -80,6 +80,8 @@ public:
 
   virtual void auto_step(Viewport &vp) = 0;
 
+  virtual bool get_auto_zoom(int &x, int &y) = 0;
+
   virtual void auto_step_continue(Viewport &vp) = 0;
 };
 
