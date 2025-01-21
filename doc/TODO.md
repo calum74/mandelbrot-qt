@@ -1,5 +1,7 @@
 # Task list
 
+Need to kick
+
 Deadlock caused by calculation thread creating a recursive calculation.
 => Answer
 

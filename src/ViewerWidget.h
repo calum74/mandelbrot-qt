@@ -110,6 +110,7 @@ public slots:
   void zoomOut();
   void autoZoom();
   void autoZoomContinue();
+  void renderingFinishedSlot();
 
   void smoothZoomIn();
   void backgroundRenderFinished();
@@ -121,6 +122,7 @@ signals:
   void startCalculating(double width, int maxIterations);
   void completed(double width, int min_depth, int max_depth, double, double,
                  double time);
+  void renderingFinishedSignal();
 };
 
 #endif // VIEWERWIDGET_H

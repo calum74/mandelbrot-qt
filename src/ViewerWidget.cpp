@@ -31,6 +31,9 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
   renderingTimer.setSingleShot(true);
   connect(&renderingTimer, &QTimer::timeout, this, &ViewerWidget::updateFrame);
+  // Called on a separate thread so we can't just start new work
+  connect(this, &ViewerWidget::renderingFinishedSignal, this,
+          &ViewerWidget::renderingFinishedSlot);
 }
 
 ViewerWidget::~ViewerWidget() { renderer.reset(); }
@@ -411,10 +414,7 @@ void ViewerWidget::backgroundRenderFinished() {
   }
 }
 
-void ViewerWidget::beginNextAnimation() {
-  if (current_animation == AnimationType::autozoom) {
-  }
-}
+void ViewerWidget::beginNextAnimation() { renderingFinishedSignal(); }
 
 void ViewerWidget::BackgroundViewport::discovered_depth(
     int points, double discovered_depth, double seconds_per_pixel) {
@@ -458,4 +458,10 @@ void ViewerWidget::animateToHere() {}
 
 void ViewerWidget::setSpeedEstimate(double secondsPerPixel) {
   estimatedSecondsPerPixel = secondsPerPixel;
+}
+
+void ViewerWidget::renderingFinishedSlot() {
+  if (current_animation == AnimationType::autozoom) {
+    autoZoom();
+  }
 }
