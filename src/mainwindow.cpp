@@ -108,8 +108,6 @@ void log_radius(std::ostream &os, double log_base_e) {
 }
 
 void MainWindow::startCalculating(double d, int iterations) {
-  return; // Keep it quiet
-
   std::stringstream ss;
   ss << "Calculating radius ";
   log_radius(ss, d);

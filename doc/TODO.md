@@ -6,6 +6,7 @@ UI fixes:
   - Fast
   - Very fast
   - In speed zoom, make sure to update the status bar at the end of the timeout
+- [ ] Very fast animation can lose the max_iteration count.
 - [ ] Max 30s per render?
 - [ ] Remove check from fractal and autozoom menus
 - [ ] main menu slots for

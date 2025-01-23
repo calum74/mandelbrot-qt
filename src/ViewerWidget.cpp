@@ -343,7 +343,6 @@ void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
   background_viewport.height = computedImage.height();
 
   renderer->zoom(0.5, zoom_x, zoom_y, lockCenter, background_viewport);
-  startCalculating(renderer->log_width(), renderer->iterations());
   renderer->calculate_async(background_viewport, *colourMap);
   renderingTimer.start(10);
 }
@@ -368,6 +367,9 @@ void ViewerWidget::updateFrame() {
     if (calculationFinished || fixZoomSpeed) {
       renderFinishedBackgroundImage();
       beginNextAnimation();
+    } else {
+      // It's taking some time, so update the status bar
+      startCalculating(renderer->log_width(), renderer->iterations());
     }
   } else {
     // Update the current view using the
@@ -420,7 +422,14 @@ void ViewerWidget::backgroundRenderFinished() {
   }
 }
 
-void ViewerWidget::beginNextAnimation() { renderingFinishedSignal(); }
+void ViewerWidget::beginNextAnimation() {
+  if (!calculationFinished) {
+    // Report on current calculation
+    startCalculating(renderer->log_width(), renderer->iterations());
+  }
+
+  renderingFinishedSignal();
+}
 
 void ViewerWidget::BackgroundViewport::discovered_depth(
     int points, double discovered_depth, double seconds_per_pixel) {
