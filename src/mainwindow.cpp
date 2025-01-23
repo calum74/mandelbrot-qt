@@ -8,7 +8,8 @@
 #include <sstream>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow), fractalsActionGroup(this) {
+    : QMainWindow(parent), ui(new Ui::MainWindow), fractalsActionGroup(this),
+      zoomSpeedActionGroup(this) {
   ui->setupUi(this);
   connect(ui->centralwidget, &ViewerWidget::startCalculating, this,
           &MainWindow::startCalculating);
@@ -53,6 +54,18 @@ MainWindow::MainWindow(QWidget *parent)
           &ViewerWidget::autoZoom);
   connect(ui->actionAnimate_to_here, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::animateToHere);
+  connect(ui->actionQuality_animation, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::setQualityAnimation);
+  connect(ui->actionFast_animation, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::setFastAnimation);
+  connect(ui->actionVery_fast_animation, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::setFastestAnimation);
+
+  zoomSpeedActionGroup.setExclusionPolicy(
+      QActionGroup::ExclusionPolicy::Exclusive);
+  zoomSpeedActionGroup.addAction(ui->actionQuality_animation);
+  zoomSpeedActionGroup.addAction(ui->actionFast_animation);
+  zoomSpeedActionGroup.addAction(ui->actionVery_fast_animation);
 
   QIcon icon(":/new/prefix1/icon.ico");
   QApplication::setWindowIcon(icon);
@@ -148,3 +161,7 @@ void ChangeFractalAction::select(bool checked) {
     changeFractal(this, fractal);
   }
 }
+
+void MainWindow::cancelAnimations() {}
+
+void MainWindow::fractalChanged(const std::string &) {}

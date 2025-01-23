@@ -55,6 +55,10 @@
     <addaction name="separator"/>
     <addaction name="actionRandomize_palette"/>
     <addaction name="actionScale_palette"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuality_animation"/>
+    <addaction name="actionFast_animation"/>
+    <addaction name="actionVery_fast_animation"/>
    </widget>
    <widget class="QMenu" name="menuFractal">
     <property name="title">
@@ -286,6 +290,33 @@
   <action name="actionAnimate_to_here">
    <property name="text">
     <string>Animate to here</string>
+   </property>
+  </action>
+  <action name="actionQuality_animation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Quality animation</string>
+   </property>
+  </action>
+  <action name="actionFast_animation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fast animation</string>
+   </property>
+  </action>
+  <action name="actionVery_fast_animation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Very fast animation</string>
    </property>
   </action>
  </widget>

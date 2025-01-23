@@ -28,10 +28,13 @@ public:
     void openGoToDialog();
     void changeFractal(class ChangeFractalAction *src,
                        const fractals::PointwiseFractal &fractal);
+    void fractalChanged(const std::string &name);
+    void cancelAnimations();
 
   private:
     Ui::MainWindow *ui;
     QActionGroup fractalsActionGroup;
+    QActionGroup zoomSpeedActionGroup;
 };
 
 class ChangeFractalAction : public QAction {

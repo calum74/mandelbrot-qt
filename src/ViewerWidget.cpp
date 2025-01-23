@@ -20,6 +20,8 @@
 #include <iomanip>
 #include <iostream>
 
+using namespace std::literals::chrono_literals;
+
 void register_fractals(fractals::Registry &r);
 
 ViewerWidget::ViewerWidget(QWidget *parent)
@@ -320,7 +322,6 @@ void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
   zoom_y = y;
 
   previousImage = image;
-  using namespace std::literals::chrono_literals;
   zoom_start = std::chrono::system_clock::now();
   // Add a 5% buffer to reduce stuttering
   zoom_duration = std::chrono::milliseconds(
@@ -332,7 +333,7 @@ void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
     zoom_duration = 100ms;
 
   if (fixZoomSpeed)
-    zoom_duration = 500ms; // Override for speed
+    zoom_duration = fixZoomDuration; // Override for speed
 
   assert(computedImage.width() > 0);
 
@@ -484,3 +485,15 @@ void ViewerWidget::renderingFinishedSlot() {
 }
 
 void ViewerWidget::stopAnimations() { cancelAnimations(); }
+
+void ViewerWidget::setQualityAnimation() { fixZoomSpeed = false; }
+
+void ViewerWidget::setFastAnimation() {
+  fixZoomSpeed = true;
+  fixZoomDuration = 500ms;
+}
+
+void ViewerWidget::setFastestAnimation() {
+  fixZoomSpeed = true;
+  fixZoomDuration = 50ms;
+}

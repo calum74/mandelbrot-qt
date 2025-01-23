@@ -62,6 +62,7 @@ class ViewerWidget : public QWidget {
   int press_x, press_y, move_x, move_y;
 
   bool fixZoomSpeed = false;
+  std::chrono::duration<double> fixZoomDuration;
 
   void calculate();
   void draw();
@@ -120,6 +121,10 @@ public slots:
 
   void animateToHere();
   void stopAnimations();
+
+  void setQualityAnimation();
+  void setFastAnimation();
+  void setFastestAnimation();
 
 signals:
   void startCalculating(double width, int maxIterations);

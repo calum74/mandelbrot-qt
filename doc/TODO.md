@@ -1,43 +1,34 @@
 # Task list
 
-Next steps:
+UI fixes:
+- [ ] Menu option to lock zoom speed
+  - Quality
+  - Fast
+  - Very fast
+  - In speed zoom, make sure to update the status bar at the end of the timeout
+- [ ] Max 30s per render?
+- [ ] Remove check from fractal and autozoom menus
+- [ ] main menu slots for
+  - ViewerWidget signal/MainUI slot for
+  - fractalChanged(const char*)
+  - stopAllAnimations()
+
+Rendering fixes:
 - [ ] Fix artefacts
   - No artefacts on scroll
-  - Still dots on image when in deep zoom
-  - Get progressively worse...
-- [ ] Sometimes glitch where depth=0
+  - Render pixels at center
 
+Refactoring:
 - [ ] Refactor ViewerWidget 
   - maybe migrate code to AnimatedRenderer
 
-Plan:
-- Could it be due to the precision of the reference orbit? No.
-- Maybe refactor and see if problem persists
-- Use 2 rendering buffers and swap them?
-- Don't copy anything between buffers?
-Potential root causes
-- Memory race condition
-  std::mutex copy-buffer-mutex? No
-- Timing issue
-  Rendering whilst calculating.
-  Final update isn't acted upon as there's already an update pending
-- Race condition
-  Calculating/copying whilst rendering
-- Bug in error bits handling
-- Can also happen in single-zoom, where the 
-Clues:
-- Mutex didn't help
-- Could it be the reference orbit
-- Disabling interpolation didn't he
-- Could it be the reference orbit moving???
-  -> Test by synchronously computing the reference orbit
-
 Papercuts:
 - [ ] Lines on display when scrolling
-- [ ] Render pixel at the center
+- [ ] Render pixel at the center of the interpolation region
 - [ ] Zooming in when animating can be confusing as the next action is taken
   on the target image (not the animation).
-- [ ] Enhance colour gradient = 5
+- [ ] Autozoom toggle is still on after autozoom cancelled
+- [ ] Enhance colour gradient = 5x
   100 different colours rather than repeating
   Why can you sometimes still see lines???
 
