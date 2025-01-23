@@ -122,9 +122,7 @@ void ViewerWidget::MyViewport::region_updated(int x, int y, int w, int h) {
 void ViewerWidget::MyViewport::finished(double width, int min_depth,
                                         int max_depth, double avg,
                                         double skipped, double render_time) {
-  widget->lastRenderTime = render_time;
   widget->completed(width, min_depth, max_depth, avg, skipped, render_time);
-
   widget->renderingFinishedSignal();
 }
 
@@ -367,7 +365,7 @@ void ViewerWidget::updateFrame() {
     zoomTimeout = true;
     // Maybe carry on zooming to the next frame
     if (calculationFinished || fixZoomSpeed) {
-      renderFinished2();
+      renderFinishedBackgroundImage();
       beginNextAnimation();
     }
   } else {
@@ -395,16 +393,15 @@ void ViewerWidget::BackgroundViewport::finished(double width, int min_depth,
                                                 int max_depth, double avg,
                                                 double skipped,
                                                 double render_time) {
-  if (!widget->zooming)
-    return;
+  // if (!widget->zooming)
+  //   return;
   widget->backgroundRenderFinished();
-  widget->lastRenderTime = render_time; // Unused !! deleteme
   widget->completed(width, min_depth, max_depth, avg, skipped, render_time);
 }
 
-void ViewerWidget::renderFinished2() {
-  if (!zooming)
-    return;
+void ViewerWidget::renderFinishedBackgroundImage() {
+  // if (!zooming)
+  //    return;
   std::copy(background_viewport.data,
             background_viewport.data +
                 background_viewport.width * background_viewport.height,
@@ -416,9 +413,8 @@ void ViewerWidget::backgroundRenderFinished() {
   calculationFinished = true;
 
   if (zoomTimeout) {
-    renderFinished2();
+    renderFinishedBackgroundImage();
     zooming = false;
-
     beginNextAnimation();
   }
 }
@@ -458,7 +454,7 @@ void ViewerWidget::cancelAnimations() {
   renderingTimer.stop();
   current_animation = AnimationType::none;
   if (zooming) {
-    renderFinished2();
+    renderFinishedBackgroundImage();
     zooming = false;
   }
 }

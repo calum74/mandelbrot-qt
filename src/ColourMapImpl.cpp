@@ -28,7 +28,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
 }
 
 void fractals::ColourMapImpl::setRange(double min, double max) {
-  gradient = 10.0 / (max - min);
+  gradient = 5.0 / (max - min);
 }
 
 void fractals::ColourMapImpl::randomize() {
@@ -42,7 +42,7 @@ void fractals::ColourMapImpl::create_colours() {
   std::mt19937 e{seed};
 
   // Create 20 random colours
-  std::vector<RGB> newColours(20);
+  std::vector<RGB> newColours(numColours);
   for (auto &c : newColours) {
     c = e() & 0xffffff;
   }

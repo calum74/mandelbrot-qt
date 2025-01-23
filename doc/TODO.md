@@ -1,85 +1,73 @@
 # Task list
 
+Next steps:
+- [ ] Fix artefacts
+  - No artefacts on scroll
+  - Still dots on image when in deep zoom
+  - Get progressively worse...
+- [ ] Sometimes glitch where depth=0
+
+- [ ] Refactor ViewerWidget 
+  - maybe migrate code to AnimatedRenderer
+
+Plan:
+- Could it be due to the precision of the reference orbit? No.
+- Maybe refactor and see if problem persists
+- Use 2 rendering buffers and swap them?
+- Don't copy anything between buffers?
+Potential root causes
+- Memory race condition
+  std::mutex copy-buffer-mutex? No
+- Timing issue
+  Rendering whilst calculating.
+  Final update isn't acted upon as there's already an update pending
+- Race condition
+  Calculating/copying whilst rendering
+- Bug in error bits handling
+- Can also happen in single-zoom, where the 
+Clues:
+- Mutex didn't help
+- Could it be the reference orbit
+- Disabling interpolation didn't he
+- Could it be the reference orbit moving???
+  -> Test by synchronously computing the reference orbit
+
+Papercuts:
+- [ ] Lines on display when scrolling
+- [ ] Render pixel at the center
+- [ ] Zooming in when animating can be confusing as the next action is taken
+  on the target image (not the animation).
+- [ ] Enhance colour gradient = 5
+  100 different colours rather than repeating
+  Why can you sometimes still see lines???
+
+Then: JSON format
+- Autosave to JSON
+- Bookmarks menu
+- Quick zoom to a location
+
+
+Then: Windows installed MSIX package
+
+
 Jobs for today:
-1. Zoom in to a given point
-- [x] Doesn't stop (Use logdepth) for this.
-- [x] Stop animation with a click or something
-- [x] Add a 5% buffer??
-- [ ] Zoom glitches - seem to be some rendering issues since we write directly to the image
-  If we render at the wrong time, will show nonsense.
-  When we zoom too fast, we don't show anything in the status bar
-  Looks like the error is overflowingz
-2. Speed of zoom?
+1. Speed of zoom?
   - Slow (1000ms)
   - Fast (150ms)
   - Quality
 
 - [ ] In animation, status bar is too noisy. Don't say "calculating" part.
-
-- [ ] Scrolling messes up last_render time and all sorts of things
-
-Features:
+  - Unless we are in "speed" mode...
 - [ ] Zoom out smoothly as well?
-- [ ] Zoom should interpolate because otherwise it's a bit blocky
+- [ ] Lines on screen when scrolling
 
-Plan for today:
-1. Create an AnimatedRenderer with additional timing capabilities
-2. Smooth zoom to final point
+- [ ] Maybe refactor to an AnimatedRenderer
+
 3. Implement bookmarks using json
   Zoom to a bookmark
 
-Autozoom:
-- Can sometimes get lost
-
-- [ ] When reusing an orbit, make sure that we update the number of iterations, particularly for a deep zoom
-
-- [ ] Generate smooth animation to here
-  - Zoom/calculate at the same time
-  - UI shows a zoom state that's fully interpolated from the previous view
-  - Try to get 60fps or something
-  - Meantime, we're calculating the actual viewport on a separate viewport.
-  - When we reach the end, we'll wait for rendering to finish
-  - Then display the new viewport and carry on zooming.
-- [ ] Lock to position.
-
-Implementation:
-- Enter a "zoom mode" whereby the saved viewport is used for all rendering.
-- Parameters:
-  - Start time, expected end time
-  - Framerate
-- Create a small buffer on expected end time based on current image.
-- Store 3 viewports:
-  1. The current image
-  2. The zoomed image
-  3. The computed image
-- As soon as the end time is reached, wait until the image is rendered.
-
-- [ ] Implement a "smooth zoom" button initially
-
-
-- Renderer::continue_smooth_zoom(double time) // Every 16ms
-  - Calculates the 
-
-
 Autocolourmap:
 - 2 modes: auto and manual
-
-
-- [ ] Stop autozoom if the image depth is too low (e.g. 10)
-
-- Create an array
-- Pop from array when we don't have any more colours in the range
-- Problem is that we've already rendered the pixels
-
-Cm::set_pixels(double[])
-
-Manual mode:
-- Pass the array of pixels to the colourmap.
-- Or, create an array of percentiles (100).
-
-
-
-
 
 
 
@@ -89,9 +77,6 @@ Manual mode:
 
 - [ ] Get a deeper series by looking more closely at the divergence criteria
 - [ ] Get a deeper orbit by adding more terms?
-- [ ] Auto algorithm gets stuck in a mandelbrot
-- [ ] To auto-zoom to the edge, zoom to a point that's 10 higher than the mimimum.
-
 
 - [ ] Center button doesn't work when you scroll
 
@@ -106,36 +91,10 @@ Features:
 - [ ] Auto-enhance colours
   How to make this a smooth/auto experience?
 
-Create 100 buckets.
-Sort the array and create the percentiles.
-
-New colouring algorithm:
-- Create an array with one RGB value per iteration.
-- To sort it, 
-
-Task: Find some very close minibrots? What is the closest they can come?
-
-
-
-
-Interesting fact: All centers are on closed orbits, with a fixed period.
-Minibrots are when orbits return to the same point over and over.
-Look at where an interior point ends up.
-We can find similar minibrots by simply following them one iteration.
-
-
-
-
-
-- A "depth" histogram - allow us to see features at different depths.
-
-- [ ] Delete the experiment, and instead repurpose the experiment for different view parameters.
-
 - [ ] fractals:: namespace is stupid
 
 - [ ] A few deep glitches, perhaps due to relative orbits?
 - [ ] Bug: when we load a file we need to update the menus to select the correct item
-
 
 - [ ] Render timings should also include the setup timing.
 
@@ -145,31 +104,15 @@ We can find similar minibrots by simply following them one iteration.
 
 - [ ] Surely we should colour "around" a point rather than just below/right
 
-- [x] Don't aggressively normalize `high_exponent_real`
 - [ ] Update all the other fractals to use new data types
 - [ ] Too many artefacts when scaling and zooming.
   Instead, the "view" contains a pixel size.
   When the pixels in the view are larger than the new pixels, replace them.
-  Still figure out
+  Still to figure out
 - [ ] Rendering sequence to literally map integers to coords and sizes.
   Make it an O(1) operation.
 
-- [ ] Reuse orbit and calculate new reference orbit async 
-
-Rendering: We keep a view stored (as doubles), together with its coordinates and pixel size.
-When we zoom, we first display the outer window to the required scaling.
-As soon as we get data on the inner zoom, we choose whether to replace the current view with the data.
-
-Limit scrolling to wait for rendering to catch up?
-
 - [ ] Multiple top-level windows
-- [ ] Look at time since we rendered last plane
-
-- [ ] Re-test very deep zooms
-
-
-
-
 
 - [ ] Understand reference orbits better
   - What is the "orbit utilization"
@@ -183,8 +126,6 @@ Limit scrolling to wait for rendering to catch up?
 
 Basically it's the depth of range that causes big problems. Computing up to the minimum is usually fine.
 
-- [ ] Speed up relative_orbit when using `high_exponent_number` for deep zooms
-
 - [ ] Colour 122 is nice
 
 - [ ] Refactor mandelbrot parameters, for example use real_number.
@@ -195,35 +136,17 @@ Optimization:
 - [ ] Look into deeper zooms
 - [ ] Visualize skipped iterations. Could be a clue into where to place the reference orbit
 
-
 ## Implement a bookmarks feature.
 Have a saved library of interesting fractals to look at.
 
-```
-struct library_item
-{
-  std::string section, name, description, algorithm, x, y, r;
-  int colour_scheme;
-  double colour_gradient;
-};
-```
-
 - [ ] Auto-enhance image if it's too dim - the range is unsuitable
 
-- [ ] Set the center orbit to be on the Mandelbrot for the best precision
-  E.g. off-center, average 85760 skipped iterations
-  Better center, average 
-
-- [ ] Load file to change the menu
-
-
-- [ ] Write-up of Taylor series
+- [ ] Load file to change the menu to show current bookmark
 
 Short term goals:
 - [ ] MSIX installer
 
 Ideas:
-- [ ] `[` and `]` keys to change the gradient
 - [ ] Instant recolour
 - [ ] Performance improvements
 
@@ -232,18 +155,10 @@ Blockers:
 - [ ] Building Qt from source on Windows still does not work
 
 Bugs:
-- [ ] Can zoom out to radius 3
 - [ ] Still some zoom inaccuracy on Mandeldrop around 1e-20
 
 Colouring:
-- [ ] Find a new default seed
-- [ ] Enhance contrast algorithm by sorting all of the pixels
-  - Keep the array of doubles instead of throwing them away
-  - Split the
-  - Each time we reach a new depth, we append to the "depths" array.
-  - Each time we fail to reach a depth, we'll pop from the "depths" array
-- Create a new colourMap class that handles this.
-- Auto gradient - each time we reach a new zoom level, we put the new pixels in a different gradient?
+- [x] Find a new default seed
 
 Enhancements:
 - [ ] Display the gradient somewhere
@@ -266,11 +181,10 @@ Documentation and tidy:
 - [ ] Can we partially evaluate the Taylor series??
 - [ ] Does choice of reference orbit matter?
 - [ ] Can we combine 2 reference orbits?
+- [ ] Can we translate a Taylor series
 
-# Log term tasks
+# Long term tasks
 
-- benchmarks
-- tests
 - Tidy up the installer text and license
 - [ ] Progress bar
 
@@ -279,7 +193,6 @@ High precision tidy:
 - Configure integer size as well
 
 Less important tasks:
-- [ ] Smooth zoom
 - [ ] Errors in pixels affect the output, so store them in a separate array
 
 Bugs:

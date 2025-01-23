@@ -29,7 +29,6 @@ class ViewerWidget : public QWidget {
     zoomtopoint
   } current_animation = AnimationType::none;
 
-  double lastRenderTime = 1.0;
   double estimatedSecondsPerPixel = 0;
   QTimer renderingTimer;
 
@@ -95,7 +94,7 @@ public:
   listFractals();
 
   void saveToFile(const QString &image_filename);
-  void renderFinished2();
+  void renderFinishedBackgroundImage();
 
 public slots:
   void copyCoords();
