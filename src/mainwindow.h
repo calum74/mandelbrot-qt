@@ -28,7 +28,7 @@ public:
     void openGoToDialog();
     void changeFractal(class ChangeFractalAction *src,
                        const fractals::PointwiseFractal &fractal);
-    void fractalChanged(const std::string &name);
+    void fractalChanged(const char *name);
     void cancelAnimations();
 
   private:

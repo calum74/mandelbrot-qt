@@ -1,34 +1,36 @@
 # Task list
 
 Next steps:
-- [ ] Max threading
-- [x] Fix speed zoom for navigate randomly
-- [ ] Fix speed zoom for max iterations
-  - Very fast animation can lose the max_iteration count.
-  In speed zoom, we often miscalculate the final depth if we don't calculate anything
-- [ ] Center button not working
-- [ ] Rendering and interpolation
-  - Interpolate on center point
-  - 
-- [ ] Resize should be able to continue animation
-- [ ] Errors should be stored in a separate array.
-- Depth stats are bogus when dragging
-
-- [ ] main menu slots for
+- [x] Go home to reset the colour gradient as well
+- [ ] Option to reset colour gradient
+- [x] Default animation type is "smooth"
+- [ ] C button to cancel navigation
+- [ ] Sometimes current calculation doesn't finish if cancelAnimations();
+- [ ] Sometimes dots remain in black areas after a long calculation.
+- [x] Update menu when loading a new fractal
   - ViewerWidget signal/MainUI slot for
   - fractalChanged(const char*)
   - stopAllAnimations()
+- [x] Render timings should also include the setup timing.
+- [ ] Crap on screen when resizing
+- [ ] At the very end of a zoom, don't wait for image to render, but just dump it.
 
-Glitches when you increse iterations, e.g. on fractal 11
-Center button not working any more
+Paper cuts: 
+- [ ] Fix speed zoom for max iterations
+  - Very fast animation can lose the max_iteration count.
+  In speed zoom, we often miscalculate the final depth if we don't calculate anything
+- [ ] Resize should be able to continue animation
+- [ ] Errors should be stored in a separate array.
+- Depth stats are bogus when dragging
+- [ ] In animation, status bar is too noisy. Don't say "calculating" part.
+  - Unless we are in "speed" mode...
+- [ ] Status bar text is inconsistent and out of date, particularly when animating
 
 Refactoring:
 - [ ] Refactor ViewerWidget 
   - maybe migrate code to AnimatedRenderer
-
-Papercuts:
-- [ ] Zooming in when animating can be confusing as the next action is taken
-  on the target image (not the animation).
+- [ ] Store radius in engineering format
+- [ ] Hexadecimal number format
 
 Then: JSON format
 - Autosave to JSON
@@ -38,27 +40,13 @@ Then: JSON format
 
 Then: Windows installed MSIX package
 
-
-Jobs for today:
-1. Speed of zoom?
-  - Slow (1000ms)
-  - Fast (150ms)
-  - Quality
-
-- [ ] In animation, status bar is too noisy. Don't say "calculating" part.
-  - Unless we are in "speed" mode...
 - [ ] Zoom out smoothly as well?
-- [ ] Lines on screen when scrolling
-
-- [ ] Maybe refactor to an AnimatedRenderer
 
 3. Implement bookmarks using json
   Zoom to a bookmark
 
 Autocolourmap:
 - 2 modes: auto and manual
-
-
 
 # Other
 
@@ -67,12 +55,8 @@ Autocolourmap:
 - [ ] Get a deeper series by looking more closely at the divergence criteria
 - [ ] Get a deeper orbit by adding more terms?
 
-- [ ] Center button doesn't work when you scroll
-
 Bookmarks.json file.
 - Store the radius in engineering form.
-- Store numbers in 
-
 
 Features:
 
@@ -82,10 +66,7 @@ Features:
 
 - [ ] fractals:: namespace is stupid
 
-- [ ] A few deep glitches, perhaps due to relative orbits?
-- [ ] Bug: when we load a file we need to update the menus to select the correct item
 
-- [ ] Render timings should also include the setup timing.
 
 - [ ] Split up orbit.hpp
 

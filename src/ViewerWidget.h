@@ -26,7 +26,8 @@ class ViewerWidget : public QWidget {
   enum class AnimationType {
     none,
     autozoom,
-    zoomtopoint
+    zoomtopoint,
+    zoomatcursor
   } current_animation = AnimationType::none;
 
   double estimatedSecondsPerPixel = 0;
@@ -122,6 +123,7 @@ public slots:
   void updateFrame();
 
   void animateToHere();
+  void zoomAtCursor();
   void stopAnimations();
 
   void setQualityAnimation();
@@ -133,6 +135,7 @@ signals:
   void completed(double width, int min_depth, int max_depth, double, double,
                  double time);
   void renderingFinishedSignal();
+  void fractalChanged(const char *name);
 };
 
 #endif // VIEWERWIDGET_H

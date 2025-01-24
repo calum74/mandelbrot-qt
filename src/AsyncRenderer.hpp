@@ -49,6 +49,7 @@ public:
 
   void set_fractal(const fractals::PointwiseFractal &f) override;
 
+  const char *get_fractal_name() const override;
   const char *get_fractal_family() const override;
 
   view_coords initial_coords() const override;

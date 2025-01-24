@@ -78,6 +78,10 @@ const char *fractals::AsyncRenderer::get_fractal_family() const {
   return current_fractal->family();
 }
 
+const char *fractals::AsyncRenderer::get_fractal_name() const {
+  return current_fractal->name();
+}
+
 fractals::view_coords fractals::AsyncRenderer::initial_coords() const {
   return current_fractal->initial_coords();
 }

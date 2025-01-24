@@ -7,8 +7,11 @@
 // attractive colours.
 fractals::ColourMapImpl::ColourMapImpl() {
   seed--;
+  resetGradient();
   randomize();
 }
+
+void fractals::ColourMapImpl::resetGradient() { gradient = 0.05; }
 
 fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   if (d == 0)

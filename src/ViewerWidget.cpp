@@ -29,6 +29,7 @@ ViewerWidget::ViewerWidget(QWidget *parent)
     : QWidget{parent}, colourMap{fractals::make_colourmap()},
       registry{fractals::make_registry()},
       renderer{fractals::make_renderer(*registry)} {
+  setFastAnimation();
 
   register_fractals(*registry);
 
@@ -194,6 +195,7 @@ void ViewerWidget::recolourPalette() {
 void ViewerWidget::resetCurrentFractal() {
   cancelAnimations();
   renderer->set_coords(renderer->initial_coords(), viewport);
+  colourMap->resetGradient();
   calculate();
 }
 
@@ -296,6 +298,7 @@ void ViewerWidget::open() {
 
       renderer->load(params, viewport);
       colourMap->load(params);
+      fractalChanged(renderer->get_fractal_name()); // Update menus if needed
       calculate();
     } else {
       // TODO: Pop up a dialog box
@@ -333,8 +336,8 @@ void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
           1.05)); // Stupid stupid std::chrono
 
   // Stop the zoom duration getting too out of hand
-  if (zoom_duration < 100ms)
-    zoom_duration = 100ms;
+  if (zoom_duration < 750ms)
+    zoom_duration = 750ms;
 
   if (fixZoomSpeed)
     zoom_duration = fixZoomDuration; // Override for speed
@@ -484,16 +487,29 @@ void ViewerWidget::animateToHere() {
   calculate();
 }
 
+void ViewerWidget::zoomAtCursor() {
+  if (zooming) {
+    cancelAnimations();
+  } else {
+    cancelAnimations();
+    current_animation = AnimationType::zoomatcursor;
+    smoothZoomTo(move_x, move_y, false);
+  }
+}
+
 void ViewerWidget::setSpeedEstimate(double secondsPerPixel) {
   estimatedSecondsPerPixel = secondsPerPixel;
 }
 
 void ViewerWidget::renderingFinishedSlot() {
+  // !! switch statement
   if (current_animation == AnimationType::autozoom) {
     autoZoom();
   } else if (current_animation == AnimationType::zoomtopoint) {
     if (renderer->log_width() > zoomtopoint_limit)
       smoothZoomTo(viewport.width / 2, viewport.height / 2, true);
+  } else if (current_animation == AnimationType::zoomatcursor) {
+    smoothZoomTo(move_x, move_y, false);
   }
 }
 
@@ -503,7 +519,7 @@ void ViewerWidget::setQualityAnimation() { fixZoomSpeed = false; }
 
 void ViewerWidget::setFastAnimation() {
   fixZoomSpeed = true;
-  fixZoomDuration = 500ms;
+  fixZoomDuration = 750ms;
 }
 
 void ViewerWidget::setFastestAnimation() {

@@ -78,6 +78,7 @@
     <addaction name="actionGoTo"/>
     <addaction name="actionAutozoom"/>
     <addaction name="actionAnimate_to_here"/>
+    <addaction name="actionZoom_continuously"/>
    </widget>
    <addaction name="menuExample"/>
    <addaction name="menuOptions"/>
@@ -286,7 +287,7 @@
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Quality animation</string>
@@ -294,6 +295,9 @@
   </action>
   <action name="actionFast_animation">
    <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
     <bool>true</bool>
    </property>
    <property name="text">
@@ -327,6 +331,14 @@
    </property>
    <property name="text">
     <string>Maximum threads</string>
+   </property>
+  </action>
+  <action name="actionZoom_continuously">
+   <property name="text">
+    <string>Zoom continuously at cursor</string>
+   </property>
+   <property name="shortcut">
+    <string>C</string>
    </property>
   </action>
  </widget>

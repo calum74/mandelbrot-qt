@@ -56,6 +56,9 @@ MainWindow::MainWindow(QWidget *parent)
           &ViewerWidget::zoomOut);
   connect(ui->actionAutozoom, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::autoZoom);
+  connect(ui->actionZoom_continuously, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::zoomAtCursor);
+
   connect(ui->actionAnimate_to_here, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::animateToHere);
   connect(ui->actionQuality_animation, &QAction::triggered, ui->centralwidget,
@@ -64,6 +67,8 @@ MainWindow::MainWindow(QWidget *parent)
           &ViewerWidget::setFastAnimation);
   connect(ui->actionVery_fast_animation, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::setFastestAnimation);
+  connect(ui->centralwidget, &ViewerWidget::fractalChanged, this,
+          &MainWindow::fractalChanged);
 
   zoomSpeedActionGroup.setExclusionPolicy(
       QActionGroup::ExclusionPolicy::Exclusive);
@@ -172,4 +177,8 @@ void ChangeFractalAction::select(bool checked) {
 
 void MainWindow::cancelAnimations() {}
 
-void MainWindow::fractalChanged(const std::string &) {}
+void MainWindow::fractalChanged(const char *name) {
+  for (auto *action : fractalsActionGroup.actions()) {
+    action->setChecked(action->text() == name);
+  }
+}
