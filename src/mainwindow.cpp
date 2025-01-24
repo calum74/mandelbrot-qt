@@ -9,7 +9,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), fractalsActionGroup(this),
-      zoomSpeedActionGroup(this) {
+      zoomSpeedActionGroup(this), threadingActionGroup(this) {
   ui->setupUi(this);
   connect(ui->centralwidget, &ViewerWidget::startCalculating, this,
           &MainWindow::startCalculating);
@@ -32,8 +32,14 @@ MainWindow::MainWindow(QWidget *parent)
           &ViewerWidget::recolourPalette);
   connect(ui->actionHome, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::resetCurrentFractal);
+
   connect(ui->actionMultithreading, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::enableThreading);
+  connect(ui->actionMax_threads, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::maxThreading);
+  connect(ui->actionSingle_threaded, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::singleThreaded);
+
   connect(ui->actionAuto_iterations, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::enableAutoDepth);
   connect(ui->actionQuick_save, &QAction::triggered, ui->centralwidget,
@@ -44,8 +50,6 @@ MainWindow::MainWindow(QWidget *parent)
           &ViewerWidget::open);
   connect(ui->actionSave, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::save);
-  connect(ui->actionCenter, &QAction::triggered, ui->centralwidget,
-          &ViewerWidget::center);
   connect(ui->actionZoom_in, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::smoothZoomIn);
   connect(ui->actionZoom_out, &QAction::triggered, ui->centralwidget,
@@ -66,6 +70,12 @@ MainWindow::MainWindow(QWidget *parent)
   zoomSpeedActionGroup.addAction(ui->actionQuality_animation);
   zoomSpeedActionGroup.addAction(ui->actionFast_animation);
   zoomSpeedActionGroup.addAction(ui->actionVery_fast_animation);
+
+  threadingActionGroup.setExclusionPolicy(
+      QActionGroup::ExclusionPolicy::Exclusive);
+  threadingActionGroup.addAction(ui->actionMultithreading);
+  threadingActionGroup.addAction(ui->actionMax_threads);
+  threadingActionGroup.addAction(ui->actionSingle_threaded);
 
   QIcon icon(":/new/prefix1/icon.ico");
   QApplication::setWindowIcon(icon);

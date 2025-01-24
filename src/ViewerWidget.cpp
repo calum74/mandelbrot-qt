@@ -19,6 +19,7 @@
 #include <filesystem>
 #include <iomanip>
 #include <iostream>
+#include <thread>
 
 using namespace std::literals::chrono_literals;
 
@@ -218,8 +219,18 @@ void ViewerWidget::enableAutoDepth(bool value) {
 }
 
 void ViewerWidget::enableThreading(bool value) {
-  // TODO: Configure this a bit better
-  renderer->set_threading(value ? 4 : 1);
+  if (value)
+    renderer->set_threading(4);
+}
+
+void ViewerWidget::singleThreaded(bool value) {
+  if (value)
+    renderer->set_threading(1);
+}
+
+void ViewerWidget::maxThreading(bool value) {
+  if (value)
+    renderer->set_threading(std::thread::hardware_concurrency());
 }
 
 void ViewerWidget::quickSave() {
@@ -298,13 +309,6 @@ void ViewerWidget::save() {
   if (!str.isEmpty()) {
     saveToFile(str);
   }
-}
-
-void ViewerWidget::center() {
-  cancelAnimations();
-
-  renderer->center(viewport);
-  calculate();
 }
 
 void ViewerWidget::zoomIn() {

@@ -51,7 +51,9 @@
     <addaction name="actionIncrease_iterations"/>
     <addaction name="actionDecrease_iterations"/>
     <addaction name="separator"/>
+    <addaction name="actionSingle_threaded"/>
     <addaction name="actionMultithreading"/>
+    <addaction name="actionMax_threads"/>
     <addaction name="separator"/>
     <addaction name="actionRandomize_palette"/>
     <addaction name="actionScale_palette"/>
@@ -72,7 +74,6 @@
     <addaction name="actionHome"/>
     <addaction name="actionZoom_in"/>
     <addaction name="actionZoom_out"/>
-    <addaction name="actionCenter"/>
     <addaction name="separator"/>
     <addaction name="actionGoTo"/>
     <addaction name="actionAutozoom"/>
@@ -305,6 +306,27 @@
    </property>
    <property name="text">
     <string>Fast animation</string>
+   </property>
+  </action>
+  <action name="actionSingle_threaded">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Single threaded</string>
+   </property>
+  </action>
+  <action name="actionFour_threads">
+   <property name="text">
+    <string>Four threads</string>
+   </property>
+  </action>
+  <action name="actionMax_threads">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Maximum threads</string>
    </property>
   </action>
  </widget>

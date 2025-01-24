@@ -1,7 +1,7 @@
 # Task list
 
 Next steps:
-- [ ] Click to zoom?
+- [ ] Max threading
 - [x] Fix speed zoom for navigate randomly
 - [ ] Fix speed zoom for max iterations
   - Very fast animation can lose the max_iteration count.
@@ -12,7 +12,7 @@ Next steps:
   - 
 - [ ] Resize should be able to continue animation
 - [ ] Errors should be stored in a separate array.
-- Depth stats are bogis when dragging
+- Depth stats are bogus when dragging
 
 - [ ] main menu slots for
   - ViewerWidget signal/MainUI slot for
@@ -22,24 +22,13 @@ Next steps:
 Glitches when you increse iterations, e.g. on fractal 11
 Center button not working any more
 
-Rendering fixes:
-- [ ] Fix artefacts
-  - No artefacts on scroll
-  - Render pixels at center
-
 Refactoring:
 - [ ] Refactor ViewerWidget 
   - maybe migrate code to AnimatedRenderer
 
 Papercuts:
-- [ ] Lines on display when scrolling
-- [ ] Render pixel at the center of the interpolation region
 - [ ] Zooming in when animating can be confusing as the next action is taken
   on the target image (not the animation).
-- [ ] Autozoom toggle is still on after autozoom cancelled
-- [ ] Enhance colour gradient = 5x
-  100 different colours rather than repeating
-  Why can you sometimes still see lines???
 
 Then: JSON format
 - Autosave to JSON

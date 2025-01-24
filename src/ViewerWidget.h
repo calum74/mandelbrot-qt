@@ -103,12 +103,14 @@ public slots:
   void resetCurrentFractal();
   void changeFractal(const fractals::PointwiseFractal &fractal);
   void enableThreading(bool checked);
+  void singleThreaded(bool checked);
+  void maxThreading(bool checked);
+
   void enableAutoDepth(bool checked);
   void quickSave();
   void scalePalette();
   void open();
   void save();
-  void center();
   void zoomIn();
   void zoomOut();
   void autoZoom();

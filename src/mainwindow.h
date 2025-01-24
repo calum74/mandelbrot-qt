@@ -35,6 +35,7 @@ public:
     Ui::MainWindow *ui;
     QActionGroup fractalsActionGroup;
     QActionGroup zoomSpeedActionGroup;
+    QActionGroup threadingActionGroup;
 };
 
 class ChangeFractalAction : public QAction {
