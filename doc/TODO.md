@@ -1,18 +1,26 @@
 # Task list
 
-UI fixes:
-- [ ] Menu option to lock zoom speed
-  - Quality
-  - Fast
-  - Very fast
-  - In speed zoom, make sure to update the status bar at the end of the timeout
-- [ ] Very fast animation can lose the max_iteration count.
-- [ ] Max 30s per render?
-- [ ] Remove check from fractal and autozoom menus
+Next steps:
+- [ ] Click to zoom?
+- [x] Fix speed zoom for navigate randomly
+- [ ] Fix speed zoom for max iterations
+  - Very fast animation can lose the max_iteration count.
+  In speed zoom, we often miscalculate the final depth if we don't calculate anything
+- [ ] Center button not working
+- [ ] Rendering and interpolation
+  - Interpolate on center point
+  - 
+- [ ] Resize should be able to continue animation
+- [ ] Errors should be stored in a separate array.
+- Depth stats are bogis when dragging
+
 - [ ] main menu slots for
   - ViewerWidget signal/MainUI slot for
   - fractalChanged(const char*)
   - stopAllAnimations()
+
+Glitches when you increse iterations, e.g. on fractal 11
+Center button not working any more
 
 Rendering fixes:
 - [ ] Fix artefacts

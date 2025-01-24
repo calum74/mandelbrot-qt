@@ -92,15 +92,13 @@ void fractals::AsyncRenderer::stop_current_calculation() {
 void fractals::AsyncRenderer::calculate_region_in_thread(
     fractals::Viewport &vp, const ColourMap &cm, std::atomic<bool> &stop) {
 
-  my_rendering_sequence seq(*calculation, cm, vp);
+  my_rendering_sequence seq(*calculation, cm, vp, depths);
   seq.calculate(threads, stop);
   view_min = seq.min_depth;
   view_max = seq.max_depth;
   center_x = seq.center_x;
   center_y = seq.center_y;
   calculated_pixels = seq.calculated_pixels;
-
-  depths = std::move(seq.depths);
 }
 
 void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
@@ -357,9 +355,12 @@ void fractals::AsyncRenderer::get_depth_range(double &min, double &p,
 }
 
 fractals::AsyncRenderer::my_rendering_sequence::my_rendering_sequence(
-    const PointwiseCalculation &calculation, const ColourMap &cm, Viewport &vp)
+    const PointwiseCalculation &calculation, const ColourMap &cm, Viewport &vp,
+    std::vector<depth_value> &depths)
     : fractals::buffered_rendering_sequence<double>(vp.width, vp.height, 16),
-      calculation(calculation), cm(cm), vp(vp) {}
+      calculation(calculation), cm(cm), vp(vp), depths(depths) {
+  depths.clear();
+}
 
 void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
     int stride) {
@@ -382,11 +383,30 @@ void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
           min_depth = depth;
       }
 #if 1 // Useful to be able to disable this for debugging
-      if (stride > 1 && x > 0 && y > 0) {
+      if (stride > 1) {
         // Interpolate the region
-        interpolate_region(vp, x - stride, y - stride, stride);
+        if (x > 0 && y > 0) {
+          maybe_fill_region(vp, x - stride, y - stride, x, y);
+        }
+
+        auto d = stride / 2;
+        int x0 = x - d;
+        int x1 = x + d;
+        int y0 = y - d;
+        int y1 = y + d;
+        if (x0 < 0)
+          x0 = 0;
+        if (x1 >= vp.width)
+          x1 = vp.width - 1;
+        if (y0 < 0)
+          y0 = 0;
+        if (y1 >= vp.height)
+          y1 = vp.height - 1;
+        interpolate_region(vp, x, y, x0, y0, x1, y1);
       }
 #endif
+    } else {
+      // Already calculated which is good
     }
   }
 

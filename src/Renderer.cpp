@@ -6,33 +6,48 @@
 
 // !! Not used
 
-void fractals::interpolate_region(Viewport &vp, int x0, int y0, int h) {
+bool fractals::maybe_fill_region(Viewport &vp, int x0, int y0, int x1, int y1) {
+  if (x1 - x0 > 2)
+    return false;
   auto c00 = vp(x0, y0);
-  auto c10 = vp(x0 + h, y0);
-  auto c01 = vp(x0, y0 + h);
-  auto c11 = vp(x0 + h, y0 + h);
+  auto c10 = vp(x1, y0);
+  auto c01 = vp(x0, y1);
+  auto c11 = vp(x1, y1);
   // auto average = blend(blend(c00, c10, 1, 1), blend(c01, c11, 1, 1), 1, 1);
 
   // If all 4 corners have the same colour, claim that the filled in colour is
   // accurate and does not need to be recalculated 1 means more speed 0 means
   // more accuracy
-#if 1
-  if (c00 == c10 && c00 == c11 && c00 == c01 && h <= 4) {
-    for (int j = 0; j < h; ++j)
-      for (int i = 0; i < h; ++i)
-        vp(x0 + i, y0 + j) = c00;
+  if (c00 == c10 && c00 == c11 && c00 == c01) {
+    for (int j = y0; j < y1; ++j)
+      for (int i = x0; i < x1; ++i)
+        vp(i, j) = c00;
+    return true;
   }
-#endif
+  return false;
+}
+
+void fractals::interpolate_region(Viewport &vp, int cx, int cy, int x0, int y0,
+                                  int x1, int y1) {
+  auto c = vp(cx, cy);
+  assert(x0 >= 0);
+  assert(x1 < vp.width);
+  assert(y0 >= 0);
+  assert(y0 < vp.height);
 
   // Solid colour
-  for (int j = 0; j < h; ++j)
-    for (int i = 0; i < h; ++i) {
-      int error = (i == 0 || i == h) && (j == 0 || j == h) ? 0 : i + j;
-      /* if ((i < h || j < h) && (i > 0 || j > 0)) */
-      auto &p = vp(x0 + i, y0 + j);
+  for (int j = y0; j < y1; ++j) {
+    int dy = j - cy;
+    int ey = dy < 0 ? -dy : dy;
+    for (int i = x0; i < x1; ++i) {
+      int dx = i - cx;
+      int ex = dx < 0 ? -dx : dx;
+      int error = ex + ey;
+      auto &p = vp(i, j);
       if (error < extra(p))
-        p = with_extra(c11, error);
+        p = with_extra(c, error);
     }
+  }
 }
 
 void fractals::Renderer::increase_iterations(Viewport &) {}

@@ -145,16 +145,10 @@
    <property name="text">
     <string>Increase depth</string>
    </property>
-   <property name="shortcut">
-    <string>I</string>
-   </property>
   </action>
   <action name="actionDecrease_iterations">
    <property name="text">
     <string>Decrease depth</string>
-   </property>
-   <property name="shortcut">
-    <string>O</string>
    </property>
   </action>
   <action name="actionMake_movie">
@@ -254,7 +248,7 @@
   </action>
   <action name="actionZoom_in">
    <property name="text">
-    <string>Zoom in</string>
+    <string>Zoom in at cursor</string>
    </property>
    <property name="shortcut">
     <string>Z</string>
@@ -277,14 +271,8 @@
    </property>
   </action>
   <action name="actionAutozoom">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="text">
-    <string>Autozoom</string>
-   </property>
-   <property name="shortcut">
-    <string>A</string>
+    <string>Navigate randomly</string>
    </property>
   </action>
   <action name="actionAnimate_to_here">
@@ -308,7 +296,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Fast animation</string>
+    <string>Smooth animation</string>
    </property>
   </action>
   <action name="actionVery_fast_animation">
@@ -316,7 +304,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Very fast animation</string>
+    <string>Fast animation</string>
    </property>
   </action>
  </widget>

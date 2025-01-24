@@ -8,7 +8,14 @@
 #include <future>
 
 namespace fractals {
-void interpolate_region(Viewport &vp, int x0, int y0, int h);
+// This is an algorithm that fills in a region close to a point
+// with that pixel value. However, it takes into consideration if a pixel has
+// already been calculated, and decides if the interpolated value should
+// overwrite each pixel or not. Each pixel has a concept of an "error" to decide
+// when it should get updated. This leads to interesting visual effects.
+void interpolate_region(Viewport &vp, int cx, int cy, int x0, int y0, int x1,
+                        int y1);
+bool maybe_fill_region(Viewport &vp, int x0, int y0, int x1, int y1);
 
 class AsyncRenderer : public Renderer {
 
@@ -69,11 +76,12 @@ public:
 
   public:
     my_rendering_sequence(const PointwiseCalculation &calculation,
-                          const ColourMap &cm, Viewport &vp);
+                          const ColourMap &cm, Viewport &vp,
+                          std::vector<depth_value> &depths);
 
     double min_depth = 0, max_depth = 0;
     int center_x = 0, center_y = 0;
-    std::vector<depth_value> depths;
+    std::vector<depth_value> &depths;
     std::uint64_t calculated_pixels = 0;
 
     void layer_complete(int stride) override;
