@@ -13,7 +13,6 @@
 #include <QWheelEvent>
 
 #include "mandelbrot.hpp"
-#include "registry.hpp"
 #include "view_parameters.hpp"
 
 #include <filesystem>
@@ -23,15 +22,8 @@
 
 using namespace std::literals::chrono_literals;
 
-void register_fractals(fractals::Registry &r);
-
-ViewerWidget::ViewerWidget(QWidget *parent)
-    : QWidget{parent}, colourMap{fractals::make_colourmap()},
-      registry{fractals::make_registry()},
-      renderer{fractals::make_renderer(*registry)} {
+ViewerWidget::ViewerWidget(QWidget *parent) : QWidget{parent} {
   setFastAnimation();
-
-  register_fractals(*registry);
 
   renderingTimer.setSingleShot(true);
   connect(&renderingTimer, &QTimer::timeout, this, &ViewerWidget::updateFrame);
@@ -40,12 +32,11 @@ ViewerWidget::ViewerWidget(QWidget *parent)
           &ViewerWidget::renderingFinishedSlot);
 }
 
-ViewerWidget::~ViewerWidget() { renderer.reset(); }
-
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
 
 void ViewerWidget::calculate() {
-  startCalculating(renderer->log_width(), renderer->iterations());
+  startCalculating(renderer.renderer->log_width(),
+                   renderer.renderer->iterations());
 
   assert(image.width() > 0);
 
@@ -54,7 +45,7 @@ void ViewerWidget::calculate() {
   viewport.width = image.width();
   viewport.height = image.height();
 
-  renderer->calculate_async(viewport, *colourMap);
+  renderer.renderer->calculate_async(viewport, *renderer.colourMap);
 }
 
 void ViewerWidget::draw() {
@@ -67,7 +58,8 @@ void ViewerWidget::draw() {
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
   cancelAnimations();
   // Should stop the current calculation
-  renderer->set_aspect_ratio(event->size().width(), event->size().height());
+  renderer.renderer->set_aspect_ratio(event->size().width(),
+                                      event->size().height());
 
   viewport.invalidateAllPixels();
   image = QImage(event->size(), QImage::Format_RGB32);
@@ -87,8 +79,8 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
     r = 0.5;
   if (r != 1.0) {
     cancelAnimations();
-    renderer->zoom(r, event->position().x(), event->position().y(), false,
-                   viewport);
+    renderer.renderer->zoom(r, event->position().x(), event->position().y(),
+                            false, viewport);
     calculate();
   }
 }
@@ -96,8 +88,8 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
   if (event->buttons() & Qt::LeftButton) {
     cancelAnimations();
-    renderer->scroll(press_x - event->pos().x(), press_y - event->pos().y(),
-                     viewport);
+    renderer.renderer->scroll(press_x - event->pos().x(),
+                              press_y - event->pos().y(), viewport);
     calculate();
     press_x = event->pos().x();
     press_y = event->pos().y();
@@ -133,25 +125,25 @@ void ViewerWidget::MyViewport::finished(double width, int min_depth,
 void ViewerWidget::MyViewport::discovered_depth(int points,
                                                 double discovered_depth,
                                                 double time) {
-  if (widget->renderer)
-    widget->renderer->discovered_depth(points, discovered_depth);
+  if (widget->renderer.renderer)
+    widget->renderer.renderer->discovered_depth(points, discovered_depth);
   widget->setSpeedEstimate(time);
 }
 
 void ViewerWidget::increaseIterations() {
   cancelAnimations();
-  renderer->increase_iterations(viewport);
+  renderer.renderer->increase_iterations(viewport);
   calculate();
 }
 
 void ViewerWidget::decreaseIterations() {
   cancelAnimations();
-  renderer->decrease_iterations(viewport);
+  renderer.renderer->decrease_iterations(viewport);
   calculate();
 }
 
 void ViewerWidget::copyCoords() {
-  auto c = renderer->get_coords();
+  auto c = renderer.renderer->get_coords();
 
   auto cx = c.x;
   auto cy = c.y;
@@ -173,66 +165,67 @@ void ViewerWidget::copyCoords() {
 }
 
 void ViewerWidget::getCoords(fractals::view_parameters &params) const {
-  renderer->save(params);
-  colourMap->save(params);
+  renderer.renderer->save(params);
+  renderer.colourMap->save(params);
 }
 
 bool ViewerWidget::setCoords(const fractals::view_parameters &params) {
   cancelAnimations();
-  colourMap->load(params);
-  renderer->load(params, viewport);
+  renderer.colourMap->load(params);
+  renderer.renderer->load(params, viewport);
   calculate();
   return true;
 }
 
 void ViewerWidget::recolourPalette() {
   cancelAnimations();
-  colourMap->randomize();
-  renderer->redraw(viewport);
+  renderer.colourMap->randomize();
+  renderer.renderer->redraw(viewport);
   calculate();
 }
 
 void ViewerWidget::resetCurrentFractal() {
   cancelAnimations();
-  renderer->set_coords(renderer->initial_coords(), viewport);
-  colourMap->resetGradient();
+  renderer.renderer->set_coords(renderer.renderer->initial_coords(), viewport);
+  renderer.colourMap->resetGradient();
   calculate();
 }
 
 void ViewerWidget::changeFractal(const fractals::PointwiseFractal &fractal) {
   cancelAnimations();
 
-  std::string old_family = renderer->get_fractal_family();
-  renderer->set_fractal(fractal);
+  std::string old_family = renderer.renderer->get_fractal_family();
+  renderer.renderer->set_fractal(fractal);
 
   if (old_family != fractal.family())
-    renderer->set_coords(renderer->initial_coords(), viewport);
-  renderer->redraw(viewport);
+    renderer.renderer->set_coords(renderer.renderer->initial_coords(),
+                                  viewport);
+  renderer.renderer->redraw(viewport);
   calculate();
 }
 
 std::vector<std::pair<std::string, const fractals::PointwiseFractal &>>
 ViewerWidget::listFractals() {
-  return registry->listFractals();
+  return renderer.registry->listFractals();
 }
 
 void ViewerWidget::enableAutoDepth(bool value) {
-  renderer->enable_auto_depth(value);
+  renderer.renderer->enable_auto_depth(value);
 }
 
 void ViewerWidget::enableThreading(bool value) {
   if (value)
-    renderer->set_threading(4);
+    renderer.renderer->set_threading(4);
 }
 
 void ViewerWidget::singleThreaded(bool value) {
   if (value)
-    renderer->set_threading(1);
+    renderer.renderer->set_threading(1);
 }
 
 void ViewerWidget::maxThreading(bool value) {
   if (value)
-    renderer->set_threading(std::thread::hardware_concurrency());
+    renderer.renderer->set_threading(std::thread::hardware_concurrency());
 }
 
 void ViewerWidget::quickSave() {
@@ -260,8 +253,8 @@ void ViewerWidget::quickSave() {
 
 void ViewerWidget::saveToFile(const QString &image_filename) {
   fractals::view_parameters params;
-  renderer->save(params);
-  colourMap->save(params);
+  renderer.renderer->save(params);
+  renderer.colourMap->save(params);
 
   std::stringstream ss;
   ss << params;
@@ -273,12 +266,12 @@ void ViewerWidget::saveToFile(const QString &image_filename) {
 void ViewerWidget::scalePalette() {
   cancelAnimations();
   double min, p, max;
-  renderer->get_depth_range(min, p, max);
+  renderer.renderer->get_depth_range(min, p, max);
   if (p > 0)
-    colourMap->setRange(min, p);
+    renderer.colourMap->setRange(min, p);
   else if (max > 0)
-    colourMap->setRange(min, max);
-  renderer->redraw(viewport);
+    renderer.colourMap->setRange(min, max);
+  renderer.renderer->redraw(viewport);
   calculate();
 }
 
@@ -296,9 +289,10 @@ void ViewerWidget::open() {
       ss >> params;
       cancelAnimations();
 
-      renderer->load(params, viewport);
-      colourMap->load(params);
-      fractalChanged(renderer->get_fractal_name()); // Update menus if needed
+      renderer.renderer->load(params, viewport);
+      renderer.colourMap->load(params);
+      fractalChanged(
+          renderer.renderer->get_fractal_name()); // Update menus if needed
       calculate();
     } else {
       // TODO: Pop up a dialog box
@@ -316,31 +310,31 @@ void ViewerWidget::save() {
 
 void ViewerWidget::zoomIn() {
   cancelAnimations();
-  renderer->zoom(0.5, move_x, move_y, false, viewport);
+  renderer.renderer->zoom(0.5, move_x, move_y, false, viewport);
   calculate();
 }
 
 void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
-  zooming = true;
-  calculationFinished = false;
-  zoomTimeout = false;
+  renderer.zooming = true;
+  renderer.calculationFinished = false;
+  renderer.zoomTimeout = false;
   computedImage = image;
-  zoom_x = x;
-  zoom_y = y;
+  renderer.zoom_x = x;
+  renderer.zoom_y = y;
 
   previousImage = image;
-  zoom_start = std::chrono::system_clock::now();
+  renderer.zoom_start = std::chrono::system_clock::now();
   // Add a 5% buffer to reduce stuttering
-  zoom_duration = std::chrono::milliseconds(
-      int(estimatedSecondsPerPixel * 1000 * viewport.width * viewport.height *
-          1.05)); // Stupid stupid std::chrono
+  renderer.zoom_duration = std::chrono::milliseconds(
+      int(renderer.estimatedSecondsPerPixel * 1000 * viewport.width *
+          viewport.height * 1.05)); // Stupid stupid std::chrono
 
   // Stop the zoom duration getting too out of hand
-  if (zoom_duration < 750ms)
-    zoom_duration = 750ms;
+  if (renderer.zoom_duration < 750ms)
+    renderer.zoom_duration = 750ms;
 
-  if (fixZoomSpeed)
-    zoom_duration = fixZoomDuration; // Override for speed
+  if (renderer.fixZoomSpeed)
+    renderer.zoom_duration = renderer.fixZoomDuration; // Override for speed
 
   assert(computedImage.width() > 0);
 
@@ -349,34 +343,36 @@ void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
   background_viewport.width = computedImage.width();
   background_viewport.height = computedImage.height();
 
-  renderer->zoom(0.5, zoom_x, zoom_y, lockCenter, background_viewport);
-  renderer->calculate_async(background_viewport, *colourMap);
+  renderer.renderer->zoom(0.5, renderer.zoom_x, renderer.zoom_y, lockCenter,
+                          background_viewport);
+  renderer.renderer->calculate_async(background_viewport, *renderer.colourMap);
   renderingTimer.start(10);
 }
 
 void ViewerWidget::smoothZoomIn() {
   cancelAnimations();
-  if (!zooming) {
+  if (!renderer.zooming) {
     smoothZoomTo(move_x, move_y, false);
   }
 }
 
 void ViewerWidget::updateFrame() {
-  if (!zooming)
+  if (!renderer.zooming)
     return;
 
   auto now = std::chrono::system_clock::now();
-  double time_ratio =
-      std::chrono::duration<double>(now - zoom_start) / zoom_duration;
+  double time_ratio = std::chrono::duration<double>(now - renderer.zoom_start) /
+                      renderer.zoom_duration;
   if (time_ratio >= 1) {
-    zoomTimeout = true;
+    renderer.zoomTimeout = true;
     // Maybe carry on zooming to the next frame
-    if (calculationFinished || fixZoomSpeed) {
+    if (renderer.calculationFinished || renderer.fixZoomSpeed) {
       renderFinishedBackgroundImage();
       beginNextAnimation();
     } else {
       // It's taking some time, so update the status bar
-      startCalculating(renderer->log_width(), renderer->iterations());
+      startCalculating(renderer.renderer->log_width(),
+                       renderer.renderer->iterations());
     }
   } else {
     // Update the current view using the
@@ -388,8 +384,9 @@ void ViewerWidget::updateFrame() {
     previousVp.width = previousImage.width();
     previousVp.height = previousImage.height();
 
-    fractals::map_viewport(previousVp, viewport, zoom_x * (1 - zoom_ratio),
-                           zoom_y * (1 - zoom_ratio), zoom_ratio);
+    fractals::map_viewport(previousVp, viewport,
+                           renderer.zoom_x * (1 - zoom_ratio),
+                           renderer.zoom_y * (1 - zoom_ratio), zoom_ratio);
     update();
 
     renderingTimer.start(10);
@@ -420,19 +417,20 @@ void ViewerWidget::renderFinishedBackgroundImage() {
 }
 
 void ViewerWidget::backgroundRenderFinished() {
-  calculationFinished = true;
+  renderer.calculationFinished = true;
 
-  if (zoomTimeout) {
+  if (renderer.zoomTimeout) {
     renderFinishedBackgroundImage();
-    zooming = false;
+    renderer.zooming = false;
     beginNextAnimation();
   }
 }
 
 void ViewerWidget::beginNextAnimation() {
-  if (!calculationFinished) {
+  if (!renderer.calculationFinished) {
     // Report on current calculation
-    startCalculating(renderer->log_width(), renderer->iterations());
+    startCalculating(renderer.renderer->log_width(),
+                     renderer.renderer->iterations());
   }
 
   renderingFinishedSignal();
@@ -440,22 +438,22 @@ void ViewerWidget::beginNextAnimation() {
 
 void ViewerWidget::BackgroundViewport::discovered_depth(
     int points, double discovered_depth, double seconds_per_pixel) {
-  if (widget->renderer)
-    widget->renderer->discovered_depth(points, discovered_depth);
+  if (widget->renderer.renderer)
+    widget->renderer.renderer->discovered_depth(points, discovered_depth);
   widget->setSpeedEstimate(seconds_per_pixel);
 }
 
 void ViewerWidget::zoomOut() {
   cancelAnimations();
-  renderer->zoom(2.0, move_x, move_y, false, viewport);
+  renderer.renderer->zoom(2.0, move_x, move_y, false, viewport);
   calculate();
 }
 
 void ViewerWidget::autoZoom() {
   cancelAnimations();
   int x, y;
-  if (renderer->get_auto_zoom(x, y)) {
-    current_animation = AnimationType::autozoom;
+  if (renderer.renderer->get_auto_zoom(x, y)) {
+    renderer.current_animation = AnimatedRenderer::AnimationType::autozoom;
     smoothZoomTo(x, y, false);
   } else {
     std::cout << "Autozoom continue failed\n";
@@ -469,60 +467,62 @@ void ViewerWidget::autoZoomContinue() {
 
 void ViewerWidget::cancelAnimations() {
   renderingTimer.stop();
-  current_animation = AnimationType::none;
-  if (zooming) {
+  renderer.current_animation = AnimatedRenderer::AnimationType::none;
+  if (renderer.zooming) {
     renderFinishedBackgroundImage();
-    zooming = false;
+    renderer.zooming = false;
   }
 }
 
 void ViewerWidget::animateToHere() {
   cancelAnimations();
-  current_animation = AnimationType::zoomtopoint;
-  auto c = renderer->get_coords();
+  renderer.current_animation = AnimatedRenderer::AnimationType::zoomtopoint;
+  auto c = renderer.renderer->get_coords();
   c.r = 2.0;
   c.max_iterations = 500;
-  zoomtopoint_limit = renderer->log_width();
-  renderer->set_coords(c, viewport);
+  renderer.zoomtopoint_limit = renderer.renderer->log_width();
+  renderer.renderer->set_coords(c, viewport);
   calculate();
 }
 
 void ViewerWidget::zoomAtCursor() {
-  if (zooming) {
+  if (renderer.zooming) {
     cancelAnimations();
   } else {
     cancelAnimations();
-    current_animation = AnimationType::zoomatcursor;
+    renderer.current_animation = AnimatedRenderer::AnimationType::zoomatcursor;
     smoothZoomTo(move_x, move_y, false);
   }
 }
 
 void ViewerWidget::setSpeedEstimate(double secondsPerPixel) {
-  estimatedSecondsPerPixel = secondsPerPixel;
+  renderer.estimatedSecondsPerPixel = secondsPerPixel;
 }
 
 void ViewerWidget::renderingFinishedSlot() {
   // !! switch statement
-  if (current_animation == AnimationType::autozoom) {
+  if (renderer.current_animation == AnimatedRenderer::AnimationType::autozoom) {
     autoZoom();
-  } else if (current_animation == AnimationType::zoomtopoint) {
-    if (renderer->log_width() > zoomtopoint_limit)
+  } else if (renderer.current_animation ==
+             AnimatedRenderer::AnimationType::zoomtopoint) {
+    if (renderer.renderer->log_width() > renderer.zoomtopoint_limit)
       smoothZoomTo(viewport.width / 2, viewport.height / 2, true);
-  } else if (current_animation == AnimationType::zoomatcursor) {
+  } else if (renderer.current_animation ==
+             AnimatedRenderer::AnimationType::zoomatcursor) {
     smoothZoomTo(move_x, move_y, false);
   }
 }
 
 void ViewerWidget::stopAnimations() { cancelAnimations(); }
 
-void ViewerWidget::setQualityAnimation() { fixZoomSpeed = false; }
+void ViewerWidget::setQualityAnimation() { renderer.fixZoomSpeed = false; }
 
 void ViewerWidget::setFastAnimation() {
-  fixZoomSpeed = true;
-  fixZoomDuration = 750ms;
+  renderer.fixZoomSpeed = true;
+  renderer.fixZoomDuration = 750ms;
 }
 
 void ViewerWidget::setFastestAnimation() {
-  fixZoomSpeed = true;
-  fixZoomDuration = 50ms;
+  renderer.fixZoomSpeed = true;
+  renderer.fixZoomDuration = 50ms;
 }

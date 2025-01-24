@@ -1,11 +1,13 @@
 # Task list
 
 Next steps:
+- [ ] Mandelbrot finder based on orbits returning to the same place?
 - [x] Go home to reset the colour gradient as well
 - [ ] Option to reset colour gradient
 - [x] Default animation type is "smooth"
 - [ ] C button to cancel navigation
-- [ ] Sometimes current calculation doesn't finish if cancelAnimations();
+- [ ] Sometimes current calculation doesn't finish if cancelAnimations(); but continues to run in the background.
+  - 
 - [ ] Sometimes dots remain in black areas after a long calculation.
 - [x] Update menu when loading a new fractal
   - ViewerWidget signal/MainUI slot for

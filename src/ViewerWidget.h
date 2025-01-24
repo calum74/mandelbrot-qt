@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QWidget>
 
+#include "AnimatedRenderer.hpp"
 #include "ColourMap.hpp"
 #include "Renderer.hpp"
 #include "Viewport.hpp"
@@ -15,28 +16,9 @@ class ViewerWidget : public QWidget {
   Q_OBJECT
   QImage image, computedImage, previousImage;
 
-  bool zooming = false;
-  std::atomic<bool> calculationFinished = false;
-  std::atomic<bool> zoomTimeout = false;
-  std::chrono::time_point<std::chrono::system_clock> zoom_start;
-  std::chrono::duration<double> zoom_duration;
-  int zoom_x, zoom_y;
-  double zoomtopoint_limit;
-
-  enum class AnimationType {
-    none,
-    autozoom,
-    zoomtopoint,
-    zoomatcursor
-  } current_animation = AnimationType::none;
-
-  double estimatedSecondsPerPixel = 0;
   QTimer renderingTimer;
 
-  std::unique_ptr<fractals::Registry> registry;
-
-  // Note destruction order - renderer must be destroyed after viewport
-  std::unique_ptr<fractals::Renderer> renderer;
+  AnimatedRenderer renderer;
 
   struct MyViewport : public fractals::Viewport {
     ViewerWidget *widget;
@@ -57,13 +39,8 @@ class ViewerWidget : public QWidget {
                           double time) override;
   } background_viewport;
 
-  std::unique_ptr<fractals::ColourMap> colourMap;
-
   // Track the previous position of the mouse cursor
   int press_x, press_y, move_x, move_y;
-
-  bool fixZoomSpeed = false;
-  std::chrono::duration<double> fixZoomDuration;
 
   void calculate();
   void draw();
@@ -77,7 +54,6 @@ class ViewerWidget : public QWidget {
 
 public:
   explicit ViewerWidget(QWidget *parent = nullptr);
-  ~ViewerWidget() override;
 
   void paintEvent(QPaintEvent *event) override;
   void resizeEvent(QResizeEvent *event) override;
