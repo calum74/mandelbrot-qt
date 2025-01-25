@@ -70,7 +70,6 @@ void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter) {
   background_viewport.data = computedImageData.data();
   background_viewport.width = viewport.width;
   background_viewport.height = viewport.height;
-  // background_viewport.invalidateAllPixels();
   rendered_zoom_ratio = 1.0;
 
   renderer->zoom(0.5, zoom_x, zoom_y, lockCenter, background_viewport);
@@ -91,6 +90,8 @@ void fractals::AnimatedRenderer::BackgroundViewport::finished(
   renderer.background_render_finished();
   renderer.viewport.finished(width, min_depth, max_depth, avg, skipped,
                              render_time);
+  if (max_depth - min_depth < 5)
+    renderer.cancel_animations();
 }
 
 void fractals::AnimatedRenderer::BackgroundViewport::discovered_depth(

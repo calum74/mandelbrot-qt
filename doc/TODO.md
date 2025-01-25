@@ -1,23 +1,31 @@
 # Task list
 
+- [ ] High def mode (oversampling)
+- [ ] Crap on screen when resizing
 
-- [ ] High def mode
+- On high-speed zoom, don't lose depth limit
+  - Bail out if too few pixels per resolution
+
+Classification project:
+a. Basic shape
+  a1. mandelbrot
+  a2. island
+  a3. web
+  a4. spiral
+  a5. flowerc
+b. Order
+b. Fractal type
+  b1. regular mandelbrot
+  b2. cubic mandelbrotc 
+
 
 Animation
-
-- [x] When we finish a zoom, we should only update the view with pixels that are more precise.
-- [ ] When we zoom, we should double the error each time
-- [ ] When we abort a zoom, we should
-  - Set the coordinates to be the original zoom by issuing a zoomout.
-  - start a new calculation at the zoom position
 
 Next steps:
 - [ ] Mandelbrot finder based on orbits returning to the same place?
 - [ ] Option to reset colour gradient
-- [ ] C button to cancel navigation
 - [ ] Sometimes dots remain in black areas after a long calculation.
 - [ ] Render timings should also include the setup timing.
-- [ ] Crap on screen when resizing
 
 Animation fixes:
 - [ ] Bail out animation when we don't recalculate the depth

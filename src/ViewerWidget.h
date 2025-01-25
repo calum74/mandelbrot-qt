@@ -17,6 +17,11 @@ class ViewerWidget : public QWidget {
   QImage image;
   QTimer renderingTimer;
 
+  // We can increase the resolution, perhaps to native screen resolution, but
+  // it's slower.
+  int imageScale = 1.0;
+  // double imageScale = 2.0;  // Oversample
+
   struct MyViewport : public fractals::Viewport {
     ViewerWidget &widget;
     MyViewport(ViewerWidget &);

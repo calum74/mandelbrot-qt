@@ -55,19 +55,23 @@ void ViewerWidget::draw() {
   painter.drawImage(this->rect(), image);
 }
 
+constexpr fractals::RGB grey = fractals::make_rgbx(100, 100, 100, 127);
+
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
   renderer.cancel_animations();
+  int w = event->size().width() * imageScale;
+  int h = event->size().height() * imageScale;
 
   // Should stop the current calculation
-  renderer.renderer->set_aspect_ratio(event->size().width(),
-                                      event->size().height());
+  renderer.renderer->set_aspect_ratio(w, h);
 
   viewport.invalidateAllPixels();
-  image = QImage(event->size(), QImage::Format_RGB32);
+  image = QImage(w, h, QImage::Format_RGB32);
   viewport.data = (fractals::RGB *)image.bits();
   viewport.width = image.width();
   viewport.height = image.height();
-  viewport.invalidateAllPixels();
+  std::fill(viewport.begin(), viewport.end(), grey);
+  // viewport.invalidateAllPixels();
   calculate();
 }
 
@@ -82,23 +86,25 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
     r = 0.5;
   if (r != 1.0) {
     renderer.cancel_animations();
-    renderer.renderer->zoom(r, event->position().x(), event->position().y(),
-                            false, viewport);
+    renderer.renderer->zoom(r, imageScale * event->position().x(),
+                            imageScale * event->position().y(), false,
+                            viewport);
     calculate();
   }
 }
 
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
+  int x = event->pos().x() * imageScale;
+  int y = event->pos().y() * imageScale;
   if (event->buttons() & Qt::LeftButton) {
     renderer.cancel_animations();
-    renderer.renderer->scroll(press_x - event->pos().x(),
-                              press_y - event->pos().y(), viewport);
+    renderer.renderer->scroll(press_x - x, press_y - y, viewport);
     calculate();
-    press_x = event->pos().x();
-    press_y = event->pos().y();
+    press_x = x;
+    press_y = y;
   }
-  move_x = event->pos().x();
-  move_y = event->pos().y();
+  move_x = x;
+  move_y = y;
   renderer.set_cursor(move_x, move_y);
 }
 
@@ -106,8 +112,10 @@ void ViewerWidget::autoZoom() { renderer.auto_navigate(); }
 
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
   if (event->buttons() & Qt::LeftButton) {
-    press_x = event->pos().x();
-    press_y = event->pos().y();
+    int x = event->pos().x() * imageScale;
+    int y = event->pos().y() * imageScale;
+    press_x = x;
+    press_y = y;
 
     stopAnimations();
   }

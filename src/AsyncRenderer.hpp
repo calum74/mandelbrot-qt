@@ -8,6 +8,7 @@
 #include <future>
 
 namespace fractals {
+
 // This is an algorithm that fills in a region close to a point
 // with that pixel value. However, it takes into consideration if a pixel has
 // already been calculated, and decides if the interpolated value should
