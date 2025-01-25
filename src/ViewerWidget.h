@@ -14,7 +14,7 @@
 
 class ViewerWidget : public QWidget {
   Q_OBJECT
-  QImage image, computedImage, previousImage;
+  QImage image;
 
   QTimer renderingTimer;
 

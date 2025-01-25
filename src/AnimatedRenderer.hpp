@@ -14,6 +14,8 @@ public:
 
   void calculate_async(fractals::Viewport &output);
 
+public: // !! private
+  // TODO: Make all this private
   std::unique_ptr<fractals::Registry> registry;
 
   // Note destruction order - renderer must be destroyed after viewport
@@ -41,4 +43,9 @@ public:
 
   bool fixZoomSpeed = false;
   std::chrono::duration<double> fixZoomDuration;
+
+  std::vector<fractals::RGB> previousImageData, computedImageData;
+
+private:
+  fractals::Viewport *viewport;
 };

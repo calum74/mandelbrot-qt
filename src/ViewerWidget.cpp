@@ -322,11 +322,14 @@ void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
   renderer.zooming = true;
   renderer.calculationFinished = false;
   renderer.zoomTimeout = false;
-  computedImage = image;
+
+  renderer.computedImageData.resize(viewport.width * viewport.height);
   renderer.zoom_x = x;
   renderer.zoom_y = y;
 
-  previousImage = image;
+  renderer.previousImageData.resize(viewport.width * viewport.height);
+  std::copy(viewport.begin(), viewport.end(),
+            renderer.previousImageData.begin());
   renderer.zoom_start = std::chrono::system_clock::now();
   // Add a 5% buffer to reduce stuttering
   renderer.zoom_duration = std::chrono::milliseconds(
@@ -343,9 +346,9 @@ void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
   assert(computedImage.width() > 0);
 
   background_viewport.widget = this;
-  background_viewport.data = (fractals::RGB *)computedImage.bits();
-  background_viewport.width = computedImage.width();
-  background_viewport.height = computedImage.height();
+  background_viewport.data = renderer.computedImageData.data();
+  background_viewport.width = viewport.width;
+  background_viewport.height = viewport.height;
 
   renderer.renderer->zoom(0.5, renderer.zoom_x, renderer.zoom_y, lockCenter,
                           background_viewport);
@@ -384,9 +387,9 @@ void ViewerWidget::updateFrame() {
     // Project the current view into the frame
     auto zoom_ratio = std::pow(0.5, time_ratio);
     fractals::Viewport previousVp;
-    previousVp.data = (fractals::RGB *)previousImage.bits();
-    previousVp.width = previousImage.width();
-    previousVp.height = previousImage.height();
+    previousVp.data = renderer.previousImageData.data();
+    previousVp.width = viewport.width;
+    previousVp.height = viewport.height;
 
     fractals::map_viewport(previousVp, viewport,
                            renderer.zoom_x * (1 - zoom_ratio),
@@ -417,7 +420,7 @@ void ViewerWidget::renderFinishedBackgroundImage() {
             background_viewport.data +
                 background_viewport.width * background_viewport.height,
             viewport.data);
-  update();
+  viewport.region_updated(0, 0, viewport.width, viewport.height);
 }
 
 void ViewerWidget::backgroundRenderFinished() {
