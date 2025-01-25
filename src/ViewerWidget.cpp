@@ -364,7 +364,10 @@ void ViewerWidget::renderingFinishedSlot() {
   renderer.start_next_calculation();
 }
 
-void ViewerWidget::stopAnimations() { renderer.cancel_animations(); }
+void ViewerWidget::stopAnimations() {
+  renderer.cancel_animations();
+  calculate();
+}
 
 void ViewerWidget::setQualityAnimation() {
   renderer.set_animation_speed(750ms, false);

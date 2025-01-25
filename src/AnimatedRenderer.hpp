@@ -64,6 +64,7 @@ private:
   std::chrono::duration<double> zoom_duration;
   int zoom_x, zoom_y;
   double zoomtopoint_limit;
+  double rendered_zoom_ratio;
 
   double estimatedSecondsPerPixel = 0;
   std::vector<fractals::RGB> previousImagePixels, backgroundImagePixels;
@@ -74,7 +75,8 @@ private:
   std::vector<fractals::RGB> previousImageData, computedImageData;
 
   struct BackgroundViewport : public fractals::Viewport {
-    AnimatedRenderer *renderer;
+    BackgroundViewport(AnimatedRenderer &);
+    AnimatedRenderer &renderer;
     void updated() override;
     void finished(double width, int min_depth, int max_depth, double avg,
                   double skipped, double render_time) override;
@@ -82,7 +84,7 @@ private:
                           double time) override;
   } background_viewport;
 
-  void render_finished_background_image();
+  void render_update_background_image();
   void render_overwrite_background_image();
   void background_render_finished();
   void begin_next_animation();

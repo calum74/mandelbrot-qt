@@ -1,9 +1,15 @@
 # Task list
 
+a lot of grey when zooming in very fast
+a bit too much redrawing when we hit pause.
+
 Animation
-- [ ] When we finish a zoom, we should only update the view with pixels that are more precise.
+
+- [x] When we finish a zoom, we should only update the view with pixels that are more precise.
 - [ ] When we zoom, we should double the error each time
-- [ ] When we abort a zoom, we should only update the view
+- [ ] When we abort a zoom, we should
+  - Set the coordinates to be the original zoom by issuing a zoomout.
+  - start a new calculation at the zoom position
 
 Next steps:
 - [ ] Mandelbrot finder based on orbits returning to the same place?
