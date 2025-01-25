@@ -33,6 +33,8 @@ public:
 
   void set_cursor(int move_x, int move_y);
   void autoZoom();
+  void animateToHere();
+  void zoomAtCursor();
 
 public: // !! private
   // TODO: Make all this private

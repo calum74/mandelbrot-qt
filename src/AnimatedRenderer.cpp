@@ -1,6 +1,7 @@
 #include "AnimatedRenderer.hpp"
 #include "Renderer.hpp"
 #include "registry.hpp"
+#include "view_coords.hpp"
 #include <cassert>
 
 using namespace std::literals::chrono_literals;
@@ -184,4 +185,23 @@ void AnimatedRenderer::autoZoom() {
 void AnimatedRenderer::set_cursor(int x, int y) {
   move_x = x;
   move_y = y;
+}
+
+void AnimatedRenderer::animateToHere() {
+  current_animation = AnimationType::startzoomtopoint;
+  auto c = renderer->get_coords();
+  c.r = 2.0;
+  c.max_iterations = 500;
+  zoomtopoint_limit = renderer->log_width();
+  renderer->set_coords(c, viewport);
+}
+
+void AnimatedRenderer::zoomAtCursor() {
+  if (zooming) {
+    cancelAnimations();
+  } else {
+    cancelAnimations();
+    current_animation = AnimationType::zoomatcursor;
+    smoothZoomTo(move_x, move_y, false);
+  }
 }

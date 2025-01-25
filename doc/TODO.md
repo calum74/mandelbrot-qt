@@ -1,7 +1,6 @@
 # Task list
 
 Animation
-- [ ] viewport is a reference
 
 Next steps:
 - [ ] Probably rendering glitch at outermost zoom
@@ -13,13 +12,8 @@ Next steps:
 - [ ] C button to cancel navigation
   - 
 - [ ] Sometimes dots remain in black areas after a long calculation.
-- [x] Update menu when loading a new fractal
-  - ViewerWidget signal/MainUI slot for
-  - fractalChanged(const char*)
-  - stopAllAnimations()
-- [x] Render timings should also include the setup timing.
+- [ ] Render timings should also include the setup timing.
 - [ ] Crap on screen when resizing
-- [ ] Have a "power" zoom as opposed to a linear zoom. 
 
 Animation fixes:
 - [ ] Bail out animation when we don't recalculate the depth

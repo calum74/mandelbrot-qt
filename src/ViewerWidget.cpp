@@ -355,26 +355,11 @@ void ViewerWidget::zoomOut() {
 }
 
 void ViewerWidget::animateToHere() {
-  renderer.cancelAnimations();
-  renderer.current_animation =
-      AnimatedRenderer::AnimationType::startzoomtopoint;
-  auto c = renderer.renderer->get_coords();
-  c.r = 2.0;
-  c.max_iterations = 500;
-  renderer.zoomtopoint_limit = renderer.renderer->log_width();
-  renderer.renderer->set_coords(c, viewport);
+  renderer.animateToHere();
   calculate();
 }
 
-void ViewerWidget::zoomAtCursor() {
-  if (renderer.zooming) {
-    renderer.cancelAnimations();
-  } else {
-    renderer.cancelAnimations();
-    renderer.current_animation = AnimatedRenderer::AnimationType::zoomatcursor;
-    renderer.smoothZoomTo(move_x, move_y, false);
-  }
-}
+void ViewerWidget::zoomAtCursor() { renderer.zoomAtCursor(); }
 
 void ViewerWidget::setSpeedEstimate(double secondsPerPixel) {
   renderer.estimatedSecondsPerPixel = secondsPerPixel;
