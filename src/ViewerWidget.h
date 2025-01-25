@@ -27,17 +27,9 @@ class ViewerWidget : public QWidget {
                   double skipped, double render_time) override;
     void discovered_depth(int points, double discovered_depth,
                           double time_per_pixel) override;
-
+    void calculation_started(double log_radius, int iterations) override;
+    void schedule_next_calculation() override;
   } viewport;
-
-  struct BackgroundViewport : public fractals::Viewport {
-    ViewerWidget *widget;
-    void region_updated(int x, int y, int w, int h) override;
-    void finished(double width, int min_depth, int max_depth, double avg,
-                  double skipped, double render_time) override;
-    void discovered_depth(int points, double discovered_depth,
-                          double time) override;
-  } background_viewport;
 
   // Track the previous position of the mouse cursor
   int press_x, press_y, move_x, move_y;
@@ -49,7 +41,6 @@ class ViewerWidget : public QWidget {
 
   void cancelAnimations();
   void setSpeedEstimate(double secondsPerPixel);
-  void beginNextAnimation();
   void smoothZoomTo(int x, int y, bool lockCenter);
 
 public:
@@ -72,7 +63,6 @@ public:
   listFractals();
 
   void saveToFile(const QString &image_filename);
-  void renderFinishedBackgroundImage();
 
 public slots:
   void copyCoords();
@@ -94,7 +84,6 @@ public slots:
   void renderingFinishedSlot();
 
   void smoothZoomIn();
-  void backgroundRenderFinished();
   void updateFrame();
 
   void animateToHere();

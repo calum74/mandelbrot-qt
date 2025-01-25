@@ -102,9 +102,3 @@ void fractals::Renderer::save(view_parameters &params) const {}
 std::unique_ptr<fractals::Renderer> fractals::make_renderer(Registry &reg) {
   return std::make_unique<AsyncRenderer>(mandelbrot_fractal, reg);
 }
-
-fractals::Viewport::iterator fractals::Viewport::begin() { return data; }
-
-fractals::Viewport::iterator fractals::Viewport::end() { return data + size(); }
-
-int fractals::Viewport::size() const { return width * height; }

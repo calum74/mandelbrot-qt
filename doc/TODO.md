@@ -1,6 +1,9 @@
 # Task list
 
+Animation
+
 Next steps:
+- [ ] region_updated to rename to `updated()` and drop coords
 - [ ] Mandelbrot finder based on orbits returning to the same place?
 - [x] Go home to reset the colour gradient as well
 - [ ] Option to reset colour gradient

@@ -2,6 +2,7 @@
 #include "ColourMap.hpp"
 #include "RGB.hpp"
 #include "Renderer.hpp"
+#include "Viewport.hpp"
 #include "registry.hpp"
 
 #include <atomic>
@@ -12,7 +13,11 @@ public:
   AnimatedRenderer();
   ~AnimatedRenderer();
 
+  void smoothZoomTo(int x, int y, bool lockCenter);
+
   void calculate_async(fractals::Viewport &output);
+
+  void start_next_calculation();
 
 public: // !! private
   // TODO: Make all this private
@@ -32,6 +37,7 @@ public: // !! private
   enum class AnimationType {
     none,
     autozoom,
+    startzoomtopoint,
     zoomtopoint,
     zoomatcursor
   } current_animation = AnimationType::none;
@@ -45,6 +51,19 @@ public: // !! private
   std::chrono::duration<double> fixZoomDuration;
 
   std::vector<fractals::RGB> previousImageData, computedImageData;
+
+  struct BackgroundViewport : public fractals::Viewport {
+    AnimatedRenderer *renderer;
+    void region_updated(int x, int y, int w, int h) override;
+    void finished(double width, int min_depth, int max_depth, double avg,
+                  double skipped, double render_time) override;
+    void discovered_depth(int points, double discovered_depth,
+                          double time) override;
+  } background_viewport;
+
+  void renderFinishedBackgroundImage();
+  void backgroundRenderFinished();
+  void beginNextAnimation();
 
 private:
   fractals::Viewport *viewport;

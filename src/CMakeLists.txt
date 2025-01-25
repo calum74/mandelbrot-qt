@@ -25,6 +25,8 @@ set(PROJECT_SOURCES
         ColourMapImpl.hpp
         ViewerWidget.h
         ViewerWidget.cpp
+        Viewport.hpp
+        Viewport.cpp
         Fractals.cpp
         gotodialog.h
         gotodialog.cpp

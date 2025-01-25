@@ -119,11 +119,26 @@ void ViewerWidget::MyViewport::region_updated(int x, int y, int w, int h) {
   }
 }
 
+void ViewerWidget::MyViewport::calculation_started(double logRadius,
+                                                   int iterations) {
+  widget->startCalculating(logRadius, iterations);
+}
+
+void ViewerWidget::MyViewport::schedule_next_calculation() {
+  widget->renderingFinishedSignal();
+}
+
 void ViewerWidget::MyViewport::finished(double width, int min_depth,
                                         int max_depth, double avg,
                                         double skipped, double render_time) {
   widget->completed(width, min_depth, max_depth, avg, skipped, render_time);
-  widget->renderingFinishedSignal();
+
+  if (widget->renderer.current_animation ==
+      AnimatedRenderer::AnimationType::startzoomtopoint) {
+    widget->renderer.current_animation =
+        AnimatedRenderer::AnimationType::zoomtopoint;
+    widget->renderingFinishedSignal();
+  }
 }
 
 void ViewerWidget::MyViewport::discovered_depth(int points,
@@ -319,40 +334,7 @@ void ViewerWidget::zoomIn() {
 }
 
 void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
-  renderer.zooming = true;
-  renderer.calculationFinished = false;
-  renderer.zoomTimeout = false;
-
-  renderer.computedImageData.resize(viewport.width * viewport.height);
-  renderer.zoom_x = x;
-  renderer.zoom_y = y;
-
-  renderer.previousImageData.resize(viewport.width * viewport.height);
-  std::copy(viewport.begin(), viewport.end(),
-            renderer.previousImageData.begin());
-  renderer.zoom_start = std::chrono::system_clock::now();
-  // Add a 5% buffer to reduce stuttering
-  renderer.zoom_duration = std::chrono::milliseconds(
-      int(renderer.estimatedSecondsPerPixel * 1000 * viewport.width *
-          viewport.height * 1.05)); // Stupid stupid std::chrono
-
-  // Stop the zoom duration getting too out of hand
-  if (renderer.zoom_duration < 750ms)
-    renderer.zoom_duration = 750ms;
-
-  if (renderer.fixZoomSpeed)
-    renderer.zoom_duration = renderer.fixZoomDuration; // Override for speed
-
-  assert(computedImage.width() > 0);
-
-  background_viewport.widget = this;
-  background_viewport.data = renderer.computedImageData.data();
-  background_viewport.width = viewport.width;
-  background_viewport.height = viewport.height;
-
-  renderer.renderer->zoom(0.5, renderer.zoom_x, renderer.zoom_y, lockCenter,
-                          background_viewport);
-  renderer.renderer->calculate_async(background_viewport, *renderer.colourMap);
+  renderer.smoothZoomTo(x, y, lockCenter);
   renderingTimer.start(10);
 }
 
@@ -374,8 +356,8 @@ void ViewerWidget::updateFrame() {
     renderer.zoomTimeout = true;
     // Maybe carry on zooming to the next frame
     if (renderer.calculationFinished || renderer.fixZoomSpeed) {
-      renderFinishedBackgroundImage();
-      beginNextAnimation();
+      renderer.renderFinishedBackgroundImage();
+      renderer.beginNextAnimation();
     } else {
       // It's taking some time, so update the status bar
       startCalculating(renderer.renderer->log_width(),
@@ -400,56 +382,6 @@ void ViewerWidget::updateFrame() {
   }
 }
 
-void ViewerWidget::BackgroundViewport::region_updated(int x, int y, int w,
-                                                      int h) {}
-
-void ViewerWidget::BackgroundViewport::finished(double width, int min_depth,
-                                                int max_depth, double avg,
-                                                double skipped,
-                                                double render_time) {
-  // if (!widget->zooming)
-  //   return;
-  widget->backgroundRenderFinished();
-  widget->completed(width, min_depth, max_depth, avg, skipped, render_time);
-}
-
-void ViewerWidget::renderFinishedBackgroundImage() {
-  // if (!zooming)
-  //    return;
-  std::copy(background_viewport.data,
-            background_viewport.data +
-                background_viewport.width * background_viewport.height,
-            viewport.data);
-  viewport.region_updated(0, 0, viewport.width, viewport.height);
-}
-
-void ViewerWidget::backgroundRenderFinished() {
-  renderer.calculationFinished = true;
-
-  if (renderer.zoomTimeout) {
-    renderFinishedBackgroundImage();
-    renderer.zooming = false;
-    beginNextAnimation();
-  }
-}
-
-void ViewerWidget::beginNextAnimation() {
-  if (!renderer.calculationFinished) {
-    // Report on current calculation
-    startCalculating(renderer.renderer->log_width(),
-                     renderer.renderer->iterations());
-  }
-
-  renderingFinishedSignal();
-}
-
-void ViewerWidget::BackgroundViewport::discovered_depth(
-    int points, double discovered_depth, double seconds_per_pixel) {
-  if (widget->renderer.renderer)
-    widget->renderer.renderer->discovered_depth(points, discovered_depth);
-  widget->setSpeedEstimate(seconds_per_pixel);
-}
-
 void ViewerWidget::zoomOut() {
   cancelAnimations();
   renderer.renderer->zoom(2.0, move_x, move_y, false, viewport);
@@ -471,14 +403,15 @@ void ViewerWidget::cancelAnimations() {
   renderingTimer.stop();
   renderer.current_animation = AnimatedRenderer::AnimationType::none;
   if (renderer.zooming) {
-    renderFinishedBackgroundImage();
+    renderer.renderFinishedBackgroundImage();
     renderer.zooming = false;
   }
 }
 
 void ViewerWidget::animateToHere() {
   cancelAnimations();
-  renderer.current_animation = AnimatedRenderer::AnimationType::zoomtopoint;
+  renderer.current_animation =
+      AnimatedRenderer::AnimationType::startzoomtopoint;
   auto c = renderer.renderer->get_coords();
   c.r = 2.0;
   c.max_iterations = 500;

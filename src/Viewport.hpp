@@ -44,6 +44,13 @@ struct Viewport {
   // Can be called even if stopped
   virtual void discovered_depth(int points, double discovered_depth,
                                 double seconds_per_point);
+
+  // Signal that a new calculation has started
+  virtual void calculation_started(double log_radius, int iterations);
+
+  // The current animation has finished, so queue an async callback
+  // to carry on animating
+  virtual void schedule_next_calculation();
 };
 
 // Perform a pixel-by-pixel remapping and interpolation from src to dest.
