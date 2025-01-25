@@ -110,3 +110,39 @@ void AnimatedRenderer::beginNextAnimation() {
   // to be called back
   viewport->schedule_next_calculation();
 }
+
+void AnimatedRenderer::timer() {
+  if (!zooming)
+    return;
+
+  auto now = std::chrono::system_clock::now();
+  double time_ratio =
+      std::chrono::duration<double>(now - zoom_start) / zoom_duration;
+  if (time_ratio >= 1) {
+    zoomTimeout = true;
+    // Maybe carry on zooming to the next frame
+    if (calculationFinished || fixZoomSpeed) {
+      renderFinishedBackgroundImage();
+      beginNextAnimation();
+    } else {
+      // It's taking some time, so update the status bar
+      viewport->calculation_started(renderer->log_width(),
+                                    renderer->iterations());
+    }
+  } else {
+    // Update the current view using the
+    // The scaling ratio isn't actually linear !!
+    // Project the current view into the frame
+    auto zoom_ratio = std::pow(0.5, time_ratio);
+    fractals::Viewport previousVp;
+    previousVp.data = previousImageData.data();
+    previousVp.width = viewport->width;
+    previousVp.height = viewport->height;
+
+    fractals::map_viewport(previousVp, *viewport, zoom_x * (1 - zoom_ratio),
+                           zoom_y * (1 - zoom_ratio), zoom_ratio);
+    viewport->region_updated(0, 0, viewport->width, viewport->height);
+
+    viewport->start_timer();
+  }
+}

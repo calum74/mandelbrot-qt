@@ -345,42 +345,7 @@ void ViewerWidget::smoothZoomIn() {
   }
 }
 
-void ViewerWidget::updateFrame() {
-  if (!renderer.zooming)
-    return;
-
-  auto now = std::chrono::system_clock::now();
-  double time_ratio = std::chrono::duration<double>(now - renderer.zoom_start) /
-                      renderer.zoom_duration;
-  if (time_ratio >= 1) {
-    renderer.zoomTimeout = true;
-    // Maybe carry on zooming to the next frame
-    if (renderer.calculationFinished || renderer.fixZoomSpeed) {
-      renderer.renderFinishedBackgroundImage();
-      renderer.beginNextAnimation();
-    } else {
-      // It's taking some time, so update the status bar
-      startCalculating(renderer.renderer->log_width(),
-                       renderer.renderer->iterations());
-    }
-  } else {
-    // Update the current view using the
-    // The scaling ratio isn't actually linear !!
-    // Project the current view into the frame
-    auto zoom_ratio = std::pow(0.5, time_ratio);
-    fractals::Viewport previousVp;
-    previousVp.data = renderer.previousImageData.data();
-    previousVp.width = viewport.width;
-    previousVp.height = viewport.height;
-
-    fractals::map_viewport(previousVp, viewport,
-                           renderer.zoom_x * (1 - zoom_ratio),
-                           renderer.zoom_y * (1 - zoom_ratio), zoom_ratio);
-    update();
-
-    renderingTimer.start(10);
-  }
-}
+void ViewerWidget::updateFrame() { renderer.timer(); }
 
 void ViewerWidget::MyViewport::start_timer() {
   widget->renderingTimer.start(10);
