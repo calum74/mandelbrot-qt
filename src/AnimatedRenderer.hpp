@@ -8,6 +8,7 @@
 #include <atomic>
 #include <chrono>
 
+namespace fractals {
 /*
 Logic for creating animations.
 
@@ -88,3 +89,4 @@ private:
   fractals::Viewport &viewport;
   int move_x = 0, move_y = 0;
 };
+} // namespace fractals

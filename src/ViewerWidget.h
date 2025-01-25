@@ -31,7 +31,7 @@ class ViewerWidget : public QWidget {
     void stop_timer() override;
   } viewport;
 
-  AnimatedRenderer renderer;
+  fractals::AnimatedRenderer renderer;
 
   // Track the previous position of the mouse cursor
   int press_x, press_y, move_x, move_y;

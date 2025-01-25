@@ -136,9 +136,9 @@ void ViewerWidget::MyViewport::finished(double width, int min_depth,
   widget.completed(width, min_depth, max_depth, avg, skipped, render_time);
 
   if (widget.renderer.current_animation ==
-      AnimatedRenderer::AnimationType::startzoomtopoint) {
+      fractals::AnimatedRenderer::AnimationType::startzoomtopoint) {
     widget.renderer.current_animation =
-        AnimatedRenderer::AnimationType::zoomtopoint;
+        fractals::AnimatedRenderer::AnimationType::zoomtopoint;
     widget.renderingFinishedSignal();
   }
 }
