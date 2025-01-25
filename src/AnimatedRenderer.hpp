@@ -22,7 +22,7 @@ public:
 
   void smoothZoomTo(int x, int y, bool lockCenter);
 
-  void calculate_async(fractals::Viewport &output);
+  void calculate_async();
 
   void start_next_calculation();
 
@@ -81,6 +81,6 @@ public: // !! private
   void beginNextAnimation();
 
 private:
-  fractals::Viewport *viewport; // !! Use a reference
+  fractals::Viewport &viewport;
   int move_x = 0, move_y = 0;
 };

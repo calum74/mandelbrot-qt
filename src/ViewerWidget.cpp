@@ -45,7 +45,7 @@ void ViewerWidget::calculate() {
   viewport.width = image.width();
   viewport.height = image.height();
 
-  renderer.calculate_async(viewport);
+  renderer.calculate_async();
 }
 
 void ViewerWidget::draw() {

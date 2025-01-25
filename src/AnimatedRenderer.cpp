@@ -8,7 +8,7 @@ using namespace std::literals::chrono_literals;
 void register_fractals(fractals::Registry &r);
 
 AnimatedRenderer::AnimatedRenderer(fractals::Viewport &viewport)
-    : viewport(&viewport), colourMap{fractals::make_colourmap()},
+    : viewport(viewport), colourMap{fractals::make_colourmap()},
       registry{fractals::make_registry()},
       renderer{fractals::make_renderer(*registry)} {
 
@@ -17,18 +17,17 @@ AnimatedRenderer::AnimatedRenderer(fractals::Viewport &viewport)
 
 AnimatedRenderer::~AnimatedRenderer() { renderer.reset(); }
 
-void AnimatedRenderer::calculate_async(fractals::Viewport &vp) {
-  viewport = &vp;
-  renderer->calculate_async(vp, *colourMap);
+void AnimatedRenderer::calculate_async() {
+  renderer->calculate_async(viewport, *colourMap);
 }
 
 void AnimatedRenderer::renderFinishedBackgroundImage() {
   // if (!zooming)
   //    return;
-  assert(viewport->size() == background_viewport.size());
+  assert(viewport.size() == background_viewport.size());
   std::copy(background_viewport.begin(), background_viewport.end(),
-            viewport->begin());
-  viewport->updated();
+            viewport.begin());
+  viewport.updated();
 }
 
 void AnimatedRenderer::smoothZoomTo(int x, int y, bool lockCenter) {
@@ -36,16 +35,16 @@ void AnimatedRenderer::smoothZoomTo(int x, int y, bool lockCenter) {
   calculationFinished = false;
   zoomTimeout = false;
 
-  computedImageData.resize(viewport->width * viewport->height);
+  computedImageData.resize(viewport.width * viewport.height);
   zoom_x = x;
   zoom_y = y;
 
-  previousImageData.resize(viewport->width * viewport->height);
-  std::copy(viewport->begin(), viewport->end(), previousImageData.begin());
+  previousImageData.resize(viewport.width * viewport.height);
+  std::copy(viewport.begin(), viewport.end(), previousImageData.begin());
   zoom_start = std::chrono::system_clock::now();
   // Add a 10% buffer to reduce stuttering
   zoom_duration = std::chrono::milliseconds(
-      int(estimatedSecondsPerPixel * 1000 * viewport->width * viewport->height *
+      int(estimatedSecondsPerPixel * 1000 * viewport.width * viewport.height *
           1.10)); // Stupid stupid std::chrono
 
   // Stop the zoom duration getting too out of hand
@@ -57,13 +56,13 @@ void AnimatedRenderer::smoothZoomTo(int x, int y, bool lockCenter) {
 
   background_viewport.renderer = this;
   background_viewport.data = computedImageData.data();
-  background_viewport.width = viewport->width;
-  background_viewport.height = viewport->height;
+  background_viewport.width = viewport.width;
+  background_viewport.height = viewport.height;
   background_viewport.invalidateAllPixels();
 
   renderer->zoom(0.5, zoom_x, zoom_y, lockCenter, background_viewport);
   renderer->calculate_async(background_viewport, *colourMap);
-  viewport->start_timer();
+  viewport.start_timer();
 }
 
 void AnimatedRenderer::BackgroundViewport::updated() {}
@@ -75,8 +74,8 @@ void AnimatedRenderer::BackgroundViewport::finished(double width, int min_depth,
   // if (!widget->zooming)
   //   return;
   renderer->backgroundRenderFinished();
-  renderer->viewport->finished(width, min_depth, max_depth, avg, skipped,
-                               render_time);
+  renderer->viewport.finished(width, min_depth, max_depth, avg, skipped,
+                              render_time);
 }
 
 void AnimatedRenderer::BackgroundViewport::discovered_depth(
@@ -99,14 +98,13 @@ void AnimatedRenderer::backgroundRenderFinished() {
 void AnimatedRenderer::beginNextAnimation() {
   if (!calculationFinished) {
     // Report on current calculation
-    viewport->calculation_started(renderer->log_width(),
-                                  renderer->iterations());
+    viewport.calculation_started(renderer->log_width(), renderer->iterations());
   }
 
   // We can't start a new calculation yet because we are within
   // the thread function of an existing calculation. So we signal that we need
   // to be called back
-  viewport->schedule_next_calculation();
+  viewport.schedule_next_calculation();
 }
 
 void AnimatedRenderer::timer() {
@@ -124,8 +122,8 @@ void AnimatedRenderer::timer() {
       beginNextAnimation();
     } else {
       // It's taking some time, so update the status bar
-      viewport->calculation_started(renderer->log_width(),
-                                    renderer->iterations());
+      viewport.calculation_started(renderer->log_width(),
+                                   renderer->iterations());
     }
   } else {
     // Update the current view using the
@@ -134,19 +132,19 @@ void AnimatedRenderer::timer() {
     auto zoom_ratio = std::pow(0.5, time_ratio);
     fractals::Viewport previousVp;
     previousVp.data = previousImageData.data();
-    previousVp.width = viewport->width;
-    previousVp.height = viewport->height;
+    previousVp.width = viewport.width;
+    previousVp.height = viewport.height;
 
-    fractals::map_viewport(previousVp, *viewport, zoom_x * (1 - zoom_ratio),
+    fractals::map_viewport(previousVp, viewport, zoom_x * (1 - zoom_ratio),
                            zoom_y * (1 - zoom_ratio), zoom_ratio);
-    viewport->updated();
+    viewport.updated();
 
-    viewport->start_timer();
+    viewport.start_timer();
   }
 }
 
 void AnimatedRenderer::cancelAnimations() {
-  viewport->stop_timer();
+  viewport.stop_timer();
   current_animation = AnimatedRenderer::AnimationType::none;
   if (zooming) {
     renderFinishedBackgroundImage();
@@ -162,7 +160,7 @@ void AnimatedRenderer::start_next_calculation() {
     break;
   case AnimatedRenderer::AnimationType::zoomtopoint:
     if (renderer->log_width() > zoomtopoint_limit)
-      smoothZoomTo(viewport->width / 2, viewport->height / 2, true);
+      smoothZoomTo(viewport.width / 2, viewport.height / 2, true);
     break;
   case AnimatedRenderer::AnimationType::zoomatcursor:
     smoothZoomTo(move_x, move_y, false);
