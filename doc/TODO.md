@@ -1,7 +1,7 @@
 # Task list
 
-a lot of grey when zooming in very fast
-a bit too much redrawing when we hit pause.
+
+- [ ] High def mode
 
 Animation
 

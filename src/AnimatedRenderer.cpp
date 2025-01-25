@@ -52,6 +52,8 @@ void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter) {
 
   previousImageData.resize(viewport.width * viewport.height);
   std::copy(viewport.begin(), viewport.end(), previousImageData.begin());
+  std::copy(viewport.begin(), viewport.end(), computedImageData.begin());
+
   zoom_start = std::chrono::system_clock::now();
   // Add a 10% buffer to reduce stuttering
   zoom_duration = std::chrono::milliseconds(
@@ -68,7 +70,7 @@ void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter) {
   background_viewport.data = computedImageData.data();
   background_viewport.width = viewport.width;
   background_viewport.height = viewport.height;
-  background_viewport.invalidateAllPixels();
+  // background_viewport.invalidateAllPixels();
   rendered_zoom_ratio = 1.0;
 
   renderer->zoom(0.5, zoom_x, zoom_y, lockCenter, background_viewport);
@@ -131,6 +133,18 @@ void fractals::AnimatedRenderer::timer() {
     zoomTimeout = true;
     // Maybe carry on zooming to the next frame
     if (calculationFinished || fixZoomSpeed) {
+      // Copy the zoomed image exactly,
+      // then superimpose whatever we calculated
+      rendered_zoom_ratio = 0.5;
+      fractals::Viewport previousVp;
+      previousVp.data = previousImageData.data();
+      previousVp.width = viewport.width;
+      previousVp.height = viewport.height;
+
+      fractals::map_viewport(
+          previousVp, viewport, zoom_x * (1.0 - rendered_zoom_ratio),
+          zoom_y * (1.0 - rendered_zoom_ratio), rendered_zoom_ratio);
+
       render_update_background_image();
       begin_next_animation();
     } else {
@@ -161,9 +175,9 @@ void fractals::AnimatedRenderer::cancel_animations() {
   viewport.stop_timer();
   current_animation = AnimatedRenderer::AnimationType::none;
   if (zooming) {
-    if (zoomTimeout)
+    if (zoomTimeout) {
       render_update_background_image();
-    else // Reset the coordinates back to what's shown
+    } else // Reset the coordinates back to what's shown
     {
       renderer->zoom(2.0 * rendered_zoom_ratio, zoom_x, zoom_y, false,
                      viewport);
