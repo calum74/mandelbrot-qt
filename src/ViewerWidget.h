@@ -19,8 +19,7 @@ class ViewerWidget : public QWidget {
 
   // We can increase the resolution, perhaps to native screen resolution, but
   // it's slower.
-  int imageScale = 1.0;
-  // double imageScale = 2.0;  // Oversample
+  double imageScale = 1.0; // Oversample
 
   struct MyViewport : public fractals::Viewport {
     ViewerWidget &widget;
@@ -77,6 +76,7 @@ public slots:
   void enableThreading(bool checked);
   void singleThreaded(bool checked);
   void maxThreading(bool checked);
+  void enableOversampling(bool checked);
 
   void enableAutoDepth(bool checked);
   void quickSave();

@@ -61,6 +61,8 @@
     <addaction name="actionQuality_animation"/>
     <addaction name="actionFast_animation"/>
     <addaction name="actionVery_fast_animation"/>
+    <addaction name="separator"/>
+    <addaction name="actionOversampling"/>
    </widget>
    <widget class="QMenu" name="menuFractal">
     <property name="title">
@@ -339,6 +341,14 @@
    </property>
    <property name="shortcut">
     <string>C</string>
+   </property>
+  </action>
+  <action name="actionOversampling">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Oversampling</string>
    </property>
   </action>
  </widget>

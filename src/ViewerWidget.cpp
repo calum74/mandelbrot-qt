@@ -392,3 +392,9 @@ void ViewerWidget::setFastestAnimation() {
 ViewerWidget::MyViewport::MyViewport(ViewerWidget &widget) : widget(widget) {}
 
 void ViewerWidget::MyViewport::stop_timer() { widget.renderingTimer.stop(); }
+
+void ViewerWidget::enableOversampling(bool checked) {
+  QResizeEvent s(size(), size());
+  imageScale = checked ? 2.0 : 1.0;
+  resizeEvent(&s);
+}

@@ -40,6 +40,9 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->actionSingle_threaded, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::singleThreaded);
 
+  connect(ui->actionOversampling, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::enableOversampling);
+
   connect(ui->actionAuto_iterations, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::enableAutoDepth);
   connect(ui->actionQuick_save, &QAction::triggered, ui->centralwidget,

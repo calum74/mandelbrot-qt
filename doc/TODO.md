@@ -14,6 +14,8 @@ a. Basic shape
   a4. spiral
   a5. flowerc
 b. Order
+  circular
+  number of spikes
 b. Fractal type
   b1. regular mandelbrot
   b2. cubic mandelbrotc 
@@ -32,7 +34,7 @@ Animation fixes:
 - [ ] At the very end of a zoom, don't wait for image to render, but just dump it.
 - [ ] Sometimes current calculation doesn't finish if cancelAnimations(); but continues to run in the background.
 
-- [ ] Make making consistent with camelcase.
+- [ ] Make naming consistent with camelcase.
 - [ ] rename autozoom to autonavigate
 
 Paper cuts: 
