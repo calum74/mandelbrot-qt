@@ -49,8 +49,8 @@ void AnimatedRenderer::smoothZoomTo(int x, int y, bool lockCenter) {
           1.10)); // Stupid stupid std::chrono
 
   // Stop the zoom duration getting too out of hand
-  if (zoom_duration < 750ms)
-    zoom_duration = 750ms;
+  if (zoom_duration < fixZoomDuration)
+    zoom_duration = fixZoomDuration;
 
   if (fixZoomSpeed)
     zoom_duration = fixZoomDuration; // Override for speed
@@ -204,4 +204,21 @@ void AnimatedRenderer::zoomAtCursor() {
     current_animation = AnimationType::zoomatcursor;
     smoothZoomTo(move_x, move_y, false);
   }
+}
+
+void AnimatedRenderer::smoothZoomIn() {
+  cancelAnimations();
+  if (!zooming) {
+    smoothZoomTo(move_x, move_y, false);
+  }
+}
+
+void AnimatedRenderer::setSpeedEstimate(double secondsPerPixel) {
+  estimatedSecondsPerPixel = secondsPerPixel;
+}
+
+void AnimatedRenderer::set_animation_speed(std::chrono::duration<double> speed,
+                                           bool fixedSpeed) {
+  fixZoomSpeed = fixedSpeed;
+  fixZoomDuration = speed;
 }

@@ -2,6 +2,9 @@
 
 Animation
 
+animatedrender to go into fractals namespace
+separate out the qt stuff better.
+
 Next steps:
 - [ ] Probably rendering glitch at outermost zoom
 - [x] region_updated to rename to `updated()` and drop coords

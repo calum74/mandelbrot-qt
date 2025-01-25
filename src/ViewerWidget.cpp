@@ -335,12 +335,7 @@ void ViewerWidget::zoomIn() {
   calculate();
 }
 
-void ViewerWidget::smoothZoomIn() {
-  renderer.cancelAnimations();
-  if (!renderer.zooming) {
-    renderer.smoothZoomTo(move_x, move_y, false);
-  }
-}
+void ViewerWidget::smoothZoomIn() { renderer.smoothZoomIn(); }
 
 void ViewerWidget::updateFrame() { renderer.timer(); }
 
@@ -362,7 +357,7 @@ void ViewerWidget::animateToHere() {
 void ViewerWidget::zoomAtCursor() { renderer.zoomAtCursor(); }
 
 void ViewerWidget::setSpeedEstimate(double secondsPerPixel) {
-  renderer.estimatedSecondsPerPixel = secondsPerPixel;
+  renderer.setSpeedEstimate(secondsPerPixel);
 }
 
 void ViewerWidget::renderingFinishedSlot() {
@@ -371,16 +366,16 @@ void ViewerWidget::renderingFinishedSlot() {
 
 void ViewerWidget::stopAnimations() { renderer.cancelAnimations(); }
 
-void ViewerWidget::setQualityAnimation() { renderer.fixZoomSpeed = false; }
+void ViewerWidget::setQualityAnimation() {
+  renderer.set_animation_speed(750ms, false);
+}
 
 void ViewerWidget::setFastAnimation() {
-  renderer.fixZoomSpeed = true;
-  renderer.fixZoomDuration = 750ms;
+  renderer.set_animation_speed(750ms, true);
 }
 
 void ViewerWidget::setFastestAnimation() {
-  renderer.fixZoomSpeed = true;
-  renderer.fixZoomDuration = 50ms;
+  renderer.set_animation_speed(50ms, true);
 }
 
 ViewerWidget::MyViewport::MyViewport(ViewerWidget &widget) : widget(widget) {}

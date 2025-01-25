@@ -35,21 +35,17 @@ public:
   void autoZoom();
   void animateToHere();
   void zoomAtCursor();
+  void smoothZoomIn();
+  void setSpeedEstimate(double seconds_per_pixel);
 
-public: // !! private
-  // TODO: Make all this private
+  // fixedSpeed means that we don't wait for rendering to complete
+  void set_animation_speed(std::chrono::duration<double> speed,
+                           bool fixedSpeed);
+
+public: // !! Ideally private
   std::unique_ptr<fractals::Registry> registry;
-
-  // Note destruction order - renderer must be destroyed after viewport
   std::unique_ptr<fractals::Renderer> renderer;
-
-  bool zooming = false;
-  std::atomic<bool> calculationFinished = false;
-  std::atomic<bool> zoomTimeout = false;
-  std::chrono::time_point<std::chrono::system_clock> zoom_start;
-  std::chrono::duration<double> zoom_duration;
-  int zoom_x, zoom_y;
-  double zoomtopoint_limit;
+  std::unique_ptr<fractals::ColourMap> colourMap;
 
   enum class AnimationType {
     none,
@@ -59,10 +55,17 @@ public: // !! private
     zoomatcursor
   } current_animation = AnimationType::none;
 
+private:
+  bool zooming = false;
+  std::atomic<bool> calculationFinished = false;
+  std::atomic<bool> zoomTimeout = false;
+  std::chrono::time_point<std::chrono::system_clock> zoom_start;
+  std::chrono::duration<double> zoom_duration;
+  int zoom_x, zoom_y;
+  double zoomtopoint_limit;
+
   double estimatedSecondsPerPixel = 0;
   std::vector<fractals::RGB> previousImagePixels, backgroundImagePixels;
-
-  std::unique_ptr<fractals::ColourMap> colourMap;
 
   bool fixZoomSpeed = false;
   std::chrono::duration<double> fixZoomDuration;
