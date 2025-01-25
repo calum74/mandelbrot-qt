@@ -13,3 +13,7 @@ AnimatedRenderer::AnimatedRenderer()
 }
 
 AnimatedRenderer::~AnimatedRenderer() { renderer.reset(); }
+
+void AnimatedRenderer::calculate_async(fractals::Viewport &vp) {
+  renderer->calculate_async(vp, *colourMap);
+}

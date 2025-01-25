@@ -6,7 +6,6 @@ Next steps:
 - [ ] Option to reset colour gradient
 - [x] Default animation type is "smooth"
 - [ ] C button to cancel navigation
-- [ ] Sometimes current calculation doesn't finish if cancelAnimations(); but continues to run in the background.
   - 
 - [ ] Sometimes dots remain in black areas after a long calculation.
 - [x] Update menu when loading a new fractal
@@ -15,7 +14,13 @@ Next steps:
   - stopAllAnimations()
 - [x] Render timings should also include the setup timing.
 - [ ] Crap on screen when resizing
+- [ ] Have a "power" zoom as opposed to a linear zoom. 
+
+Animation fixes:
+- [ ] Bail out animation when we don't recalculate the depth
 - [ ] At the very end of a zoom, don't wait for image to render, but just dump it.
+- [ ] Sometimes current calculation doesn't finish if cancelAnimations(); but continues to run in the background.
+
 
 Paper cuts: 
 - [ ] Fix speed zoom for max iterations

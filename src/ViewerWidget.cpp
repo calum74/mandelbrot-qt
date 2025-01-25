@@ -45,7 +45,7 @@ void ViewerWidget::calculate() {
   viewport.width = image.width();
   viewport.height = image.height();
 
-  renderer.renderer->calculate_async(viewport, *renderer.colourMap);
+  renderer.calculate_async(viewport);
 }
 
 void ViewerWidget::draw() {
@@ -72,7 +72,10 @@ void ViewerWidget::resizeEvent(QResizeEvent *event) {
 }
 
 void ViewerWidget::wheelEvent(QWheelEvent *event) {
-  double r = 1.0 - event->angleDelta().y() / 128.0;
+  // Since each unit of scroll magnifies the image, using std::pow will give
+  // the correct composition of 2 scrolls. 0.992 is a fudge factor, decrease it
+  // for a faster zoom.
+  double r = std::pow(0.992, event->angleDelta().y());
   if (r > 2.0)
     r = 2.0;
   if (r < 0.5)

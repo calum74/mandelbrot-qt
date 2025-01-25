@@ -12,6 +12,8 @@ public:
   AnimatedRenderer();
   ~AnimatedRenderer();
 
+  void calculate_async(fractals::Viewport &output);
+
   std::unique_ptr<fractals::Registry> registry;
 
   // Note destruction order - renderer must be destroyed after viewport
