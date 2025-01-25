@@ -382,6 +382,10 @@ void ViewerWidget::updateFrame() {
   }
 }
 
+void ViewerWidget::MyViewport::start_timer() {
+  widget->renderingTimer.start(10);
+}
+
 void ViewerWidget::zoomOut() {
   cancelAnimations();
   renderer.renderer->zoom(2.0, move_x, move_y, false, viewport);

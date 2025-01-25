@@ -29,6 +29,7 @@ class ViewerWidget : public QWidget {
                           double time_per_pixel) override;
     void calculation_started(double log_radius, int iterations) override;
     void schedule_next_calculation() override;
+    void start_timer() override;
   } viewport;
 
   // Track the previous position of the mouse cursor

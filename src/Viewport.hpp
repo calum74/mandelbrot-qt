@@ -51,6 +51,9 @@ struct Viewport {
   // The current animation has finished, so queue an async callback
   // to carry on animating
   virtual void schedule_next_calculation();
+
+  // Schedule the next frame to render
+  virtual void start_timer();
 };
 
 // Perform a pixel-by-pixel remapping and interpolation from src to dest.

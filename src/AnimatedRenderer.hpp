@@ -19,6 +19,8 @@ public:
 
   void start_next_calculation();
 
+  void timer();
+
 public: // !! private
   // TODO: Make all this private
   std::unique_ptr<fractals::Registry> registry;

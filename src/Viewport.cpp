@@ -10,3 +10,5 @@ void fractals::Viewport::calculation_started(double log_radius,
                                              int iterations) {}
 
 void fractals::Viewport::schedule_next_calculation() {}
+
+void fractals::Viewport::start_timer() {}
