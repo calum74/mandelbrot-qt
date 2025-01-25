@@ -28,7 +28,7 @@ void AnimatedRenderer::renderFinishedBackgroundImage() {
   assert(viewport->size() == background_viewport.size());
   std::copy(background_viewport.begin(), background_viewport.end(),
             viewport->begin());
-  viewport->region_updated(0, 0, viewport->width, viewport->height);
+  viewport->updated();
 }
 
 void AnimatedRenderer::smoothZoomTo(int x, int y, bool lockCenter) {
@@ -67,8 +67,7 @@ void AnimatedRenderer::smoothZoomTo(int x, int y, bool lockCenter) {
   renderer->calculate_async(background_viewport, *colourMap);
 }
 
-void AnimatedRenderer::BackgroundViewport::region_updated(int x, int y, int w,
-                                                          int h) {}
+void AnimatedRenderer::BackgroundViewport::updated() {}
 
 void AnimatedRenderer::BackgroundViewport::finished(double width, int min_depth,
                                                     int max_depth, double avg,
@@ -141,7 +140,7 @@ void AnimatedRenderer::timer() {
 
     fractals::map_viewport(previousVp, *viewport, zoom_x * (1 - zoom_ratio),
                            zoom_y * (1 - zoom_ratio), zoom_ratio);
-    viewport->region_updated(0, 0, viewport->width, viewport->height);
+    viewport->updated();
 
     viewport->start_timer();
   }

@@ -32,8 +32,8 @@ struct Viewport {
 
   void invalidateAllPixels();
 
-  // Callback when data has changed in the given pixel-region
-  virtual void region_updated(int x, int y, int w, int h);
+  // Callback when data has changed and it's time to render
+  virtual void updated();
 
   // Callback when viewport fully calculated.
   // May not get called if cancelled.

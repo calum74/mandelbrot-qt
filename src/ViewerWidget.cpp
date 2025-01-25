@@ -111,7 +111,7 @@ void ViewerWidget::mousePressEvent(QMouseEvent *event) {
   }
 }
 
-void ViewerWidget::MyViewport::region_updated(int x, int y, int w, int h) {
+void ViewerWidget::MyViewport::updated() {
   // Note will be called on different threads
   if (!widget->pending_redraw) {
     ++widget->pending_redraw;

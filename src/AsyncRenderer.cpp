@@ -133,7 +133,7 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
     }
 
     if (!stop) {
-      view.region_updated(0, 0, view.width, view.height);
+      view.updated();
       std::chrono::duration<double> d = t1 - t0;
 
       view.finished(log_width(), view_min, view_max,
@@ -158,7 +158,7 @@ bool fractals::AsyncRenderer::zoom(double r, int cx, int cy, bool lockCenter,
 
   remap_viewport(vp, cx * (1 - r), cy * (1 - r), r);
 
-  vp.region_updated(0, 0, vp.width, vp.height);
+  vp.updated();
   return true;
 }
 
@@ -339,7 +339,7 @@ void fractals::AsyncRenderer::scroll(int dx, int dy, Viewport &vp) {
 
   remap_viewport(vp, dx, dy, 1.0);
 
-  vp.region_updated(0, 0, vp.width, vp.height);
+  vp.updated();
 }
 
 void fractals::AsyncRenderer::enable_auto_depth(bool value) {
@@ -432,7 +432,7 @@ void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
     center_y = total_y / total;
   }
 
-  vp.region_updated(0, 0, vp.width, vp.height);
+  vp.updated();
 }
 
 double fractals::AsyncRenderer::my_rendering_sequence::get_point(int x, int y) {

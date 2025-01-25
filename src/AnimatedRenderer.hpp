@@ -56,7 +56,7 @@ public: // !! private
 
   struct BackgroundViewport : public fractals::Viewport {
     AnimatedRenderer *renderer;
-    void region_updated(int x, int y, int w, int h) override;
+    void updated() override;
     void finished(double width, int min_depth, int max_depth, double avg,
                   double skipped, double render_time) override;
     void discovered_depth(int points, double discovered_depth,
