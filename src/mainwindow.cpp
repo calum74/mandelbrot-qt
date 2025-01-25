@@ -145,8 +145,6 @@ void MainWindow::completed(double d, int min_depth, int max_depth, double avg,
   // std::cout << "Skipped " << skipped << " iterations\n";
 
   ui->statusbar->showMessage(ss.str().c_str());
-  if (ui->actionAutozoom->isChecked())
-    ui->centralwidget->autoZoomContinue();
 }
 
 void MainWindow::openGoToDialog() {

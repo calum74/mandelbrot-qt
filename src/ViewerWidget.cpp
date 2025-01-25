@@ -57,6 +57,7 @@ void ViewerWidget::draw() {
 
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
   cancelAnimations();
+
   // Should stop the current calculation
   renderer.renderer->set_aspect_ratio(event->size().width(),
                                       event->size().height());
@@ -461,11 +462,6 @@ void ViewerWidget::autoZoom() {
   } else {
     std::cout << "Autozoom continue failed\n";
   }
-}
-
-void ViewerWidget::autoZoomContinue() {
-  //  renderer->auto_step_continue(viewport);
-  //  calculate();
 }
 
 void ViewerWidget::cancelAnimations() {

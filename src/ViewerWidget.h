@@ -91,7 +91,6 @@ public slots:
   void zoomIn();
   void zoomOut();
   void autoZoom();
-  void autoZoomContinue();
   void renderingFinishedSlot();
 
   void smoothZoomIn();
