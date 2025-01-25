@@ -1,6 +1,7 @@
 # Task list
 
 Animation
+- [ ] viewport is a reference
 
 Next steps:
 - [ ] Probably rendering glitch at outermost zoom
@@ -25,6 +26,8 @@ Animation fixes:
 - [ ] At the very end of a zoom, don't wait for image to render, but just dump it.
 - [ ] Sometimes current calculation doesn't finish if cancelAnimations(); but continues to run in the background.
 
+- [ ] Make making consistent with camelcase.
+- [ ] rename autozoom to autonavigate
 
 Paper cuts: 
 - [ ] Fix speed zoom for max iterations

@@ -22,7 +22,8 @@
 
 using namespace std::literals::chrono_literals;
 
-ViewerWidget::ViewerWidget(QWidget *parent) : QWidget{parent} {
+ViewerWidget::ViewerWidget(QWidget *parent)
+    : QWidget{parent}, viewport(*this), renderer(viewport) {
   setFastAnimation();
 
   renderingTimer.setSingleShot(true);
@@ -56,7 +57,7 @@ void ViewerWidget::draw() {
 }
 
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
-  cancelAnimations();
+  renderer.cancelAnimations();
 
   // Should stop the current calculation
   renderer.renderer->set_aspect_ratio(event->size().width(),
@@ -82,7 +83,7 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
   if (r < 0.5)
     r = 0.5;
   if (r != 1.0) {
-    cancelAnimations();
+    renderer.cancelAnimations();
     renderer.renderer->zoom(r, event->position().x(), event->position().y(),
                             false, viewport);
     calculate();
@@ -91,7 +92,7 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
 
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
   if (event->buttons() & Qt::LeftButton) {
-    cancelAnimations();
+    renderer.cancelAnimations();
     renderer.renderer->scroll(press_x - event->pos().x(),
                               press_y - event->pos().y(), viewport);
     calculate();
@@ -100,7 +101,10 @@ void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
   }
   move_x = event->pos().x();
   move_y = event->pos().y();
+  renderer.set_cursor(move_x, move_y);
 }
+
+void ViewerWidget::autoZoom() { renderer.autoZoom(); }
 
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
   if (event->buttons() & Qt::LeftButton) {
@@ -150,13 +154,13 @@ void ViewerWidget::MyViewport::discovered_depth(int points,
 }
 
 void ViewerWidget::increaseIterations() {
-  cancelAnimations();
+  renderer.cancelAnimations();
   renderer.renderer->increase_iterations(viewport);
   calculate();
 }
 
 void ViewerWidget::decreaseIterations() {
-  cancelAnimations();
+  renderer.cancelAnimations();
   renderer.renderer->decrease_iterations(viewport);
   calculate();
 }
@@ -189,7 +193,7 @@ void ViewerWidget::getCoords(fractals::view_parameters &params) const {
 }
 
 bool ViewerWidget::setCoords(const fractals::view_parameters &params) {
-  cancelAnimations();
+  renderer.cancelAnimations();
   renderer.colourMap->load(params);
   renderer.renderer->load(params, viewport);
   calculate();
@@ -197,21 +201,21 @@ bool ViewerWidget::setCoords(const fractals::view_parameters &params) {
 }
 
 void ViewerWidget::recolourPalette() {
-  cancelAnimations();
+  renderer.cancelAnimations();
   renderer.colourMap->randomize();
   renderer.renderer->redraw(viewport);
   calculate();
 }
 
 void ViewerWidget::resetCurrentFractal() {
-  cancelAnimations();
+  renderer.cancelAnimations();
   renderer.renderer->set_coords(renderer.renderer->initial_coords(), viewport);
   renderer.colourMap->resetGradient();
   calculate();
 }
 
 void ViewerWidget::changeFractal(const fractals::PointwiseFractal &fractal) {
-  cancelAnimations();
+  renderer.cancelAnimations();
 
   std::string old_family = renderer.renderer->get_fractal_family();
   renderer.renderer->set_fractal(fractal);
@@ -283,7 +287,7 @@ void ViewerWidget::saveToFile(const QString &image_filename) {
 }
 
 void ViewerWidget::scalePalette() {
-  cancelAnimations();
+  renderer.cancelAnimations();
   double min, p, max;
   renderer.renderer->get_depth_range(min, p, max);
   if (p > 0)
@@ -306,7 +310,7 @@ void ViewerWidget::open() {
       std::stringstream ss(text.toStdString());
       fractals::view_parameters params;
       ss >> params;
-      cancelAnimations();
+      renderer.cancelAnimations();
 
       renderer.renderer->load(params, viewport);
       renderer.colourMap->load(params);
@@ -328,20 +332,15 @@ void ViewerWidget::save() {
 }
 
 void ViewerWidget::zoomIn() {
-  cancelAnimations();
+  renderer.cancelAnimations();
   renderer.renderer->zoom(0.5, move_x, move_y, false, viewport);
   calculate();
 }
 
-void ViewerWidget::smoothZoomTo(int x, int y, bool lockCenter) {
-  renderer.smoothZoomTo(x, y, lockCenter);
-  renderingTimer.start(10);
-}
-
 void ViewerWidget::smoothZoomIn() {
-  cancelAnimations();
+  renderer.cancelAnimations();
   if (!renderer.zooming) {
-    smoothZoomTo(move_x, move_y, false);
+    renderer.smoothZoomTo(move_x, move_y, false);
   }
 }
 
@@ -352,33 +351,13 @@ void ViewerWidget::MyViewport::start_timer() {
 }
 
 void ViewerWidget::zoomOut() {
-  cancelAnimations();
+  renderer.cancelAnimations();
   renderer.renderer->zoom(2.0, move_x, move_y, false, viewport);
   calculate();
 }
 
-void ViewerWidget::autoZoom() {
-  cancelAnimations();
-  int x, y;
-  if (renderer.renderer->get_auto_zoom(x, y)) {
-    renderer.current_animation = AnimatedRenderer::AnimationType::autozoom;
-    smoothZoomTo(x, y, false);
-  } else {
-    std::cout << "Autozoom continue failed\n";
-  }
-}
-
-void ViewerWidget::cancelAnimations() {
-  renderingTimer.stop();
-  renderer.current_animation = AnimatedRenderer::AnimationType::none;
-  if (renderer.zooming) {
-    renderer.renderFinishedBackgroundImage();
-    renderer.zooming = false;
-  }
-}
-
 void ViewerWidget::animateToHere() {
-  cancelAnimations();
+  renderer.cancelAnimations();
   renderer.current_animation =
       AnimatedRenderer::AnimationType::startzoomtopoint;
   auto c = renderer.renderer->get_coords();
@@ -391,11 +370,11 @@ void ViewerWidget::animateToHere() {
 
 void ViewerWidget::zoomAtCursor() {
   if (renderer.zooming) {
-    cancelAnimations();
+    renderer.cancelAnimations();
   } else {
-    cancelAnimations();
+    renderer.cancelAnimations();
     renderer.current_animation = AnimatedRenderer::AnimationType::zoomatcursor;
-    smoothZoomTo(move_x, move_y, false);
+    renderer.smoothZoomTo(move_x, move_y, false);
   }
 }
 
@@ -404,20 +383,10 @@ void ViewerWidget::setSpeedEstimate(double secondsPerPixel) {
 }
 
 void ViewerWidget::renderingFinishedSlot() {
-  // !! switch statement
-  if (renderer.current_animation == AnimatedRenderer::AnimationType::autozoom) {
-    autoZoom();
-  } else if (renderer.current_animation ==
-             AnimatedRenderer::AnimationType::zoomtopoint) {
-    if (renderer.renderer->log_width() > renderer.zoomtopoint_limit)
-      smoothZoomTo(viewport.width / 2, viewport.height / 2, true);
-  } else if (renderer.current_animation ==
-             AnimatedRenderer::AnimationType::zoomatcursor) {
-    smoothZoomTo(move_x, move_y, false);
-  }
+  renderer.start_next_calculation();
 }
 
-void ViewerWidget::stopAnimations() { cancelAnimations(); }
+void ViewerWidget::stopAnimations() { renderer.cancelAnimations(); }
 
 void ViewerWidget::setQualityAnimation() { renderer.fixZoomSpeed = false; }
 
@@ -430,3 +399,7 @@ void ViewerWidget::setFastestAnimation() {
   renderer.fixZoomSpeed = true;
   renderer.fixZoomDuration = 50ms;
 }
+
+ViewerWidget::MyViewport::MyViewport(ViewerWidget &widget) : widget(&widget) {}
+
+void ViewerWidget::MyViewport::stop_timer() { widget->renderingTimer.stop(); }

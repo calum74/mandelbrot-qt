@@ -7,8 +7,8 @@ using namespace std::literals::chrono_literals;
 
 void register_fractals(fractals::Registry &r);
 
-AnimatedRenderer::AnimatedRenderer()
-    : colourMap{fractals::make_colourmap()},
+AnimatedRenderer::AnimatedRenderer(fractals::Viewport &viewport)
+    : viewport(&viewport), colourMap{fractals::make_colourmap()},
       registry{fractals::make_registry()},
       renderer{fractals::make_renderer(*registry)} {
 
@@ -55,8 +55,6 @@ void AnimatedRenderer::smoothZoomTo(int x, int y, bool lockCenter) {
   if (fixZoomSpeed)
     zoom_duration = fixZoomDuration; // Override for speed
 
-  assert(computedImage.width() > 0);
-
   background_viewport.renderer = this;
   background_viewport.data = computedImageData.data();
   background_viewport.width = viewport->width;
@@ -65,6 +63,7 @@ void AnimatedRenderer::smoothZoomTo(int x, int y, bool lockCenter) {
 
   renderer->zoom(0.5, zoom_x, zoom_y, lockCenter, background_viewport);
   renderer->calculate_async(background_viewport, *colourMap);
+  viewport->start_timer();
 }
 
 void AnimatedRenderer::BackgroundViewport::updated() {}
@@ -144,4 +143,47 @@ void AnimatedRenderer::timer() {
 
     viewport->start_timer();
   }
+}
+
+void AnimatedRenderer::cancelAnimations() {
+  viewport->stop_timer();
+  current_animation = AnimatedRenderer::AnimationType::none;
+  if (zooming) {
+    renderFinishedBackgroundImage();
+    zooming = false;
+  }
+}
+
+void AnimatedRenderer::start_next_calculation() {
+  // !! switch statement
+  switch (current_animation) {
+  case AnimationType::autozoom:
+    autoZoom();
+    break;
+  case AnimatedRenderer::AnimationType::zoomtopoint:
+    if (renderer->log_width() > zoomtopoint_limit)
+      smoothZoomTo(viewport->width / 2, viewport->height / 2, true);
+    break;
+  case AnimatedRenderer::AnimationType::zoomatcursor:
+    smoothZoomTo(move_x, move_y, false);
+    break;
+  default:
+    break;
+  }
+}
+
+void AnimatedRenderer::autoZoom() {
+  cancelAnimations();
+  int x, y;
+  if (renderer->get_auto_zoom(x, y)) {
+    current_animation = AnimationType::autozoom;
+    smoothZoomTo(x, y, false);
+  } else {
+    std::cout << "Autozoom continue failed\n";
+  }
+}
+
+void AnimatedRenderer::set_cursor(int x, int y) {
+  move_x = x;
+  move_y = y;
 }

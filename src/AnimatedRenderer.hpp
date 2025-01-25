@@ -8,9 +8,16 @@
 #include <atomic>
 #include <chrono>
 
+/*
+Logic for creating animations.
+
+Manages two additional pixel buffers for the previous image and the current
+image being calculated.
+
+*/
 class AnimatedRenderer {
 public:
-  AnimatedRenderer();
+  AnimatedRenderer(fractals::Viewport &viewport);
   ~AnimatedRenderer();
 
   void smoothZoomTo(int x, int y, bool lockCenter);
@@ -19,7 +26,13 @@ public:
 
   void start_next_calculation();
 
+  // Called when the timer has timed out
   void timer();
+
+  void cancelAnimations();
+
+  void set_cursor(int move_x, int move_y);
+  void autoZoom();
 
 public: // !! private
   // TODO: Make all this private
@@ -68,5 +81,6 @@ public: // !! private
   void beginNextAnimation();
 
 private:
-  fractals::Viewport *viewport;
+  fractals::Viewport *viewport; // !! Use a reference
+  int move_x = 0, move_y = 0;
 };

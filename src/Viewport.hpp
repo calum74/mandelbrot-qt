@@ -54,6 +54,7 @@ struct Viewport {
 
   // Schedule the next frame to render
   virtual void start_timer();
+  virtual void stop_timer();
 };
 
 // Perform a pixel-by-pixel remapping and interpolation from src to dest.

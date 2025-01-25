@@ -18,10 +18,9 @@ class ViewerWidget : public QWidget {
 
   QTimer renderingTimer;
 
-  AnimatedRenderer renderer;
-
   struct MyViewport : public fractals::Viewport {
     ViewerWidget *widget;
+    MyViewport(ViewerWidget &);
     void updated() override;
     void finished(double width, int min_depth, int max_depth, double avg,
                   double skipped, double render_time) override;
@@ -30,7 +29,10 @@ class ViewerWidget : public QWidget {
     void calculation_started(double log_radius, int iterations) override;
     void schedule_next_calculation() override;
     void start_timer() override;
+    void stop_timer() override;
   } viewport;
+
+  AnimatedRenderer renderer;
 
   // Track the previous position of the mouse cursor
   int press_x, press_y, move_x, move_y;
@@ -40,9 +42,7 @@ class ViewerWidget : public QWidget {
 
   std::atomic<int> pending_redraw;
 
-  void cancelAnimations();
   void setSpeedEstimate(double secondsPerPixel);
-  void smoothZoomTo(int x, int y, bool lockCenter);
 
 public:
   explicit ViewerWidget(QWidget *parent = nullptr);
