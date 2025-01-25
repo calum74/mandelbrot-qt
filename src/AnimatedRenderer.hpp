@@ -20,7 +20,7 @@ public:
   AnimatedRenderer(fractals::Viewport &viewport);
   ~AnimatedRenderer();
 
-  void smoothZoomTo(int x, int y, bool lockCenter);
+  void smooth_zoom_to(int x, int y, bool lockCenter);
 
   void calculate_async();
 
@@ -29,14 +29,14 @@ public:
   // Called when the timer has timed out
   void timer();
 
-  void cancelAnimations();
+  void cancel_animations();
 
   void set_cursor(int move_x, int move_y);
-  void autoZoom();
-  void animateToHere();
-  void zoomAtCursor();
-  void smoothZoomIn();
-  void setSpeedEstimate(double seconds_per_pixel);
+  void auto_navigate();
+  void animate_to_here();
+  void zoom_at_cursor();
+  void smooth_zoom_in();
+  void set_speed_estimate(double seconds_per_pixel);
 
   // fixedSpeed means that we don't wait for rendering to complete
   void set_animation_speed(std::chrono::duration<double> speed,
@@ -81,11 +81,10 @@ private:
                           double time) override;
   } background_viewport;
 
-  void renderFinishedBackgroundImage();
-  void backgroundRenderFinished();
-  void beginNextAnimation();
+  void render_finished_background_image();
+  void background_render_finished();
+  void begin_next_animation();
 
-private:
   fractals::Viewport &viewport;
   int move_x = 0, move_y = 0;
 };

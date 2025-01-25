@@ -22,7 +22,7 @@ void AnimatedRenderer::calculate_async() {
   renderer->calculate_async(viewport, *colourMap);
 }
 
-void AnimatedRenderer::renderFinishedBackgroundImage() {
+void AnimatedRenderer::render_finished_background_image() {
   // if (!zooming)
   //    return;
   assert(viewport.size() == background_viewport.size());
@@ -31,7 +31,7 @@ void AnimatedRenderer::renderFinishedBackgroundImage() {
   viewport.updated();
 }
 
-void AnimatedRenderer::smoothZoomTo(int x, int y, bool lockCenter) {
+void AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter) {
   zooming = true;
   calculationFinished = false;
   zoomTimeout = false;
@@ -74,7 +74,7 @@ void AnimatedRenderer::BackgroundViewport::finished(double width, int min_depth,
                                                     double render_time) {
   // if (!widget->zooming)
   //   return;
-  renderer->backgroundRenderFinished();
+  renderer->background_render_finished();
   renderer->viewport.finished(width, min_depth, max_depth, avg, skipped,
                               render_time);
 }
@@ -86,17 +86,17 @@ void AnimatedRenderer::BackgroundViewport::discovered_depth(
   renderer->estimatedSecondsPerPixel = seconds_per_pixel;
 }
 
-void AnimatedRenderer::backgroundRenderFinished() {
+void AnimatedRenderer::background_render_finished() {
   calculationFinished = true;
 
   if (zoomTimeout) {
-    renderFinishedBackgroundImage();
+    render_finished_background_image();
     zooming = false;
-    beginNextAnimation();
+    begin_next_animation();
   }
 }
 
-void AnimatedRenderer::beginNextAnimation() {
+void AnimatedRenderer::begin_next_animation() {
   if (!calculationFinished) {
     // Report on current calculation
     viewport.calculation_started(renderer->log_width(), renderer->iterations());
@@ -119,8 +119,8 @@ void AnimatedRenderer::timer() {
     zoomTimeout = true;
     // Maybe carry on zooming to the next frame
     if (calculationFinished || fixZoomSpeed) {
-      renderFinishedBackgroundImage();
-      beginNextAnimation();
+      render_finished_background_image();
+      begin_next_animation();
     } else {
       // It's taking some time, so update the status bar
       viewport.calculation_started(renderer->log_width(),
@@ -144,11 +144,11 @@ void AnimatedRenderer::timer() {
   }
 }
 
-void AnimatedRenderer::cancelAnimations() {
+void AnimatedRenderer::cancel_animations() {
   viewport.stop_timer();
   current_animation = AnimatedRenderer::AnimationType::none;
   if (zooming) {
-    renderFinishedBackgroundImage();
+    render_finished_background_image();
     zooming = false;
   }
 }
@@ -157,26 +157,26 @@ void AnimatedRenderer::start_next_calculation() {
   // !! switch statement
   switch (current_animation) {
   case AnimationType::autozoom:
-    autoZoom();
+    auto_navigate();
     break;
   case AnimatedRenderer::AnimationType::zoomtopoint:
     if (renderer->log_width() > zoomtopoint_limit)
-      smoothZoomTo(viewport.width / 2, viewport.height / 2, true);
+      smooth_zoom_to(viewport.width / 2, viewport.height / 2, true);
     break;
   case AnimatedRenderer::AnimationType::zoomatcursor:
-    smoothZoomTo(move_x, move_y, false);
+    smooth_zoom_to(move_x, move_y, false);
     break;
   default:
     break;
   }
 }
 
-void AnimatedRenderer::autoZoom() {
-  cancelAnimations();
+void AnimatedRenderer::auto_navigate() {
+  cancel_animations();
   int x, y;
   if (renderer->get_auto_zoom(x, y)) {
     current_animation = AnimationType::autozoom;
-    smoothZoomTo(x, y, false);
+    smooth_zoom_to(x, y, false);
   } else {
     std::cout << "Autozoom continue failed\n";
   }
@@ -187,7 +187,7 @@ void AnimatedRenderer::set_cursor(int x, int y) {
   move_y = y;
 }
 
-void AnimatedRenderer::animateToHere() {
+void AnimatedRenderer::animate_to_here() {
   current_animation = AnimationType::startzoomtopoint;
   auto c = renderer->get_coords();
   c.r = 2.0;
@@ -196,24 +196,24 @@ void AnimatedRenderer::animateToHere() {
   renderer->set_coords(c, viewport);
 }
 
-void AnimatedRenderer::zoomAtCursor() {
+void AnimatedRenderer::zoom_at_cursor() {
   if (zooming) {
-    cancelAnimations();
+    cancel_animations();
   } else {
-    cancelAnimations();
+    cancel_animations();
     current_animation = AnimationType::zoomatcursor;
-    smoothZoomTo(move_x, move_y, false);
+    smooth_zoom_to(move_x, move_y, false);
   }
 }
 
-void AnimatedRenderer::smoothZoomIn() {
-  cancelAnimations();
+void AnimatedRenderer::smooth_zoom_in() {
+  cancel_animations();
   if (!zooming) {
-    smoothZoomTo(move_x, move_y, false);
+    smooth_zoom_to(move_x, move_y, false);
   }
 }
 
-void AnimatedRenderer::setSpeedEstimate(double secondsPerPixel) {
+void AnimatedRenderer::set_speed_estimate(double secondsPerPixel) {
   estimatedSecondsPerPixel = secondsPerPixel;
 }
 

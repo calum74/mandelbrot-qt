@@ -3,6 +3,9 @@
 Animation
 
 animatedrender to go into fractals namespace
+asyncrenderer in fractals namespace
+rename autozoom
+
 separate out the qt stuff better.
 
 Next steps:

@@ -56,7 +56,7 @@ void ViewerWidget::draw() {
 }
 
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
-  renderer.cancelAnimations();
+  renderer.cancel_animations();
 
   // Should stop the current calculation
   renderer.renderer->set_aspect_ratio(event->size().width(),
@@ -81,7 +81,7 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
   if (r < 0.5)
     r = 0.5;
   if (r != 1.0) {
-    renderer.cancelAnimations();
+    renderer.cancel_animations();
     renderer.renderer->zoom(r, event->position().x(), event->position().y(),
                             false, viewport);
     calculate();
@@ -90,7 +90,7 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
 
 void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
   if (event->buttons() & Qt::LeftButton) {
-    renderer.cancelAnimations();
+    renderer.cancel_animations();
     renderer.renderer->scroll(press_x - event->pos().x(),
                               press_y - event->pos().y(), viewport);
     calculate();
@@ -102,7 +102,7 @@ void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
   renderer.set_cursor(move_x, move_y);
 }
 
-void ViewerWidget::autoZoom() { renderer.autoZoom(); }
+void ViewerWidget::autoZoom() { renderer.auto_navigate(); }
 
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
   if (event->buttons() & Qt::LeftButton) {
@@ -152,13 +152,13 @@ void ViewerWidget::MyViewport::discovered_depth(int points,
 }
 
 void ViewerWidget::increaseIterations() {
-  renderer.cancelAnimations();
+  renderer.cancel_animations();
   renderer.renderer->increase_iterations(viewport);
   calculate();
 }
 
 void ViewerWidget::decreaseIterations() {
-  renderer.cancelAnimations();
+  renderer.cancel_animations();
   renderer.renderer->decrease_iterations(viewport);
   calculate();
 }
@@ -191,7 +191,7 @@ void ViewerWidget::getCoords(fractals::view_parameters &params) const {
 }
 
 bool ViewerWidget::setCoords(const fractals::view_parameters &params) {
-  renderer.cancelAnimations();
+  renderer.cancel_animations();
   renderer.colourMap->load(params);
   renderer.renderer->load(params, viewport);
   calculate();
@@ -199,21 +199,21 @@ bool ViewerWidget::setCoords(const fractals::view_parameters &params) {
 }
 
 void ViewerWidget::recolourPalette() {
-  renderer.cancelAnimations();
+  renderer.cancel_animations();
   renderer.colourMap->randomize();
   renderer.renderer->redraw(viewport);
   calculate();
 }
 
 void ViewerWidget::resetCurrentFractal() {
-  renderer.cancelAnimations();
+  renderer.cancel_animations();
   renderer.renderer->set_coords(renderer.renderer->initial_coords(), viewport);
   renderer.colourMap->resetGradient();
   calculate();
 }
 
 void ViewerWidget::changeFractal(const fractals::PointwiseFractal &fractal) {
-  renderer.cancelAnimations();
+  renderer.cancel_animations();
 
   std::string old_family = renderer.renderer->get_fractal_family();
   renderer.renderer->set_fractal(fractal);
@@ -285,7 +285,7 @@ void ViewerWidget::saveToFile(const QString &image_filename) {
 }
 
 void ViewerWidget::scalePalette() {
-  renderer.cancelAnimations();
+  renderer.cancel_animations();
   double min, p, max;
   renderer.renderer->get_depth_range(min, p, max);
   if (p > 0)
@@ -308,7 +308,7 @@ void ViewerWidget::open() {
       std::stringstream ss(text.toStdString());
       fractals::view_parameters params;
       ss >> params;
-      renderer.cancelAnimations();
+      renderer.cancel_animations();
 
       renderer.renderer->load(params, viewport);
       renderer.colourMap->load(params);
@@ -330,12 +330,12 @@ void ViewerWidget::save() {
 }
 
 void ViewerWidget::zoomIn() {
-  renderer.cancelAnimations();
+  renderer.cancel_animations();
   renderer.renderer->zoom(0.5, move_x, move_y, false, viewport);
   calculate();
 }
 
-void ViewerWidget::smoothZoomIn() { renderer.smoothZoomIn(); }
+void ViewerWidget::smoothZoomIn() { renderer.smooth_zoom_in(); }
 
 void ViewerWidget::updateFrame() { renderer.timer(); }
 
@@ -344,27 +344,27 @@ void ViewerWidget::MyViewport::start_timer() {
 }
 
 void ViewerWidget::zoomOut() {
-  renderer.cancelAnimations();
+  renderer.cancel_animations();
   renderer.renderer->zoom(2.0, move_x, move_y, false, viewport);
   calculate();
 }
 
 void ViewerWidget::animateToHere() {
-  renderer.animateToHere();
+  renderer.animate_to_here();
   calculate();
 }
 
-void ViewerWidget::zoomAtCursor() { renderer.zoomAtCursor(); }
+void ViewerWidget::zoomAtCursor() { renderer.zoom_at_cursor(); }
 
 void ViewerWidget::setSpeedEstimate(double secondsPerPixel) {
-  renderer.setSpeedEstimate(secondsPerPixel);
+  renderer.set_speed_estimate(secondsPerPixel);
 }
 
 void ViewerWidget::renderingFinishedSlot() {
   renderer.start_next_calculation();
 }
 
-void ViewerWidget::stopAnimations() { renderer.cancelAnimations(); }
+void ViewerWidget::stopAnimations() { renderer.cancel_animations(); }
 
 void ViewerWidget::setQualityAnimation() {
   renderer.set_animation_speed(750ms, false);
