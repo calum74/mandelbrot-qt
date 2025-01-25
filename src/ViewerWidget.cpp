@@ -41,7 +41,6 @@ void ViewerWidget::calculate() {
 
   assert(image.width() > 0);
 
-  viewport.widget = this;
   viewport.data = (fractals::RGB *)image.bits();
   viewport.width = image.width();
   viewport.height = image.height();
@@ -65,7 +64,6 @@ void ViewerWidget::resizeEvent(QResizeEvent *event) {
 
   viewport.invalidateAllPixels();
   image = QImage(event->size(), QImage::Format_RGB32);
-  viewport.widget = this;
   viewport.data = (fractals::RGB *)image.bits();
   viewport.width = image.width();
   viewport.height = image.height();
@@ -117,40 +115,40 @@ void ViewerWidget::mousePressEvent(QMouseEvent *event) {
 
 void ViewerWidget::MyViewport::updated() {
   // Note will be called on different threads
-  if (!widget->pending_redraw) {
-    ++widget->pending_redraw;
-    widget->update();
+  if (!widget.pending_redraw) {
+    ++widget.pending_redraw;
+    widget.update();
   }
 }
 
 void ViewerWidget::MyViewport::calculation_started(double logRadius,
                                                    int iterations) {
-  widget->startCalculating(logRadius, iterations);
+  widget.startCalculating(logRadius, iterations);
 }
 
 void ViewerWidget::MyViewport::schedule_next_calculation() {
-  widget->renderingFinishedSignal();
+  widget.renderingFinishedSignal();
 }
 
 void ViewerWidget::MyViewport::finished(double width, int min_depth,
                                         int max_depth, double avg,
                                         double skipped, double render_time) {
-  widget->completed(width, min_depth, max_depth, avg, skipped, render_time);
+  widget.completed(width, min_depth, max_depth, avg, skipped, render_time);
 
-  if (widget->renderer.current_animation ==
+  if (widget.renderer.current_animation ==
       AnimatedRenderer::AnimationType::startzoomtopoint) {
-    widget->renderer.current_animation =
+    widget.renderer.current_animation =
         AnimatedRenderer::AnimationType::zoomtopoint;
-    widget->renderingFinishedSignal();
+    widget.renderingFinishedSignal();
   }
 }
 
 void ViewerWidget::MyViewport::discovered_depth(int points,
                                                 double discovered_depth,
                                                 double time) {
-  if (widget->renderer.renderer)
-    widget->renderer.renderer->discovered_depth(points, discovered_depth);
-  widget->setSpeedEstimate(time);
+  if (widget.renderer.renderer)
+    widget.renderer.renderer->discovered_depth(points, discovered_depth);
+  widget.setSpeedEstimate(time);
 }
 
 void ViewerWidget::increaseIterations() {
@@ -347,7 +345,7 @@ void ViewerWidget::smoothZoomIn() {
 void ViewerWidget::updateFrame() { renderer.timer(); }
 
 void ViewerWidget::MyViewport::start_timer() {
-  widget->renderingTimer.start(10);
+  widget.renderingTimer.start(10);
 }
 
 void ViewerWidget::zoomOut() {
@@ -400,6 +398,6 @@ void ViewerWidget::setFastestAnimation() {
   renderer.fixZoomDuration = 50ms;
 }
 
-ViewerWidget::MyViewport::MyViewport(ViewerWidget &widget) : widget(&widget) {}
+ViewerWidget::MyViewport::MyViewport(ViewerWidget &widget) : widget(widget) {}
 
-void ViewerWidget::MyViewport::stop_timer() { widget->renderingTimer.stop(); }
+void ViewerWidget::MyViewport::stop_timer() { widget.renderingTimer.stop(); }

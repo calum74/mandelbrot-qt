@@ -15,11 +15,10 @@
 class ViewerWidget : public QWidget {
   Q_OBJECT
   QImage image;
-
   QTimer renderingTimer;
 
   struct MyViewport : public fractals::Viewport {
-    ViewerWidget *widget;
+    ViewerWidget &widget;
     MyViewport(ViewerWidget &);
     void updated() override;
     void finished(double width, int min_depth, int max_depth, double avg,
