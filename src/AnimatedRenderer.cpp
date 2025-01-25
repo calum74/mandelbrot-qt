@@ -26,6 +26,16 @@ void fractals::AnimatedRenderer::render_finished_background_image() {
   // if (!zooming)
   //    return;
   assert(viewport.size() == background_viewport.size());
+  for (int i = 0; i < viewport.size(); ++i) {
+    auto from_pixel = background_viewport.data[i];
+    auto &to_pixel = viewport.data[i];
+    if (extra(from_pixel) < extra(to_pixel))
+      to_pixel = from_pixel;
+  }
+  viewport.updated();
+}
+
+void fractals::AnimatedRenderer::render_overwrite_background_image() {
   std::copy(background_viewport.begin(), background_viewport.end(),
             viewport.begin());
   viewport.updated();
@@ -147,7 +157,7 @@ void fractals::AnimatedRenderer::cancel_animations() {
   viewport.stop_timer();
   current_animation = AnimatedRenderer::AnimationType::none;
   if (zooming) {
-    render_finished_background_image();
+    render_overwrite_background_image();
     zooming = false;
   }
 }

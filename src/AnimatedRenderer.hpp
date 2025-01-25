@@ -83,6 +83,7 @@ private:
   } background_viewport;
 
   void render_finished_background_image();
+  void render_overwrite_background_image();
   void background_render_finished();
   void begin_next_animation();
 

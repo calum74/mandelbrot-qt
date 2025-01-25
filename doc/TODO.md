@@ -1,22 +1,14 @@
 # Task list
 
 Animation
-
-animatedrender to go into fractals namespace
-asyncrenderer in fractals namespace
-rename autozoom
-
-separate out the qt stuff better.
+- [ ] When we finish a zoom, we should only update the view with pixels that are more precise.
+- [ ] When we zoom, we should double the error each time
+- [ ] When we abort a zoom, we should only update the view
 
 Next steps:
-- [ ] Probably rendering glitch at outermost zoom
-- [x] region_updated to rename to `updated()` and drop coords
 - [ ] Mandelbrot finder based on orbits returning to the same place?
-- [x] Go home to reset the colour gradient as well
 - [ ] Option to reset colour gradient
-- [x] Default animation type is "smooth"
 - [ ] C button to cancel navigation
-  - 
 - [ ] Sometimes dots remain in black areas after a long calculation.
 - [ ] Render timings should also include the setup timing.
 - [ ] Crap on screen when resizing
