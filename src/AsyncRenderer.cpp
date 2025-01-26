@@ -100,8 +100,8 @@ void fractals::AsyncRenderer::calculate_region_in_thread(
 
   my_rendering_sequence seq(*calculation, cm, vp, depths);
   seq.calculate(threads, stop);
-  view_min = seq.min_depth;
-  view_max = seq.max_depth;
+  metrics.min_depth = seq.min_depth;
+  metrics.max_depth = seq.max_depth;
   metrics.points_calculated = seq.calculated_pixels;
 }
 
@@ -118,33 +118,34 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
     calculation =
         current_fractal->create(coords, view.width, view.height, stop);
 
-    view_min = 0;
-    view_max = 0;
-    view_percentile_max = 0;
+    metrics.min_depth = 0;
+    metrics.max_depth = 0;
+    metrics.discovered_depth = 0;
     calculate_region_in_thread(view, cm, stop);
     auto t1 = std::chrono::high_resolution_clock::now();
 
     if (automaticallyAdjustDepth && depths.begin() < depths.end()) {
       auto discovered_depth =
           util::top_percentile(depths.begin(), depths.end(), 0.999)->depth;
-      view_percentile_max = discovered_depth;
-      view.discovered_depth(std::distance(depths.begin(), depths.end()),
-                            discovered_depth,
-                            std::chrono::duration<double>(t1 - t0).count() /
-                                metrics.points_calculated,
-                            view_min, view_max, metrics.points_calculated);
+      metrics.discovered_depth = discovered_depth;
+      view.discovered_depth(
+          std::distance(depths.begin(), depths.end()), discovered_depth,
+          std::chrono::duration<double>(t1 - t0).count() /
+              metrics.points_calculated,
+          metrics.min_depth, metrics.max_depth, metrics.points_calculated);
     } else {
       view.discovered_depth(std::distance(depths.begin(), depths.end()), 0.0,
                             std::chrono::duration<double>(t1 - t0).count() /
                                 metrics.points_calculated,
-                            view_min, view_max, metrics.points_calculated);
+                            metrics.min_depth, metrics.max_depth,
+                            metrics.points_calculated);
     }
 
     if (!stop) {
       view.updated();
       std::chrono::duration<double> d = t1 - t0;
 
-      view.finished(log_width(), view_min, view_max,
+      view.finished(log_width(), metrics.min_depth, metrics.max_depth,
                     calculation->average_iterations(),
                     calculation->average_skipped(), d.count());
     }
@@ -328,9 +329,9 @@ void fractals::AsyncRenderer::set_threading(int threads) {
 void fractals::AsyncRenderer::get_depth_range(double &min, double &p,
                                               double &max) {
   stop_current_calculation(); // ?? Why
-  min = view_min;
-  max = view_max;
-  p = view_percentile_max;
+  min = metrics.min_depth;
+  max = metrics.max_depth;
+  p = metrics.discovered_depth;
 }
 
 fractals::AsyncRenderer::my_rendering_sequence::my_rendering_sequence(
