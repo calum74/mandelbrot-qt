@@ -11,12 +11,13 @@ struct RenderingMetrics {
   std::uint64_t non_black_points;
   double seconds_per_point;
 
+  double discovered_depth; // The depth of the 99th percentile pixel
+
   bool fully_evaluated; // True if the calculation evaluated every point
 
   // These metrics are reported only on successful completion
   double avg_iterations;
   double avg_skipped_iterations;
   double render_time_seconds;
-  double discovered_depth;
 };
 } // namespace fractals

@@ -103,13 +103,14 @@ private:
 
   std::chrono::time_point<std::chrono::high_resolution_clock> t0;
 
-  std::vector<depth_value> depths;
+  std::vector<depth_value> depths; // ?? Do we want to keep this around
+
   RenderingMetrics metrics;
-  std::uint64_t calculated_pixels;
+  // std::uint64_t calculated_pixels;
+  double view_min, view_max, view_percentile_max;
 
   int threads = 4;
   int max_x = 0, max_y = 0;
   bool automaticallyAdjustDepth = true;
-  double view_min, view_max, view_percentile_max;
 };
 } // namespace fractals
