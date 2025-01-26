@@ -135,6 +135,8 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
     std::chrono::duration<double> d = t1 - t0;
     metrics.render_time_seconds = d.count();
     metrics.log_radius = log_width();
+    metrics.seconds_per_point =
+        d.count() / metrics.points_calculated; // !! Redundant field
 
     if (stop) {
       metrics.fully_evaluated = false;

@@ -1,6 +1,16 @@
 # Task list
 
+Bugs:
+- Quality animation does not change the speed any more
+- Ensure "calculating" status message takes priority
+
+- Express gradient in the inverse: Iterations per colour
+
 - When we scroll, we'll sometimes lose pixels
+- Mandeldrop scrolling is invalid.
+- Sometimes shows finished calculation when it's actually calculating something new
+  - Ensure that "calculating" takes priority
+  - Depth 0-0 looks silly
 
 - Better normalization logic for high_exponent_real
 - On open, resume previous place visited?

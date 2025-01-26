@@ -146,7 +146,8 @@ void ViewerWidget::MyViewport::finished(
     widget.renderer.renderer->discovered_depth(metrics);
   widget.setSpeedEstimate(metrics.seconds_per_point);
 
-  widget.completed(&metrics);
+  if (metrics.fully_evaluated)
+    widget.completed(&metrics);
 
   if (widget.renderer.current_animation ==
       fractals::AnimatedRenderer::AnimationType::startzoomtopoint) {
