@@ -2,23 +2,7 @@
 #include "RGB.hpp"
 
 namespace fractals {
-
-// For reporting on
-struct RenderingMetrics {
-  // These metrics are always reported
-  double log_radius;
-  double min_depth;
-  double max_depth;
-  std::size_t points_calculated;
-  std::uint64_t non_black_points;
-  double seconds_per_point;
-
-  // These metrics are reported only on successful completion
-  double avg_iterations;
-  double avg_skipped_iterations;
-  double render_time_seconds;
-  double discovered_depth;
-};
+struct RenderingMetrics;
 
 /*
 A region to render. It is essentially a buffer of pixels
@@ -53,13 +37,15 @@ struct Viewport {
   // Callback when data has changed and it's time to render
   virtual void updated();
 
-  // Callback when viewport fully calculated.
-  // May not get called if cancelled.
+  // Callback when calculation has completed
+  virtual void finished(const RenderingMetrics &metrics);
+
+  // !! Deleteme
   virtual void finished(double log_width, int min_depth, int max_depth,
                         double avg_iterations, double avg_skipped_iterations,
                         double render_time);
 
-  // Can be called even if stopped
+  // !! Deleteme
   virtual void discovered_depth(int non_black_points, double discovered_depth,
                                 double seconds_per_point, int view_min,
                                 int view_max, int total_points);

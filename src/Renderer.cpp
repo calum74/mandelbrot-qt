@@ -83,6 +83,8 @@ void fractals::Viewport::discovered_depth(int, double, double, int, int, int) {}
 
 void fractals::Viewport::finished(double, int, int, double, double, double) {}
 
+void fractals::Viewport::finished(const RenderingMetrics &metrics) {}
+
 void fractals::Renderer::discovered_depth(int, double, int, int, int) {}
 
 // Arguable these should be pure virtual functions
