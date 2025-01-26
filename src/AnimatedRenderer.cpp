@@ -241,6 +241,7 @@ void fractals::AnimatedRenderer::set_cursor(int x, int y) {
 }
 
 void fractals::AnimatedRenderer::animate_to_here() {
+  cancel_animations();
   current_animation = AnimationType::startzoomtopoint;
   auto c = renderer->get_coords();
   c.r = 2.0;

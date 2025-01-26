@@ -3,6 +3,7 @@
 Bugs:
 - Quality animation does not change the speed any more
 - Ensure "calculating" status message takes priority
+- "Animate to here" seems to animate the current position first.
 
 - Express gradient in the inverse: Iterations per colour
 
