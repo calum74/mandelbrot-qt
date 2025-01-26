@@ -65,6 +65,8 @@ private:
   int zoom_x, zoom_y;
   double zoomtopoint_limit;
   double rendered_zoom_ratio;
+  int calculated_points;
+  int view_min, view_max;
 
   double estimatedSecondsPerPixel = 0;
   std::vector<fractals::RGB> previousImagePixels, backgroundImagePixels;
@@ -80,8 +82,9 @@ private:
     void updated() override;
     void finished(double width, int min_depth, int max_depth, double avg,
                   double skipped, double render_time) override;
-    void discovered_depth(int points, double discovered_depth,
-                          double time) override;
+    void discovered_depth(int points, double discovered_depth, double time,
+                          int view_min, int view_max,
+                          int total_points) override;
   } background_viewport;
 
   void render_update_background_image();

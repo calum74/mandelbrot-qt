@@ -46,7 +46,8 @@ public:
 
   double get_average_skipped_iterations() const override;
 
-  void discovered_depth(int points, double discovered_depth) override;
+  void discovered_depth(int points, double discovered_dept, int view_min,
+                        int view_max, int total_points) override;
 
   void set_fractal(const fractals::PointwiseFractal &f) override;
 
@@ -81,10 +82,10 @@ public:
                           const ColourMap &cm, Viewport &vp,
                           std::vector<depth_value> &depths);
 
-    double min_depth = 0, max_depth = 0;
+    std::atomic<double> min_depth = 0, max_depth = 0;
     int center_x = 0, center_y = 0;
     std::vector<depth_value> &depths;
-    std::uint64_t calculated_pixels = 0;
+    std::atomic<std::uint64_t> calculated_pixels = 0;
 
     void layer_complete(int stride) override;
 

@@ -44,7 +44,8 @@ public:
 
   virtual view_coords get_coords() const = 0;
 
-  virtual void discovered_depth(int points, double discovered_depth);
+  virtual void discovered_depth(int points, double discovered_depth,
+                                int view_min, int view_max, int total_points);
 
   // Returns true on success (and value changed)
   // False on failure (coords not changed).

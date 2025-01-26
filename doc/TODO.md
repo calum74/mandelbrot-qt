@@ -1,10 +1,14 @@
 # Task list
 
-- [ ] High def mode (oversampling)
-- [ ] Crap on screen when resizing
-
 - On high-speed zoom, don't lose depth limit
   - Bail out if too few pixels per resolution
+
+- Better normalization logic for high_exponent_real
+- On open, resume previous place visited?
+
+"1 CPU core, "4 CPU cores", "All CPU cores"
+"Multithreading" -> "Multithreaded"
+- [ ] Rename "oversampling" to "High definition"
 
 Classification project:
 a. Basic shape
@@ -20,7 +24,6 @@ b. Fractal type
   b1. regular mandelbrot
   b2. cubic mandelbrotc 
 
-
 Animation
 
 Next steps:
@@ -31,8 +34,8 @@ Next steps:
 
 Animation fixes:
 - [ ] Bail out animation when we don't recalculate the depth
-- [ ] At the very end of a zoom, don't wait for image to render, but just dump it.
-- [ ] Sometimes current calculation doesn't finish if cancelAnimations(); but continues to run in the background.
+- [x] At the very end of a zoom, don't wait for image to render, but just dump it.
+- [x] Sometimes current calculation doesn't finish if cancelAnimations(); but continues to run in the background.
 
 - [ ] Make naming consistent with camelcase.
 - [ ] rename autozoom to autonavigate
@@ -49,8 +52,6 @@ Paper cuts:
 - [ ] Status bar text is inconsistent and out of date, particularly when animating
 
 Refactoring:
-- [ ] Refactor ViewerWidget 
-  - maybe migrate code to AnimatedRenderer
 - [ ] Store radius in engineering format
 - [ ] Hexadecimal number format
 
@@ -94,7 +95,7 @@ Features:
 
 - [ ] Make it nicer to adapt Mandelbrot to Mandeldrop
 
-- [ ] Surely we should colour "around" a point rather than just below/right
+- [x] Surely we should colour "around" a point rather than just below/right
 
 - [ ] Update all the other fractals to use new data types
 - [ ] Too many artefacts when scaling and zooming.
@@ -108,7 +109,7 @@ Features:
 
 - [ ] Understand reference orbits better
   - What is the "orbit utilization"
-  - What percentage of iterations
+  - What percentage of iterations are skipped
   - When is it cheaper to compute a new reference orbit?
   - Can we create a reference of a reference?
   - Can other reference orbit "split" from the old one?
@@ -117,8 +118,6 @@ Features:
   - What about skipping epsilon forward?
 
 Basically it's the depth of range that causes big problems. Computing up to the minimum is usually fine.
-
-- [ ] Colour 122 is nice
 
 - [ ] Refactor mandelbrot parameters, for example use real_number.
 Maybe there's a hard-coded way to express the delta range? So we can scale all deltas by M, e.g. bias them all by 500.
@@ -168,12 +167,12 @@ Documentation and tidy:
 - [ ] Read up on state of the art again
 - [ ] Look at where the performance is currently going
 - [ ] Dealing with very large number of iterations
-- [ ] Dealing with very deep zooms. E.g. scaledSmallNumber  
-- [ ] Would adding another Taylor series term help?
+- [x] Dealing with very deep zooms. E.g. scaledSmallNumber  
+- [x] Would adding another Taylor series term help?
 - [ ] Can we partially evaluate the Taylor series??
 - [ ] Does choice of reference orbit matter?
 - [ ] Can we combine 2 reference orbits?
-- [ ] Can we translate a Taylor series
+- [ ] Can we translate a Taylor series efficiently?
 
 # Long term tasks
 

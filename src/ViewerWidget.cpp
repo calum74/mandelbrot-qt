@@ -153,9 +153,12 @@ void ViewerWidget::MyViewport::finished(double width, int min_depth,
 
 void ViewerWidget::MyViewport::discovered_depth(int points,
                                                 double discovered_depth,
-                                                double time) {
+                                                double time, int view_min,
+                                                int view_max,
+                                                int total_points) {
   if (widget.renderer.renderer)
-    widget.renderer.renderer->discovered_depth(points, discovered_depth);
+    widget.renderer.renderer->discovered_depth(
+        points, discovered_depth, view_min, view_max, total_points);
   widget.setSpeedEstimate(time);
 }
 

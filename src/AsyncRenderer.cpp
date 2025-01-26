@@ -64,7 +64,9 @@ double fractals::AsyncRenderer::get_average_skipped_iterations() const {
 }
 
 void fractals::AsyncRenderer::discovered_depth(int points,
-                                               double discovered_depth) {
+                                               double discovered_depth,
+                                               int view_min, int view_max,
+                                               int total_points) {
   if (points > 1000)                              // Fudge factor
     coords.max_iterations = discovered_depth * 2; // Fudge factor
 }
@@ -113,10 +115,11 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
   stop = false;
 
   current_calculation = std::async([&]() {
+    t0 = std::chrono::high_resolution_clock::now();
+
     calculation =
         current_fractal->create(coords, view.width, view.height, stop);
 
-    t0 = std::chrono::high_resolution_clock::now();
     view_min = 0;
     view_max = 0;
     view_percentile_max = 0;
@@ -129,7 +132,13 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
       view_percentile_max = discovered_depth;
       view.discovered_depth(
           std::distance(depths.begin(), depths.end()), discovered_depth,
-          std::chrono::duration<double>(t1 - t0).count() / calculated_pixels);
+          std::chrono::duration<double>(t1 - t0).count() / calculated_pixels,
+          view_min, view_max, calculated_pixels);
+    } else {
+      view.discovered_depth(std::distance(depths.begin(), depths.end()), 0.0,
+                            std::chrono::duration<double>(t1 - t0).count() /
+                                calculated_pixels,
+                            view_min, view_max, calculated_pixels);
     }
 
     if (!stop) {
@@ -352,7 +361,7 @@ void fractals::AsyncRenderer::set_threading(int threads) {
 
 void fractals::AsyncRenderer::get_depth_range(double &min, double &p,
                                               double &max) {
-  stop_current_calculation();
+  stop_current_calculation(); // ?? Why
   min = view_min;
   max = view_max;
   p = view_percentile_max;
@@ -380,11 +389,6 @@ void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
       vp(x, y) = cm(depth);
       if (depth > 0) {
         depths.push_back({depth, x, y});
-        if (depth > max_depth) {
-          max_depth = depth;
-        }
-        if (depth < min_depth || min_depth == 0)
-          min_depth = depth;
       }
 #if 1 // Useful to be able to disable this for debugging
       if (stride > 1) {
@@ -414,6 +418,7 @@ void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
     }
   }
 
+  // Delete this
   seq.start_at_stride(stride);
   long long total_x = 0, total_y = 0, total = 0;
   if (depths.size()) {
@@ -439,5 +444,16 @@ double fractals::AsyncRenderer::my_rendering_sequence::get_point(int x, int y) {
   if (extra(vp(x, y)) == 0)
     return std::numeric_limits<double>::quiet_NaN();
   ++calculated_pixels;
-  return calculation.calculate(x, y);
+  auto depth = calculation.calculate(x, y);
+  if (depth > 0) {
+    // Technically this is a race condition
+    // but we want to capture this here (and not in layer_complete())
+    // because we need this in case we abort computation before the first layer
+    // is complete.
+    if (depth < min_depth || min_depth == 0)
+      min_depth = depth;
+    if (depth > max_depth)
+      max_depth = depth;
+  }
+  return depth;
 }
