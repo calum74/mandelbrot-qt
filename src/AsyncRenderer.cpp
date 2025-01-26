@@ -63,12 +63,11 @@ double fractals::AsyncRenderer::get_average_skipped_iterations() const {
   return calculation->average_skipped();
 }
 
-void fractals::AsyncRenderer::discovered_depth(int points,
-                                               double discovered_depth,
-                                               int view_min, int view_max,
-                                               int total_points) {
-  if (points > 1000)                              // Fudge factor
-    coords.max_iterations = discovered_depth * 2; // Fudge factor
+void fractals::AsyncRenderer::discovered_depth(
+    const RenderingMetrics &metrics) {
+  if (metrics.non_black_points > 1000 &&
+      metrics.discovered_depth > 0)                       // Fudge factor
+    coords.max_iterations = metrics.discovered_depth * 2; // Fudge factor
 }
 
 void fractals::AsyncRenderer::set_fractal(const fractals::PointwiseFractal &f) {
@@ -124,33 +123,28 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
     calculate_region_in_thread(view, cm, stop);
     auto t1 = std::chrono::high_resolution_clock::now();
 
-    if (automaticallyAdjustDepth && depths.begin() < depths.end()) {
+    metrics.non_black_points = std::distance(depths.begin(), depths.end());
+    if (depths.begin() < depths.end()) {
       auto discovered_depth =
           util::top_percentile(depths.begin(), depths.end(), 0.999)->depth;
       metrics.discovered_depth = discovered_depth;
-      view.discovered_depth(
-          std::distance(depths.begin(), depths.end()), discovered_depth,
-          std::chrono::duration<double>(t1 - t0).count() /
-              metrics.points_calculated,
-          metrics.min_depth, metrics.max_depth, metrics.points_calculated);
     } else {
-      view.discovered_depth(std::distance(depths.begin(), depths.end()), 0.0,
-                            std::chrono::duration<double>(t1 - t0).count() /
-                                metrics.points_calculated,
-                            metrics.min_depth, metrics.max_depth,
-                            metrics.points_calculated);
+      metrics.discovered_depth = metrics.max_depth;
     }
 
-    if (!stop) {
+    std::chrono::duration<double> d = t1 - t0;
+    metrics.render_time_seconds = d.count();
+    metrics.log_radius = log_width();
+
+    if (stop) {
+      metrics.fully_evaluated = false;
+    } else {
       view.updated();
-      std::chrono::duration<double> d = t1 - t0;
       metrics.fully_evaluated = true;
       metrics.average_iterations = calculation->average_iterations();
       metrics.average_skipped_iterations = calculation->average_skipped();
-      metrics.render_time_seconds = d.count();
-      metrics.log_radius = log_width();
-      view.finished(metrics);
     }
+    view.finished(metrics);
   });
 }
 

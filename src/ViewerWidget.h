@@ -26,9 +26,6 @@ class ViewerWidget : public QWidget {
     MyViewport(ViewerWidget &);
     void updated() override;
     void finished(const fractals::RenderingMetrics &) override;
-    void discovered_depth(int points, double discovered_depth,
-                          double time_per_pixel, int view_min, int view_max,
-                          int total_points) override;
     void calculation_started(double log_radius, int iterations) override;
     void schedule_next_calculation() override;
     void start_timer() override;

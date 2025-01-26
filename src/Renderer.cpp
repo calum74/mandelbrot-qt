@@ -79,11 +79,9 @@ double fractals::Renderer::get_average_skipped_iterations() const { return 0; }
 
 void fractals::Viewport::updated() {}
 
-void fractals::Viewport::discovered_depth(int, double, double, int, int, int) {}
-
 void fractals::Viewport::finished(const RenderingMetrics &metrics) {}
 
-void fractals::Renderer::discovered_depth(int, double, int, int, int) {}
+void fractals::Renderer::discovered_depth(const RenderingMetrics &) {}
 
 // Arguable these should be pure virtual functions
 void fractals::Renderer::set_fractal(const fractals::PointwiseFractal &) {}

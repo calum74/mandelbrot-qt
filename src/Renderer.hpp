@@ -8,6 +8,7 @@ class Viewport;
 class ColourMap;
 class view_coords;
 class PointwiseFractal;
+struct RenderingMetrics;
 class Registry;
 struct view_parameters;
 
@@ -44,8 +45,7 @@ public:
 
   virtual view_coords get_coords() const = 0;
 
-  virtual void discovered_depth(int points, double discovered_depth,
-                                int view_min, int view_max, int total_points);
+  virtual void discovered_depth(const RenderingMetrics &metrics);
 
   // Returns true on success (and value changed)
   // False on failure (coords not changed).
@@ -64,23 +64,14 @@ public:
   virtual const char *get_fractal_name() const = 0;
 
   virtual double get_average_iterations() const;
-
   virtual double get_average_skipped_iterations() const;
-
   virtual void enable_auto_depth(bool value);
-
   virtual void set_threading(int threads);
-
   virtual void get_depth_range(double &min, double &percentile, double &max);
-
   virtual void save(view_parameters &params) const;
-
   virtual void load(const view_parameters &params, Viewport &vp);
-
   virtual void center(Viewport &vp);
-
   virtual void zoom_in(Viewport &vp);
-
   virtual bool get_auto_zoom(int &x, int &y) = 0;
 };
 

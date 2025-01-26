@@ -40,11 +40,6 @@ struct Viewport {
   // Callback when calculation has completed
   virtual void finished(const RenderingMetrics &metrics);
 
-  // !! Deleteme
-  virtual void discovered_depth(int non_black_points, double discovered_depth,
-                                double seconds_per_point, int view_min,
-                                int view_max, int total_points);
-
   // Signal that a new calculation has started
   virtual void calculation_started(double log_radius, int iterations);
 

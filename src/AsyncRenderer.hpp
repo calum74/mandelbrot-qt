@@ -31,8 +31,7 @@ public:
   void decrease_iterations(Viewport &vp) override;
   double get_average_iterations() const override;
   double get_average_skipped_iterations() const override;
-  void discovered_depth(int points, double discovered_dept, int view_min,
-                        int view_max, int total_points) override;
+  void discovered_depth(const RenderingMetrics &metrics) override;
   void set_fractal(const fractals::PointwiseFractal &f) override;
   const char *get_fractal_name() const override;
   const char *get_fractal_family() const override;

@@ -12,6 +12,7 @@
 #include <QStandardPaths>
 #include <QWheelEvent>
 
+#include "RenderingMetrics.hpp"
 #include "mandelbrot.hpp"
 #include "view_parameters.hpp"
 
@@ -141,6 +142,10 @@ void ViewerWidget::MyViewport::schedule_next_calculation() {
 void ViewerWidget::MyViewport::finished(
     const fractals::RenderingMetrics &metrics) {
 
+  if (widget.renderer.renderer)
+    widget.renderer.renderer->discovered_depth(metrics);
+  widget.setSpeedEstimate(metrics.seconds_per_point);
+
   widget.completed(&metrics);
 
   if (widget.renderer.current_animation ==
@@ -149,17 +154,6 @@ void ViewerWidget::MyViewport::finished(
         fractals::AnimatedRenderer::AnimationType::zoomtopoint;
     widget.renderingFinishedSignal();
   }
-}
-
-void ViewerWidget::MyViewport::discovered_depth(int points,
-                                                double discovered_depth,
-                                                double time, int view_min,
-                                                int view_max,
-                                                int total_points) {
-  if (widget.renderer.renderer)
-    widget.renderer.renderer->discovered_depth(
-        points, discovered_depth, view_min, view_max, total_points);
-  widget.setSpeedEstimate(time);
 }
 
 void ViewerWidget::increaseIterations() {

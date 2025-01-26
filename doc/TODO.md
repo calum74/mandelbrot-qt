@@ -1,7 +1,6 @@
 # Task list
 
-- On high-speed zoom, don't lose depth limit
-  - Bail out if too few pixels per resolution
+- When we scroll, we'll sometimes lose pixels
 
 - Better normalization logic for high_exponent_real
 - On open, resume previous place visited?

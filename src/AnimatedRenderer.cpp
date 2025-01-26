@@ -1,5 +1,6 @@
 #include "AnimatedRenderer.hpp"
 #include "Renderer.hpp"
+#include "RenderingMetrics.hpp"
 #include "registry.hpp"
 #include "view_coords.hpp"
 #include <cassert>
@@ -86,26 +87,17 @@ void fractals::AnimatedRenderer::BackgroundViewport::updated() {
 
 void fractals::AnimatedRenderer::BackgroundViewport::finished(
     const RenderingMetrics &metrics) {
-  // if (!widget->zooming)
-  //   return;
-  renderer.background_render_finished();
-  renderer.viewport.finished(metrics);
-  // if (max_depth - min_depth < 5)
-  //  renderer.cancel_animations();
-}
-
-void fractals::AnimatedRenderer::BackgroundViewport::discovered_depth(
-    int points, double discovered_depth, double seconds_per_pixel, int view_min,
-    int view_max, int total_points) {
-  renderer.calculated_points = total_points;
-  renderer.view_min = view_min;
-  renderer.view_max = view_max;
-  std::cout << "discovered_depth min=" << view_min << ", max=" << view_max
-            << "\n";
+  renderer.calculated_points = metrics.points_calculated;
+  renderer.view_min = metrics.min_depth;
+  renderer.view_max = metrics.max_depth;
   if (renderer.renderer)
-    renderer.renderer->discovered_depth(points, discovered_depth, view_min,
-                                        view_max, total_points);
-  renderer.estimatedSecondsPerPixel = seconds_per_pixel;
+    renderer.renderer->discovered_depth(metrics);
+  renderer.estimatedSecondsPerPixel = metrics.seconds_per_point;
+
+  if (metrics.fully_evaluated) {
+    renderer.background_render_finished();
+    renderer.viewport.finished(metrics);
+  }
 }
 
 void fractals::AnimatedRenderer::background_render_finished() {
@@ -124,14 +116,11 @@ void fractals::AnimatedRenderer::begin_next_animation() {
     viewport.calculation_started(renderer->log_width(), renderer->iterations());
   }
 
-  if (calculated_points == 0)
-    std::cout << "No points\n";
   // If calculation is too slow, abort any animations that are in flight.
   if (calculated_points > 0 && view_min + 5 > view_max) {
-    std::cout << "Low range\n";
-    std::cout << calculated_points << " points, " << view_min << "-" << view_max
-              << std::endl;
     // Don't animate if we're in a low range
+    // We're either in the middle of some black
+    // or escaped.
     cancel_animations();
     return;
   }
