@@ -19,8 +19,8 @@ bool fractals::maybe_fill_region(Viewport &vp, int x0, int y0, int x1, int y1) {
   // accurate and does not need to be recalculated 1 means more speed 0 means
   // more accuracy
   if (c00 == c10 && c00 == c11 && c00 == c01) {
-    for (int j = y0; j < y1; ++j)
-      for (int i = x0; i < x1; ++i)
+    for (int j = y0; j <= y1; ++j)
+      for (int i = x0; i <= x1; ++i)
         vp(i, j) = c00;
     return true;
   }

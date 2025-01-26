@@ -1,14 +1,23 @@
 # Task list
 
+Each point has a "closest point" calculation to see if it returns back to c. The closer the closest point, the closer we are to a minibrot.
+Return value is actually "period of closest point"
+This also works for the black area as well, surely.
+
+
+
+
+
 Bugs:
-- Quality animation does not change the speed any more
 - Ensure "calculating" status message takes priority
-- "Animate to here" seems to animate the current position first.
+- In black areas, ending a continuous zoom sometimes does not update
+  all points (e.g. black areas?). Glitches?
+  Solid colour interpolation bug?
 
 - Express gradient in the inverse: Iterations per colour
 
 - When we scroll, we'll sometimes lose pixels
-- Mandeldrop scrolling is invalid.
+
 - Sometimes shows finished calculation when it's actually calculating something new
   - Ensure that "calculating" takes priority
   - Depth 0-0 looks silly
