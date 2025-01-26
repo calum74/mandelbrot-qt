@@ -226,7 +226,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Multithreading</string>
+    <string>Multithreaded</string>
    </property>
   </action>
   <action name="actionQuick_save">

@@ -135,7 +135,6 @@ void MainWindow::startCalculating(double d, int iterations) {
 }
 
 void MainWindow::completed(const fractals::RenderingMetrics *metrics) {
-  std::cout << "MainWindow::completed\n";
   std::stringstream ss;
   ss << "Radius ";
   log_radius(ss, metrics->log_radius);

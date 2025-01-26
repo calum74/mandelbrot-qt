@@ -141,7 +141,6 @@ void ViewerWidget::MyViewport::schedule_next_calculation() {
 void ViewerWidget::MyViewport::finished(
     const fractals::RenderingMetrics &metrics) {
 
-  std::cout << "Debug: MyViewport::finished\n";
   widget.completed(&metrics);
 
   if (widget.renderer.current_animation ==
