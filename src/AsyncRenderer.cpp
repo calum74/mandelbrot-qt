@@ -102,8 +102,6 @@ void fractals::AsyncRenderer::calculate_region_in_thread(
   seq.calculate(threads, stop);
   view_min = seq.min_depth;
   view_max = seq.max_depth;
-  center_x = seq.center_x;
-  center_y = seq.center_y;
   calculated_pixels = seq.calculated_pixels;
 }
 
@@ -383,25 +381,6 @@ void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
     } else {
       // Already calculated which is good
     }
-  }
-
-  // Delete this
-  seq.start_at_stride(stride);
-  long long total_x = 0, total_y = 0, total = 0;
-  if (depths.size()) {
-    auto discovered_depth =
-        util::top_percentile(depths.begin(), depths.end(), 0.97)->depth;
-    while (seq.next(x, y, s, c) && stride == s) {
-      // Re-scan the points to find a center
-      double depth = output[x + y * vp.width];
-      if (depth == 0 || depth >= discovered_depth) {
-        total_x += x;
-        total_y += y;
-        total++;
-      }
-    }
-    center_x = total_x / total;
-    center_y = total_y / total;
   }
 
   vp.updated();

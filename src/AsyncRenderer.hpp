@@ -59,8 +59,6 @@ public:
 
   void stop_current_calculation();
 
-  int center_x = 0, center_y = 0;
-
   // An array of all non-zero depths (?? Needed)
 
   struct depth_value {
@@ -85,7 +83,6 @@ public:
                           std::vector<depth_value> &depths);
 
     std::atomic<double> min_depth = 0, max_depth = 0;
-    int center_x = 0, center_y = 0;
     std::vector<depth_value> &depths;
     std::atomic<std::uint64_t> calculated_pixels = 0;
 
