@@ -21,43 +21,39 @@ bool maybe_fill_region(Viewport &vp, int x0, int y0, int x1, int y1);
 
 class AsyncRenderer : public Renderer {
 
-  std::shared_ptr<PointwiseCalculationFactory> current_fractal;
-  view_coords coords;
-  Registry &registry;
-  std::future<void> current_calculation;
-  std::atomic<bool> stop;
-  std::shared_ptr<PointwiseCalculation> calculation;
-
-  std::chrono::time_point<std::chrono::high_resolution_clock> t0;
-
 public:
   AsyncRenderer(const PointwiseFractal &fractal, Registry &registry);
-
   ~AsyncRenderer();
 
   void load(const view_parameters &params, Viewport &vp) override;
-
   void save(view_parameters &params) const override;
-
   void increase_iterations(Viewport &vp) override;
-
   void decrease_iterations(Viewport &vp) override;
-
   double get_average_iterations() const override;
-
   double get_average_skipped_iterations() const override;
-
   void discovered_depth(int points, double discovered_dept, int view_min,
                         int view_max, int total_points) override;
-
   void set_fractal(const fractals::PointwiseFractal &f) override;
-
   const char *get_fractal_name() const override;
   const char *get_fractal_family() const override;
-
   view_coords initial_coords() const override;
 
-  void stop_current_calculation();
+  void calculate_async(fractals::Viewport &view, const ColourMap &cm) override;
+  bool zoom(double r, int cx, int cy, bool lockCenter, Viewport &vp) override;
+  view_coords get_coords() const override;
+  double log_width() const override;
+  int iterations() const override;
+  void center(Viewport &vp) override;
+  void zoom_in(Viewport &vp) override;
+  void remap_viewport(Viewport &vp, double dx, double dy, double r) const;
+  void redraw(Viewport &vp) override;
+  void set_aspect_ratio(int new_width, int new_height) override;
+  bool set_coords(const view_coords &c, Viewport &vp) override;
+  void scroll(int dx, int dy, Viewport &vp) override;
+  void enable_auto_depth(bool value) override;
+  void set_threading(int threads) override;
+  void get_depth_range(double &min, double &p, double &max) override;
+  bool get_auto_zoom(int &x, int &y) override;
 
   // An array of all non-zero depths (?? Needed)
 
@@ -69,10 +65,6 @@ public:
       return depth < other.depth;
     }
   };
-
-  std::vector<depth_value> depths;
-  RenderingMetrics metrics;
-  std::uint64_t calculated_pixels;
 
   class my_rendering_sequence
       : public fractals::buffered_rendering_sequence<double> {
@@ -96,53 +88,28 @@ public:
     Viewport &vp;
   };
 
-  int threads = 4;
-  int max_x = 0, max_y = 0;
+  void stop_current_calculation();
 
   void calculate_region_in_thread(fractals::Viewport &vp, const ColourMap &cm,
                                   std::atomic<bool> &stop);
 
-  double view_min, view_max, view_percentile_max;
+private:
+  std::shared_ptr<PointwiseCalculationFactory> current_fractal;
+  view_coords coords;
+  Registry &registry;
+  std::future<void> current_calculation;
+  std::atomic<bool> stop;
+  std::shared_ptr<PointwiseCalculation> calculation;
 
-  void calculate_async(fractals::Viewport &view, const ColourMap &cm) override;
+  std::chrono::time_point<std::chrono::high_resolution_clock> t0;
 
-  bool zoom(double r, int cx, int cy, bool lockCenter, Viewport &vp) override;
+  std::vector<depth_value> depths;
+  RenderingMetrics metrics;
+  std::uint64_t calculated_pixels;
 
-  view_coords get_coords() const override;
-
-  double log_width() const override;
-
-  int iterations() const override;
-
-  void center(Viewport &vp) override;
-
-  void zoom_in(Viewport &vp) override;
-
-  // int auto_remaining = 0;
-  // int auto_x, auto_y;
-
-  // void auto_step_continue(Viewport &vp) override;
-
-  // void auto_step(Viewport &vp) override;
-
-  void remap_viewport(Viewport &vp, double dx, double dy, double r) const;
-
-  void redraw(Viewport &vp) override;
-
-  void set_aspect_ratio(int new_width, int new_height) override;
-
-  bool set_coords(const view_coords &c, Viewport &vp) override;
-
-  void scroll(int dx, int dy, Viewport &vp) override;
-
+  int threads = 4;
+  int max_x = 0, max_y = 0;
   bool automaticallyAdjustDepth = true;
-
-  void enable_auto_depth(bool value) override;
-
-  void set_threading(int threads) override;
-
-  void get_depth_range(double &min, double &p, double &max) override;
-
-  bool get_auto_zoom(int &x, int &y) override;
+  double view_min, view_max, view_percentile_max;
 };
 } // namespace fractals
