@@ -192,39 +192,6 @@ void fractals::AsyncRenderer::zoom_in(Viewport &vp) {
   zoom(0.5, vp.width / 2, vp.height / 2, true, vp);
 }
 
-void fractals::AsyncRenderer::auto_step_continue(Viewport &vp) {
-  stop_current_calculation();
-
-  if (auto_remaining > 0) {
-    auto_remaining--;
-    zoom(0.75, auto_x, auto_y, false, vp);
-    return;
-  } else {
-    auto_step(vp);
-  }
-}
-
-void fractals::AsyncRenderer::auto_step(Viewport &vp) {
-  stop_current_calculation();
-
-  // !! Can probably delete this function now
-  /*
-      if (center_x > 0 && center_y > 0) {
-        auto_x =
-        zoom(0.85, center_x, center_y, vp);
-        return;
-      }
-  */
-  if (!depths.empty()) {
-
-    auto p = util::top_percentile(depths.begin(), depths.end(), 0.9999);
-    auto_x = p->x;
-    auto_y = p->y;
-    auto_remaining = 10;
-    auto_step_continue(vp);
-  }
-}
-
 bool fractals::AsyncRenderer::get_auto_zoom(int &x, int &y) {
   if (!depths.empty()) {
     auto p = util::top_percentile(depths.begin(), depths.end(), 0.9999);

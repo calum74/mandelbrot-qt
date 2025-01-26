@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Renderer.hpp"
+#include "RenderingMetrics.hpp"
 #include "fractal.hpp"
 #include "rendering_sequence.hpp"
 #include "view_coords.hpp"
@@ -72,6 +73,7 @@ public:
   };
 
   std::vector<depth_value> depths;
+  RenderingMetrics metrics;
   std::uint64_t calculated_pixels;
 
   class my_rendering_sequence
@@ -119,12 +121,12 @@ public:
 
   void zoom_in(Viewport &vp) override;
 
-  int auto_remaining = 0;
-  int auto_x, auto_y;
+  // int auto_remaining = 0;
+  // int auto_x, auto_y;
 
-  void auto_step_continue(Viewport &vp) override;
+  // void auto_step_continue(Viewport &vp) override;
 
-  void auto_step(Viewport &vp) override;
+  // void auto_step(Viewport &vp) override;
 
   void remap_viewport(Viewport &vp, double dx, double dy, double r) const;
 
