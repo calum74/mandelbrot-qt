@@ -41,11 +41,6 @@ struct Viewport {
   virtual void finished(const RenderingMetrics &metrics);
 
   // !! Deleteme
-  virtual void finished(double log_width, int min_depth, int max_depth,
-                        double avg_iterations, double avg_skipped_iterations,
-                        double render_time);
-
-  // !! Deleteme
   virtual void discovered_depth(int non_black_points, double discovered_depth,
                                 double seconds_per_point, int view_min,
                                 int view_max, int total_points);

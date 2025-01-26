@@ -25,8 +25,7 @@ class ViewerWidget : public QWidget {
     ViewerWidget &widget;
     MyViewport(ViewerWidget &);
     void updated() override;
-    void finished(double width, int min_depth, int max_depth, double avg,
-                  double skipped, double render_time) override;
+    void finished(const fractals::RenderingMetrics &) override;
     void discovered_depth(int points, double discovered_depth,
                           double time_per_pixel, int view_min, int view_max,
                           int total_points) override;
@@ -102,8 +101,8 @@ public slots:
 
 signals:
   void startCalculating(double width, int maxIterations);
-  void completed(double width, int min_depth, int max_depth, double, double,
-                 double time);
+  void completed(const fractals::RenderingMetrics *
+                     metrics); // References silently fail with Qt signals/slots
   void renderingFinishedSignal();
   void fractalChanged(const char *name);
 };

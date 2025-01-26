@@ -80,8 +80,7 @@ private:
     BackgroundViewport(AnimatedRenderer &);
     AnimatedRenderer &renderer;
     void updated() override;
-    void finished(double width, int min_depth, int max_depth, double avg,
-                  double skipped, double render_time) override;
+    void finished(const RenderingMetrics &metrics) override;
     void discovered_depth(int points, double discovered_depth, double time,
                           int view_min, int view_max,
                           int total_points) override;

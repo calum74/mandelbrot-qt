@@ -138,10 +138,11 @@ void ViewerWidget::MyViewport::schedule_next_calculation() {
   widget.renderingFinishedSignal();
 }
 
-void ViewerWidget::MyViewport::finished(double width, int min_depth,
-                                        int max_depth, double avg,
-                                        double skipped, double render_time) {
-  widget.completed(width, min_depth, max_depth, avg, skipped, render_time);
+void ViewerWidget::MyViewport::finished(
+    const fractals::RenderingMetrics &metrics) {
+
+  std::cout << "Debug: MyViewport::finished\n";
+  widget.completed(&metrics);
 
   if (widget.renderer.current_animation ==
       fractals::AnimatedRenderer::AnimationType::startzoomtopoint) {

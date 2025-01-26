@@ -134,13 +134,13 @@ void MainWindow::startCalculating(double d, int iterations) {
   ui->statusbar->showMessage(ss.str().c_str());
 }
 
-void MainWindow::completed(double d, int min_depth, int max_depth, double avg,
-                           double skipped, double time) {
+void MainWindow::completed(const fractals::RenderingMetrics *metrics) {
+  std::cout << "MainWindow::completed\n";
   std::stringstream ss;
   ss << "Radius ";
-  log_radius(ss, d);
-  ss << " completed in " << time << " seconds, depth " << min_depth << "-"
-     << max_depth;
+  log_radius(ss, metrics->log_radius);
+  ss << " completed in " << metrics->render_time_seconds << " seconds, depth "
+     << (int)metrics->min_depth << "-" << (int)metrics->max_depth;
 
   // Log the number of iterations skipped if you want
   // (also, could display this somehow)

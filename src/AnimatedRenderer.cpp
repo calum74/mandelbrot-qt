@@ -80,19 +80,16 @@ void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter) {
 }
 
 void fractals::AnimatedRenderer::BackgroundViewport::updated() {
-  std::cout << "Background update\n";
   if (renderer.zoomTimeout)
     renderer.render_update_background_image();
 }
 
 void fractals::AnimatedRenderer::BackgroundViewport::finished(
-    double width, int min_depth, int max_depth, double avg, double skipped,
-    double render_time) {
+    const RenderingMetrics &metrics) {
   // if (!widget->zooming)
   //   return;
   renderer.background_render_finished();
-  renderer.viewport.finished(width, min_depth, max_depth, avg, skipped,
-                             render_time);
+  renderer.viewport.finished(metrics);
   // if (max_depth - min_depth < 5)
   //  renderer.cancel_animations();
 }

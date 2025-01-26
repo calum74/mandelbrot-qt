@@ -20,6 +20,9 @@ a. Basic shape
 b. Order
   circular
   number of spikes
+c. Description of features:
+  spokes:
+  wheel
 b. Fractal type
   b1. regular mandelbrot
   b2. cubic mandelbrotc 

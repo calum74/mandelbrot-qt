@@ -144,10 +144,12 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
     if (!stop) {
       view.updated();
       std::chrono::duration<double> d = t1 - t0;
-
-      view.finished(log_width(), metrics.min_depth, metrics.max_depth,
-                    calculation->average_iterations(),
-                    calculation->average_skipped(), d.count());
+      metrics.fully_evaluated = true;
+      metrics.average_iterations = calculation->average_iterations();
+      metrics.average_skipped_iterations = calculation->average_skipped();
+      metrics.render_time_seconds = d.count();
+      metrics.log_radius = log_width();
+      view.finished(metrics);
     }
   });
 }
