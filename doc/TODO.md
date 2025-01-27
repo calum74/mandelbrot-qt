@@ -1,12 +1,47 @@
 # Task list
 
+Think more about how to use orbit-trees.
+The basic idea is that we can use the Taylor-series expansion to detect divergence, and which point we want to "split" the orbit.
+Each split orbit computes a new reference orbit using perturbation from the original reference orbit.
+We compute a Taylor series representing the divergence of all points in the branch in the branch from the new reference orbit.
+-> Problem is that delta0 isn't 0.
+-> Can the two Taylor series nevertheless compose in some wat?
+
+
+Features:
+- [ ] Click to start continuous zoom option
+  If no drag, then we start the zoom
+  Reset the zoom speed on zoom in.
+- [ ] Zoom in is always "fast"?
+- [ ] Navigate is always "smooth"
+Bug when releasing
+Resume does not always work in quality mode
+
+- [ ] Smoother zoom out??
+- [ ] GPL license
+- [ ] Esc to stop animations
+- [ ] Multiple top-level windows
+
+
+Bugs:
+- [ ] Animate to here still continues to zoom in after an autozoom (Windows?)
+- [x] Zooming in slightly on a mandelbrot often leaves dots in the black area (glitches?)
+  Need to check the length of the reference orbit and maybe force recalculation
+  Problem is if the primary orbit maxed out and didn't escape.
+  Then we need to extend it.
+  If the primary did escape, then we are probably good.
+
+- [ ] Scrolling disrupts depth calculations
+
+
+
 Each point has a "closest point" calculation to see if it returns back to c. The closer the closest point, the closer we are to a minibrot.
 Return value is actually "period of closest point"
 This also works for the black area as well, surely.
 
 
-
-
+Algorithm:
+For each orbit (after the initial skip), we'll compute the norm of the distance to c. Keep the minimum value and its iteration number.
 
 Bugs:
 - Ensure "calculating" status message takes priority
@@ -25,8 +60,7 @@ Bugs:
 - Better normalization logic for high_exponent_real
 - On open, resume previous place visited?
 
-"1 CPU core, "4 CPU cores", "All CPU cores"
-"Multithreading" -> "Multithreaded"
+- [ ] "1 CPU core, "4 CPU cores", "All CPU cores"
 - [ ] Rename "oversampling" to "High definition"
 
 Classification project:
@@ -36,6 +70,8 @@ a. Basic shape
   a3. web
   a4. spiral
   a5. flowerc
+  wagon-wheel
+  hub
 b. Order
   circular
   number of spikes
@@ -46,18 +82,10 @@ b. Fractal type
   b1. regular mandelbrot
   b2. cubic mandelbrotc 
 
-Animation
-
 Next steps:
 - [ ] Mandelbrot finder based on orbits returning to the same place?
 - [ ] Option to reset colour gradient
 - [ ] Sometimes dots remain in black areas after a long calculation.
-- [ ] Render timings should also include the setup timing.
-
-Animation fixes:
-- [ ] Bail out animation when we don't recalculate the depth
-- [x] At the very end of a zoom, don't wait for image to render, but just dump it.
-- [x] Sometimes current calculation doesn't finish if cancelAnimations(); but continues to run in the background.
 
 - [ ] Make naming consistent with camelcase.
 - [ ] rename autozoom to autonavigate
@@ -65,7 +93,6 @@ Animation fixes:
 Paper cuts: 
 - [ ] Fix speed zoom for max iterations
   - Very fast animation can lose the max_iteration count.
-  In speed zoom, we often miscalculate the final depth if we don't calculate anything
 - [ ] Resize should be able to continue animation
 - [ ] Errors should be stored in a separate array.
 - Depth stats are bogus when dragging
@@ -120,14 +147,9 @@ Features:
 - [x] Surely we should colour "around" a point rather than just below/right
 
 - [ ] Update all the other fractals to use new data types
-- [ ] Too many artefacts when scaling and zooming.
-  Instead, the "view" contains a pixel size.
-  When the pixels in the view are larger than the new pixels, replace them.
-  Still to figure out
 - [ ] Rendering sequence to literally map integers to coords and sizes.
   Make it an O(1) operation.
 
-- [ ] Multiple top-level windows
 
 - [ ] Understand reference orbits better
   - What is the "orbit utilization"

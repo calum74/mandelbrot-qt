@@ -203,20 +203,23 @@ void fractals::AnimatedRenderer::cancel_animations() {
           zoom_y * (1.0 - rendered_zoom_ratio), rendered_zoom_ratio);
     }
     zooming = false;
+    current_animation = AnimatedRenderer::AnimationType::none;
   }
 }
 
 void fractals::AnimatedRenderer::start_next_calculation() {
-  // !! switch statement
   switch (current_animation) {
   case AnimationType::autozoom:
     auto_navigate();
     break;
-  case AnimatedRenderer::AnimationType::zoomtopoint:
+  case AnimationType::startzoomtopoint:
+    current_animation = AnimationType::zoomtopoint;
+    // Fall through
+  case AnimationType::zoomtopoint:
     if (renderer->log_width() > zoomtopoint_limit)
       smooth_zoom_to(viewport.width / 2, viewport.height / 2, true);
     break;
-  case AnimatedRenderer::AnimationType::zoomatcursor:
+  case AnimationType::zoomatcursor:
     smooth_zoom_to(move_x, move_y, false);
     break;
   default:
@@ -282,6 +285,8 @@ void fractals::AnimatedRenderer::set_animation_speed(
   fixZoomSpeed = fixedSpeed;
   fixZoomDuration = speed;
 }
+
+bool fractals::AnimatedRenderer::is_animating() const { return zooming; }
 
 fractals::AnimatedRenderer::BackgroundViewport::BackgroundViewport(
     AnimatedRenderer &renderer)

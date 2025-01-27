@@ -43,6 +43,8 @@ public:
   void set_animation_speed(std::chrono::duration<double> speed,
                            bool fixedSpeed);
 
+  bool is_animating() const;
+
 public: // !! Ideally private
   std::unique_ptr<fractals::Registry> registry;
   std::unique_ptr<fractals::Renderer> renderer;

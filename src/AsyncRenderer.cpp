@@ -99,9 +99,13 @@ void fractals::AsyncRenderer::calculate_region_in_thread(
 
   my_rendering_sequence seq(*calculation, cm, vp, depths);
   seq.calculate(threads, stop);
-  metrics.min_depth = seq.min_depth;
-  metrics.max_depth = seq.max_depth;
-  metrics.points_calculated = seq.calculated_pixels;
+
+  if (seq.calculated_pixels > 100) {
+    // !! I don't know when we sometimes return 1 or 0 pixels calculated
+    metrics.min_depth = seq.min_depth;
+    metrics.max_depth = seq.max_depth;
+    metrics.points_calculated = seq.calculated_pixels;
+  }
 }
 
 void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,

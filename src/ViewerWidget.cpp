@@ -112,13 +112,22 @@ void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
 void ViewerWidget::autoZoom() { renderer.auto_navigate(); }
 
 void ViewerWidget::mousePressEvent(QMouseEvent *event) {
-  if (event->buttons() & Qt::LeftButton) {
+  if (event->button() == Qt::LeftButton) {
     int x = event->pos().x() * imageScale;
     int y = event->pos().y() * imageScale;
-    press_x = x;
-    press_y = y;
+    start_x = press_x = x;
+    start_y = press_y = y;
 
+    release_can_start_zooming = !renderer.is_animating();
     stopAnimations();
+  }
+}
+
+void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
+  if (event->button() == Qt::LeftButton) {
+    if (release_can_start_zooming && start_x == move_x && start_y == move_y) {
+      zoomAtCursor();
+    }
   }
 }
 

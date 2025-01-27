@@ -35,7 +35,8 @@ class ViewerWidget : public QWidget {
   fractals::AnimatedRenderer renderer;
 
   // Track the previous position of the mouse cursor
-  int press_x, press_y, move_x, move_y;
+  int press_x, press_y, move_x, move_y, start_x, start_y;
+  bool release_can_start_zooming;
 
   void calculate();
   void draw();
@@ -53,6 +54,7 @@ public:
   void wheelEvent(QWheelEvent *event) override;
   void mouseMoveEvent(QMouseEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent *event) override;
 
   void increaseIterations();
   void decreaseIterations();
