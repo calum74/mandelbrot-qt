@@ -203,7 +203,7 @@ void fractals::AnimatedRenderer::cancel_animations() {
           zoom_y * (1.0 - rendered_zoom_ratio), rendered_zoom_ratio);
     }
     zooming = false;
-    current_animation = AnimatedRenderer::AnimationType::none;
+    // current_animation = AnimatedRenderer::AnimationType::none;
   }
 }
 
@@ -212,9 +212,6 @@ void fractals::AnimatedRenderer::start_next_calculation() {
   case AnimationType::autozoom:
     auto_navigate();
     break;
-  case AnimationType::startzoomtopoint:
-    current_animation = AnimationType::zoomtopoint;
-    // Fall through
   case AnimationType::zoomtopoint:
     if (renderer->log_width() > zoomtopoint_limit)
       smooth_zoom_to(viewport.width / 2, viewport.height / 2, true);

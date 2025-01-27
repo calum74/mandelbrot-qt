@@ -1,11 +1,13 @@
 # Task list
 
-Think more about how to use orbit-trees.
-The basic idea is that we can use the Taylor-series expansion to detect divergence, and which point we want to "split" the orbit.
-Each split orbit computes a new reference orbit using perturbation from the original reference orbit.
-We compute a Taylor series representing the divergence of all points in the branch in the branch from the new reference orbit.
--> Problem is that delta0 isn't 0.
--> Can the two Taylor series nevertheless compose in some wat?
+Suddenly a nasty judder whilst rendering.
+
+
+
+
+Mandelbrot explorer
+Where mathematics meets art
+
 
 
 Features:
@@ -14,7 +16,11 @@ Features:
   Reset the zoom speed on zoom in.
 - [ ] Zoom in is always "fast"?
 - [ ] Navigate is always "smooth"
-Bug when releasing
+
+
+
+
+
 Resume does not always work in quality mode
 
 - [ ] Smoother zoom out??
