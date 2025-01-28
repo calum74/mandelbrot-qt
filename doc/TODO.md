@@ -2,7 +2,7 @@
 
 Suddenly a nasty judder whilst rendering.
 
-
+- [ ] Class OrbitConfiguration which contains all of the parameters for the orbit
 
 
 Mandelbrot explorer

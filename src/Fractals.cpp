@@ -13,6 +13,6 @@ void register_fractals(fractals::Registry &r) {
 
   // To add custom fractals, insert them into this list, for example:
   // r.add(circle);
-  // r.add(experimental_fractal);
+  r.add(experimental_fractal);
   // r.add(mandelbrot_imprecise);
 }
