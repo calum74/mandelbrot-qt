@@ -1,5 +1,16 @@
 # Task list
 
+Paste coordinates
+e.g. 
+
+Zooming:
+- Different defaults for different actions:
+  - Continuous zoom = smooth
+  - Zoom step = fast
+
+Can we approximate "32 steps" using perturbation theory?
+
+
 Suddenly a nasty judder whilst rendering.
 
 - [ ] Class OrbitConfiguration which contains all of the parameters for the orbit

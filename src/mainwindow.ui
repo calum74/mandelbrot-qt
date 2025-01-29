@@ -42,6 +42,7 @@
     <addaction name="actionQuick_save"/>
     <addaction name="separator"/>
     <addaction name="actionCopy"/>
+    <addaction name="actionPaste_coords"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
     <property name="title">
@@ -125,11 +126,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+C, Meta+C</string>
-   </property>
-  </action>
-  <action name="actionPaste_coords">
-   <property name="text">
-    <string>Paste coords</string>
    </property>
   </action>
   <action name="actionCopy_image">
@@ -349,6 +345,14 @@
    </property>
    <property name="text">
     <string>Oversampling</string>
+   </property>
+  </action>
+  <action name="actionPaste_coords">
+   <property name="text">
+    <string>Paste coordinates</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
  </widget>

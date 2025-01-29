@@ -178,6 +178,12 @@ void ViewerWidget::decreaseIterations() {
   calculate();
 }
 
+void ViewerWidget::pasteCoords() {
+  QClipboard *clipboard = QApplication::clipboard();
+  auto t = clipboard->text();
+  std::cout << "Pasted: " << t.toStdString() << std::endl;
+}
+
 void ViewerWidget::copyCoords() {
   auto c = renderer.renderer->get_coords();
 

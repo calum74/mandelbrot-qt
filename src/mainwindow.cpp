@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "gotodialog.h"
 #include "ui_mainwindow.h"
+#include <QFile>
 #include <QKeyEvent>
 #include <cmath>
 #include <iomanip>
@@ -17,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::completed);
   connect(ui->actionCopy, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::copyCoords);
+  connect(ui->actionPaste_coords, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::pasteCoords);
   connect(ui->actionGoTo, &QAction::triggered, this,
           &MainWindow::openGoToDialog);
 
@@ -87,6 +90,8 @@ MainWindow::MainWindow(QWidget *parent)
 
   QIcon icon(":/new/prefix1/icon.ico");
   QApplication::setWindowIcon(icon);
+
+  QFile file(":/new/prefix1/bookmarks.json");
 
   fractalsActionGroup.setExclusionPolicy(
       QActionGroup::ExclusionPolicy::Exclusive);

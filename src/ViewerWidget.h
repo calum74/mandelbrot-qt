@@ -69,6 +69,7 @@ public:
 
 public slots:
   void copyCoords();
+  void pasteCoords();
   void recolourPalette();
   void resetCurrentFractal();
   void changeFractal(const fractals::PointwiseFractal &fractal);
