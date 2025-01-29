@@ -1,10 +1,18 @@
-{
-    // Credit to: Phil Thompson
-    // philthompson.me
-    "name": "Untitled 5",
-    "group": "By Phil Thompson",
-    "Re": -1.768534912655296681276669575288151909,
-    "Im": -0.003238612298963392406449390944502121069,
+[{
+    "Credit": "Phil Thompson",
+    "Name": "Untitled 5",
+    "Group": "By Phil Thompson",
+    "Re": "-1.768534912655296681276669575288151909",
+    "Im": "-0.003238612298963392406449390944502121069",
     "Magnification": 3.0e20,
     "Iterations": 1500
-}
+},
+{
+    "Credit": "Phil Thompson",
+    "Name": "Example 5",
+    "group": "By Phil Thompson",
+    "Re": "-1.768534912655296681276669575288151909",
+    "Im": "-0.003238612298963392406449390944502121069",
+    "Magnification": 3.0e20,
+    "Iterations": 1500
+}]

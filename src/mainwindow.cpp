@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include <cmath>
 #include <iomanip>
+#include <nlohmann/json.hpp>
 #include <numbers>
 #include <sstream>
 
@@ -92,6 +93,19 @@ MainWindow::MainWindow(QWidget *parent)
   QApplication::setWindowIcon(icon);
 
   QFile file(":/new/prefix1/bookmarks.json");
+  if (file.open(QIODevice::ReadOnly)) {
+    QByteArray contents = file.readAll();
+    nlohmann::json data =
+        nlohmann::json::parse(contents.begin(), contents.end());
+
+    // Turn it into JSON
+    for (auto &item : data) {
+      std::cout << "Added a bookmark item\n";
+      // std::cout << item << std::endl;
+      auto *bookmark = new Bookmark(item);
+      ui->menuBookmarks_2->addAction(bookmark);
+    }
+  }
 
   fractalsActionGroup.setExclusionPolicy(
       QActionGroup::ExclusionPolicy::Exclusive);
@@ -186,4 +200,14 @@ void MainWindow::fractalChanged(const char *name) {
   for (auto *action : fractalsActionGroup.actions()) {
     action->setChecked(action->text() == name);
   }
+}
+
+Bookmark::Bookmark(const nlohmann::json &js) {
+  setText("Hello");
+  // auto name = js["Name"];
+  // if (name) {
+  // std::string n;
+  //  name.get_to(n);
+  //  setText(n.c_str());
+  //}
 }

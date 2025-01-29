@@ -83,10 +83,16 @@
     <addaction name="actionAnimate_to_here"/>
     <addaction name="actionZoom_continuously"/>
    </widget>
+   <widget class="QMenu" name="menuBookmarks_2">
+    <property name="title">
+     <string>Bookmarks</string>
+    </property>
+   </widget>
    <addaction name="menuExample"/>
    <addaction name="menuOptions"/>
    <addaction name="menuFractal"/>
    <addaction name="menuBookmarks"/>
+   <addaction name="menuBookmarks_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">

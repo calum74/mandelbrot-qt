@@ -3,10 +3,12 @@
 
 #include "RenderingMetrics.hpp"
 #include "fractal.hpp"
+#include "view_parameters.hpp"
 #include <QAction>
 #include <QActionGroup>
 #include <QEvent>
 #include <QMainWindow>
+#include <nlohmann/json_fwd.hpp>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -53,6 +55,18 @@ private slots:
 
 private:
   const fractals::PointwiseFractal &fractal;
+};
+
+class Bookmark : public QAction {
+  Q_OBJECT
+public:
+  Bookmark(const nlohmann::json &json);
+
+signals:
+  void select(const fractals::view_parameters *);
+
+private:
+  fractals::view_parameters params;
 };
 
 #endif // MAINWINDOW_H
