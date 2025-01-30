@@ -16,12 +16,14 @@ class RegistryImpl : public Registry {
       fractals;
 
   const PointwiseFractal *lookup(const std::string &query) const override {
+    if (fractals.empty())
+      return {};
     // !! Linear search
     for (auto &[name, fractal] : fractals) {
       if (name == query)
         return &fractal;
     }
-    return {};
+    return &fractals.front().second;
   }
 
   std::vector<std::pair<std::string, const fractals::PointwiseFractal &>>

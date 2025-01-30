@@ -7,7 +7,10 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QEvent>
+#include <QFile>
 #include <QMainWindow>
+
+class Bookmark;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -39,7 +42,13 @@ public:
     QActionGroup zoomSpeedActionGroup;
     QActionGroup threadingActionGroup;
 
-    void doAddBookmark(const fractals::view_parameters &params);
+    void doAddBookmark(const fractals::view_parameters &params, bool isUser);
+    std::vector<Bookmark *> bookmarks;
+
+    void loadBookmarks(QFile &&file, bool isUser);
+    void saveBookmarks();
+
+    QFile getBookmarksFile();
 };
 
 class ChangeFractalAction : public QAction {
@@ -70,7 +79,7 @@ private slots:
 signals:
   void selected(const fractals::view_parameters *);
 
-private:
+public:
   fractals::view_parameters params;
 };
 

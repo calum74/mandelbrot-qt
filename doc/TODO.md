@@ -1,11 +1,11 @@
 # Task list
+- [ ] Zoom in goes too far
 
 Next steps:
-- [ ] Hierarchical bookmarks
+- [x] Hierarchical bookmarks
 - When fractal not found, default to mandelbrot
 - [ ] Load/save user bookmarks in ~/.mandelbrot.json
-- [ ] Separator for user fractals
-
+- [ ] Separator for user fractals??
 
 - [x] Add bookmark dialog box
   Note: Text says where bookmark is saved.

@@ -95,18 +95,8 @@ MainWindow::MainWindow(QWidget *parent)
   QIcon icon(":/new/prefix1/icon.ico");
   QApplication::setWindowIcon(icon);
 
-  QFile file(":/new/prefix1/bookmarks.json");
-  if (file.open(QIODevice::ReadOnly)) {
-    QByteArray contents = file.readAll();
-    nlohmann::json data =
-        nlohmann::json::parse(contents.begin(), contents.end());
-
-    // Turn it into JSON
-    for (auto &item : data) {
-      auto params = read_json(item);
-      doAddBookmark(params);
-    }
-  }
+  loadBookmarks(QFile(":/new/prefix1/bookmarks.json"), false);
+  loadBookmarks(getBookmarksFile(), true);
 
   fractalsActionGroup.setExclusionPolicy(
       QActionGroup::ExclusionPolicy::Exclusive);
@@ -197,7 +187,8 @@ Bookmark::Bookmark(const fractals::view_parameters &params) : params(params) {
 
 void Bookmark::triggered(bool checked) { selected(&params); }
 
-void MainWindow::doAddBookmark(const fractals::view_parameters &params) {
+void MainWindow::doAddBookmark(const fractals::view_parameters &params,
+                               bool isUser) {
   // Split the name of the parameter
   std::string_view name = params.title;
   QMenu *menu = ui->menuBookmarks_2;
@@ -223,6 +214,8 @@ void MainWindow::doAddBookmark(const fractals::view_parameters &params) {
   connect(bookmark, &Bookmark::selected, ui->centralwidget,
           &ViewerWidget::openBookmark);
   menu->addAction(bookmark);
+  if (isUser)
+    bookmarks.push_back(bookmark);
 }
 
 void MainWindow::addBookmark() {
@@ -231,6 +224,35 @@ void MainWindow::addBookmark() {
     fractals::view_parameters params;
     ui->centralwidget->getCoords(params);
     params.title = dialog.getName().toStdString();
-    doAddBookmark(params);
+    doAddBookmark(params, true);
+    saveBookmarks();
+  }
+}
+
+void MainWindow::loadBookmarks(QFile &&file, bool isUser) {
+  if (file.open(QIODevice::ReadOnly)) {
+    QByteArray contents = file.readAll();
+    nlohmann::json data =
+        nlohmann::json::parse(contents.begin(), contents.end());
+
+    // Turn it into JSON
+    for (auto &item : data) {
+      auto params = read_json(item);
+      doAddBookmark(params, isUser);
+    }
+  }
+}
+
+QFile MainWindow::getBookmarksFile() { return QFile("bookmarks.json"); }
+
+void MainWindow::saveBookmarks() {
+  QFile file = getBookmarksFile();
+  if (file.open(QIODevice::WriteOnly)) {
+    nlohmann::json js = nlohmann::json::array();
+    for (auto *bookmark : bookmarks) {
+      js.push_back(write_json(bookmark->params));
+    }
+    auto contents = js.dump(4);
+    file.write(contents.data(), contents.size());
   }
 }
