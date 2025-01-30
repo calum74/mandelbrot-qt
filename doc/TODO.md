@@ -1,6 +1,7 @@
 # Task list
 
 Next steps:
+- [ ] Copy coords to copy the JSON
 - [ ] Add bookmark dialog box
 - [x] Goto dialog box to display radius in engineering units
 - [ ] Bookmark gets added to the menu

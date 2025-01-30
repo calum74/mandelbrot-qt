@@ -15,6 +15,9 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        addbookmark.h
+        addbookmark.cpp
+        addbookmark.ui
         Renderer.hpp
         Renderer.cpp
         AsyncRenderer.hpp
@@ -33,6 +36,7 @@ set(PROJECT_SOURCES
         gotodialog.cpp
         registry.hpp
         registry.cpp
+
 )
 
 set(MACOSX_BUNDLE_ICON_FILE icon.icns)
@@ -41,7 +45,8 @@ set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/icon.icns")
 set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(mandelbrot-qt
+
+qt_add_executable(mandelbrot-qt
         MANUAL_FINALIZATION
         MACOSX_BUNDLE
         ${app_icon_macos}
