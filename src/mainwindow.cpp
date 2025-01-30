@@ -1,5 +1,7 @@
 #include "mainwindow.h"
+#include "addbookmark.h"
 #include "gotodialog.h"
+#include "json.hpp"
 #include "ui_mainwindow.h"
 #include <QFile>
 #include <QKeyEvent>
@@ -75,6 +77,8 @@ MainWindow::MainWindow(QWidget *parent)
           &ViewerWidget::setFastestAnimation);
   connect(ui->centralwidget, &ViewerWidget::fractalChanged, this,
           &MainWindow::fractalChanged);
+  connect(ui->actionAdd_bookmark, &QAction::triggered, this,
+          &MainWindow::addBookmark);
 
   zoomSpeedActionGroup.setExclusionPolicy(
       QActionGroup::ExclusionPolicy::Exclusive);
@@ -99,10 +103,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Turn it into JSON
     for (auto &item : data) {
-      auto *bookmark = new Bookmark(item);
-      connect(bookmark, &Bookmark::selected, ui->centralwidget,
-              &ViewerWidget::openBookmark);
-      ui->menuBookmarks_2->addAction(bookmark);
+      auto params = read_json(item);
+      doAddBookmark(params);
     }
   }
 
@@ -186,33 +188,49 @@ void MainWindow::fractalChanged(const char *name) {
   }
 }
 
-void parse(const nlohmann::json &js, fractals::view_coords::value_type &v) {
-  std::stringstream ss(js.get<std::string>());
-  ss >> v;
-}
-
-Bookmark::Bookmark(const nlohmann::json &js) {
-
+Bookmark::Bookmark(const fractals::view_parameters &params) : params(params) {
   connect(this, &QAction::triggered, this, &Bookmark::triggered);
+  auto last = params.title.rfind('/');
 
-  if (js.contains("Name")) {
-    auto name = js["Name"];
-    if (name.is_string()) {
-      setText(name.get<std::string>().c_str());
-    }
-  }
-  if (js.contains("Re"))
-    parse(js["Re"], params.coords.x);
-  if (js.contains("Im"))
-    parse(js["Im"], params.coords.y);
-  if (js.contains("Radius"))
-    parse(js["Radius"], params.coords.r);
-  if (js.contains("Iterations"))
-    params.coords.max_iterations = js["Iterations"].get<int>();
-  if (js.contains("Gradient"))
-    params.colour_gradient = js["Gradient"].get<double>();
-  if (js.contains("Colour"))
-    params.colour_seed = js["Colour"].get<int>();
+  setText(params.title.c_str() + (last >= 0 ? last + 1 : 0));
 }
 
 void Bookmark::triggered(bool checked) { selected(&params); }
+
+void MainWindow::doAddBookmark(const fractals::view_parameters &params) {
+  // Split the name of the parameter
+  std::string_view name = params.title;
+  QMenu *menu = ui->menuBookmarks_2;
+
+  for (int p = name.find('/'); p >= 0; p = name.find('/')) {
+    QString first = std::string(name.substr(0, p)).c_str();
+    name = name.substr(p + 1);
+    QMenu *sub = 0;
+    for (auto *action : menu->actions()) {
+      if (action->menu() && action->text() == first) {
+        sub = action->menu();
+        break;
+      }
+    }
+    if (!sub) {
+      sub = new QMenu(first, menu);
+      menu->addMenu(sub);
+    }
+    menu = sub;
+  }
+
+  auto *bookmark = new Bookmark(params);
+  connect(bookmark, &Bookmark::selected, ui->centralwidget,
+          &ViewerWidget::openBookmark);
+  menu->addAction(bookmark);
+}
+
+void MainWindow::addBookmark() {
+  AddBookmark dialog;
+  if (dialog.exec()) {
+    fractals::view_parameters params;
+    ui->centralwidget->getCoords(params);
+    params.title = dialog.getName().toStdString();
+    doAddBookmark(params);
+  }
+}

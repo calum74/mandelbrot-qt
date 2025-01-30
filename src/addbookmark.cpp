@@ -12,3 +12,5 @@ AddBookmark::~AddBookmark()
 {
     delete ui;
 }
+
+QString AddBookmark::getName() const { return ui->nameEdit->text(); }

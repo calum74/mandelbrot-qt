@@ -8,7 +8,6 @@
 #include <QActionGroup>
 #include <QEvent>
 #include <QMainWindow>
-#include <nlohmann/json_fwd.hpp>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -32,12 +31,15 @@ public:
                        const fractals::PointwiseFractal &fractal);
     void fractalChanged(const char *name);
     void cancelAnimations();
+    void addBookmark();
 
   private:
     Ui::MainWindow *ui;
     QActionGroup fractalsActionGroup;
     QActionGroup zoomSpeedActionGroup;
     QActionGroup threadingActionGroup;
+
+    void doAddBookmark(const fractals::view_parameters &params);
 };
 
 class ChangeFractalAction : public QAction {
@@ -60,7 +62,7 @@ private:
 class Bookmark : public QAction {
   Q_OBJECT
 public:
-  Bookmark(const nlohmann::json &json);
+  Bookmark(const fractals::view_parameters &);
 
 private slots:
   void triggered(bool);

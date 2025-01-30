@@ -36,7 +36,8 @@ set(PROJECT_SOURCES
         gotodialog.cpp
         registry.hpp
         registry.cpp
-
+        json.cpp
+        json.hpp
 )
 
 set(MACOSX_BUNDLE_ICON_FILE icon.icns)

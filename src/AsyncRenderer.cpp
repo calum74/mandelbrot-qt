@@ -20,7 +20,7 @@ void fractals::AsyncRenderer::load(const view_parameters &params,
   stop_current_calculation();
 
   coords = params.coords;
-  auto new_fractal = registry.lookup(params.fractal_name);
+  auto new_fractal = registry.lookup(params.algorithm);
 
   if (new_fractal)
     current_fractal = new_fractal->create();
@@ -30,7 +30,7 @@ void fractals::AsyncRenderer::load(const view_parameters &params,
 
 void fractals::AsyncRenderer::save(view_parameters &params) const {
   params.coords = coords;
-  params.fractal_name = current_fractal->name();
+  params.algorithm = current_fractal->name();
 }
 
 void fractals::AsyncRenderer::increase_iterations(Viewport &vp) {

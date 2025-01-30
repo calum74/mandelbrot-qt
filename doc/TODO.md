@@ -1,15 +1,31 @@
 # Task list
 
 Next steps:
-- [ ] Copy coords to copy the JSON
-- [ ] Add bookmark dialog box
-- [x] Goto dialog box to display radius in engineering units
-- [ ] Bookmark gets added to the menu
-- [ ] Load/save user bookmarks in ~/.mandelbrot.json
-- [ ] Animation speed is on the "Go" menu
 - [ ] Hierarchical bookmarks
+- When fractal not found, default to mandelbrot
+- [ ] Load/save user bookmarks in ~/.mandelbrot.json
+- [ ] Separator for user fractals
+
+
+- [x] Add bookmark dialog box
+  Note: Text says where bookmark is saved.
+- [x] Bookmark gets added to the menu
+
+- [x] Copy coords to copy the JSON
+- [x] Embed JSON in saved images
+
+- [x] Goto dialog box to display radius in engineering units
+- [x] Animation speed is on the "Go" menu
+
+Idea for orbit-finding: 
+- If the Taylor series is valid, we can find a delta which makes the orbit coincide with the starting point.
+- Using Newton Raphson.
+- 
+
+- [ ] Display the time without setprecision(2)??
 
 JSON format
+
 - [ ] Rename / name alias for fractals.
   All unknown fractals default to the Mandelbrot set
 - [ ] Import/export bookmarks file?

@@ -14,8 +14,9 @@ class AddBookmark : public QDialog
 public:
     explicit AddBookmark(QWidget *parent = nullptr);
     ~AddBookmark();
+    QString getName() const;
 
-private:
+  private:
     Ui::AddBookmark *ui;
 };
 

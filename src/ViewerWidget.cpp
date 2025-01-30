@@ -13,7 +13,9 @@
 #include <QWheelEvent>
 
 #include "RenderingMetrics.hpp"
+#include "json.hpp"
 #include "mandelbrot.hpp"
+#include "nlohmann/json.hpp"
 #include "view_parameters.hpp"
 
 #include <filesystem>
@@ -185,24 +187,17 @@ void ViewerWidget::pasteCoords() {
 }
 
 void ViewerWidget::copyCoords() {
-  auto c = renderer.renderer->get_coords();
 
-  auto cx = c.x;
-  auto cy = c.y;
-
-  int zeros = fractals::count_fractional_zeros(c.r);
-  int width = 4 + zeros * 0.30103;
-
-  std::stringstream ss;
-  ss << std::setprecision(width) << cx << std::endl;
-  ss << cy << std::endl;
-  ss << c.r << std::endl;
+  fractals::view_parameters params;
+  getCoords(params);
+  auto js = write_json(params);
+  std::string str = js.dump(4);
 
   QClipboard *clipboard = QApplication::clipboard();
 
   QMimeData *data = new QMimeData;
   data->setImageData(image);
-  data->setText(ss.str().c_str());
+  data->setText(str.c_str());
   clipboard->setMimeData(data);
 }
 
@@ -298,10 +293,7 @@ void ViewerWidget::saveToFile(const QString &image_filename) {
   renderer.renderer->save(params);
   renderer.colourMap->save(params);
 
-  std::stringstream ss;
-  ss << params;
-
-  image.setText("MandelbrotQt", ss.str().c_str());
+  image.setText("MandelbrotQtjson", write_json(params).dump().c_str());
   image.save(image_filename, "png");
 }
 
@@ -324,21 +316,26 @@ void ViewerWidget::open() {
     QImage image;
     image.load(str);
     auto text = image.text("MandelbrotQt");
+    fractals::view_parameters params;
     if (!text.isEmpty()) {
       // Successfully loaded metadata
       std::stringstream ss(text.toStdString());
-      fractals::view_parameters params;
       ss >> params;
-      renderer.cancel_animations();
-
-      renderer.renderer->load(params, viewport);
-      renderer.colourMap->load(params);
-      fractalChanged(
-          renderer.renderer->get_fractal_name()); // Update menus if needed
-      calculate();
     } else {
-      // TODO: Pop up a dialog box
+      text = image.text("MandelbrotQtjson");
+      if (!text.isEmpty()) {
+        params = read_json(nlohmann::json::parse(text.toStdString()));
+      } else
+        return;
     }
+
+    renderer.cancel_animations();
+
+    renderer.renderer->load(params, viewport);
+    renderer.colourMap->load(params);
+    fractalChanged(
+        renderer.renderer->get_fractal_name()); // Update menus if needed
+    calculate();
   }
 }
 
