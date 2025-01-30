@@ -59,10 +59,6 @@
     <addaction name="actionRandomize_palette"/>
     <addaction name="actionScale_palette"/>
     <addaction name="separator"/>
-    <addaction name="actionQuality_animation"/>
-    <addaction name="actionFast_animation"/>
-    <addaction name="actionVery_fast_animation"/>
-    <addaction name="separator"/>
     <addaction name="actionOversampling"/>
    </widget>
    <widget class="QMenu" name="menuFractal">
@@ -82,11 +78,17 @@
     <addaction name="actionAutozoom"/>
     <addaction name="actionAnimate_to_here"/>
     <addaction name="actionZoom_continuously"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuality_animation"/>
+    <addaction name="actionFast_animation"/>
+    <addaction name="actionVery_fast_animation"/>
    </widget>
    <widget class="QMenu" name="menuBookmarks_2">
     <property name="title">
      <string>Bookmarks</string>
     </property>
+    <addaction name="actionAdd_bookmark"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="menuExample"/>
    <addaction name="menuOptions"/>
@@ -359,6 +361,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionAdd_bookmark">
+   <property name="text">
+    <string>Add bookmark...</string>
+   </property>
+   <property name="shortcut">
+    <string>B</string>
    </property>
   </action>
  </widget>

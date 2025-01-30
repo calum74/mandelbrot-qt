@@ -2,23 +2,20 @@
 
 Next steps:
 - [ ] Add bookmark dialog box
-- [ ] Goto dialog box to display radius in engineering units
+- [x] Goto dialog box to display radius in engineering units
 - [ ] Bookmark gets added to the menu
 - [ ] Load/save user bookmarks in ~/.mandelbrot.json
 - [ ] Animation speed is on the "Go" menu
 - [ ] Hierarchical bookmarks
 
-
-
-JSON formatz
+JSON format
+- [ ] Rename / name alias for fractals.
+  All unknown fractals default to the Mandelbrot set
 - [ ] Import/export bookmarks file?
 - [ ] Class bookmarks?
 - Different fractal types/names
 - Copy to copy the JSON to clipboard
 - Output engineering notation
-- Number format "5e-14" acceptable (without the dot)
-- Output radius properly in the Goto dialog
-- Invert the gradient
 - Load json without recompiling everything
 - Edit bookmarks on disk
   - user-bookmarks.json
