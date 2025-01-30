@@ -11,13 +11,13 @@ fractals::ColourMapImpl::ColourMapImpl() {
   randomize();
 }
 
-void fractals::ColourMapImpl::resetGradient() { gradient = 0.05; }
+void fractals::ColourMapImpl::resetGradient() { gradient = 20; }
 
 fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   if (d == 0)
     return make_rgb(0, 0, 0);
 
-  d = pow(d, gamma) * gradient;
+  d = pow(d, gamma) / gradient;
   int i = d;
   auto f = d - i;
   i %= colours.size();
@@ -31,7 +31,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
 }
 
 void fractals::ColourMapImpl::setRange(double min, double max) {
-  gradient = 5.0 / (max - min);
+  gradient = (max - min) / 5.0;
 }
 
 void fractals::ColourMapImpl::randomize() {
@@ -56,6 +56,8 @@ void fractals::ColourMapImpl::create_colours() {
 void fractals::ColourMapImpl::load(const view_parameters &params) {
   seed = params.colour_seed;
   gradient = params.colour_gradient;
+  if (gradient < 1.0)
+    gradient = 1.0 / gradient;
   create_colours();
 }
 

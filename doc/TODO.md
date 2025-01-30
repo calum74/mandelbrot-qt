@@ -1,7 +1,17 @@
 # Task list
 
+JSON format
+- Copy to copy the JSON to clipboard
+- Output engineering notation
+- Number format "5e-14" acceptable
+- Output radius properly in the Goto dialog
+- Invert the gradient
+- Load json without recompiling everything
+
 Paste coordinates
 e.g. 
+
+- [ ] Bugs in New Year fractal. (imprecision of some kind)
 
 Zooming:
 - Different defaults for different actions:

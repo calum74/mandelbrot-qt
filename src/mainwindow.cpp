@@ -100,9 +100,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Turn it into JSON
     for (auto &item : data) {
-      std::cout << "Added a bookmark item\n";
-      // std::cout << item << std::endl;
       auto *bookmark = new Bookmark(item);
+      connect(bookmark, &Bookmark::selected, ui->centralwidget,
+              &ViewerWidget::openBookmark);
       ui->menuBookmarks_2->addAction(bookmark);
     }
   }
@@ -122,10 +122,7 @@ MainWindow::MainWindow(QWidget *parent)
   }
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
+MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::changeFractal(ChangeFractalAction *src,
                                const fractals::PointwiseFractal &fractal) {
@@ -202,12 +199,33 @@ void MainWindow::fractalChanged(const char *name) {
   }
 }
 
-Bookmark::Bookmark(const nlohmann::json &js) {
-  setText("Hello");
-  // auto name = js["Name"];
-  // if (name) {
-  // std::string n;
-  //  name.get_to(n);
-  //  setText(n.c_str());
-  //}
+void parse(const nlohmann::json &js, fractals::view_coords::value_type &v) {
+  std::stringstream ss(js.get<std::string>());
+  ss >> v;
 }
+
+Bookmark::Bookmark(const nlohmann::json &js) {
+
+  connect(this, &QAction::triggered, this, &Bookmark::triggered);
+
+  if (js.contains("Name")) {
+    auto name = js["Name"];
+    if (name.is_string()) {
+      setText(name.get<std::string>().c_str());
+    }
+  }
+  if (js.contains("Re"))
+    parse(js["Re"], params.coords.x);
+  if (js.contains("Im"))
+    parse(js["Im"], params.coords.y);
+  if (js.contains("Radius"))
+    parse(js["Radius"], params.coords.r);
+  if (js.contains("Iterations"))
+    params.coords.max_iterations = js["Iterations"].get<int>();
+  if (js.contains("Gradient"))
+    params.colour_gradient = js["Gradient"].get<double>();
+  if (js.contains("Colour"))
+    params.colour_seed = js["Colour"].get<int>();
+}
+
+void Bookmark::triggered(bool checked) { selected(&params); }

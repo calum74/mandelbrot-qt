@@ -99,6 +99,8 @@ public slots:
   void setFastAnimation();
   void setFastestAnimation();
 
+  void openBookmark(const fractals::view_parameters *params);
+
 signals:
   void startCalculating(double width, int maxIterations);
   void completed(const fractals::RenderingMetrics *

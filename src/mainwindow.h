@@ -62,8 +62,11 @@ class Bookmark : public QAction {
 public:
   Bookmark(const nlohmann::json &json);
 
+private slots:
+  void triggered(bool);
+
 signals:
-  void select(const fractals::view_parameters *);
+  void selected(const fractals::view_parameters *);
 
 private:
   fractals::view_parameters params;

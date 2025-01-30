@@ -342,6 +342,18 @@ void ViewerWidget::open() {
   }
 }
 
+void ViewerWidget::openBookmark(const fractals::view_parameters *params) {
+    renderer.cancel_animations();
+
+      renderer.renderer->load(*params, viewport);
+      renderer.colourMap->load(*params);
+      fractalChanged(
+          renderer.renderer->get_fractal_name()); // Update menus if needed
+      calculate();
+
+}
+
+
 void ViewerWidget::save() {
   auto str = QFileDialog::getSaveFileName(this, "Save file", "fractal.png",
                                           "PNG (*.png)");
