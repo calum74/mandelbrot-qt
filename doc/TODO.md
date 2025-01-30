@@ -1,17 +1,44 @@
 # Task list
 
-JSON format
+Next steps:
+- [ ] Add bookmark dialog box
+- [ ] Goto dialog box to display radius in engineering units
+- [ ] Bookmark gets added to the menu
+- [ ] Load/save user bookmarks in ~/.mandelbrot.json
+- [ ] Animation speed is on the "Go" menu
+- [ ] Hierarchical bookmarks
+
+
+
+JSON formatz
+- [ ] Import/export bookmarks file?
+- [ ] Class bookmarks?
+- Different fractal types/names
 - Copy to copy the JSON to clipboard
 - Output engineering notation
-- Number format "5e-14" acceptable
+- Number format "5e-14" acceptable (without the dot)
 - Output radius properly in the Goto dialog
 - Invert the gradient
 - Load json without recompiling everything
+- Edit bookmarks on disk
+  - user-bookmarks.json
+- Paths in the bookmarks
+- Embed JSON in the image when loading/saving
+- Add bookmark ^B
+  Fill in the name
+  View:
+  X,Y,Radius (in engineering format)
+  Colour
+  Gradient
+
+- Animate to here still carries on zooming mysteriously
+  I think we need to cancel the current calculation as it only happens when there is still a rendering going on?
 
 Paste coordinates
 e.g. 
 
 - [ ] Bugs in New Year fractal. (imprecision of some kind)
+- [ ] Glitches in Magnus Opus Ex
 
 Zooming:
 - Different defaults for different actions:

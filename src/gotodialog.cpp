@@ -42,7 +42,8 @@ void GoToDialog::setCoords(const fractals::view_parameters &params) {
   ui->yCoord->setPlainText(ss2.str().c_str());
 
   std::stringstream ss3;
-  ss3 << std::setprecision(params.coords.get_precision()) << params.coords.r;
+  ss3 << std::setprecision(3);
+  fractals::log_radius(ss3, params.coords.ln_r());
   ui->sizeCoord->setPlainText(ss3.str().c_str());
 
   ui->maxIterations->setPlainText(to_qstring(params.coords.max_iterations));

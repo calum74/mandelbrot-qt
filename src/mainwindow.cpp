@@ -6,7 +6,6 @@
 #include <cmath>
 #include <iomanip>
 #include <nlohmann/json.hpp>
-#include <numbers>
 #include <sstream>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -129,22 +128,10 @@ void MainWindow::changeFractal(ChangeFractalAction *src,
   ui->centralwidget->changeFractal(fractal);
 }
 
-void log_radius(std::ostream &os, double log_base_e) {
-  // Renders a number ln(x) in engineering form
-  auto log_base_10 = log_base_e * std::numbers::log10e;
-
-  double int_part, frac_part = std::pow(10, std::modf(log_base_10, &int_part));
-  while (frac_part < 1) {
-    frac_part *= 10;
-    int_part--;
-  }
-  os << std::setprecision(2) << frac_part << "e" << (int)int_part;
-}
-
 void MainWindow::startCalculating(double d, int iterations) {
   std::stringstream ss;
-  ss << "Calculating radius ";
-  log_radius(ss, d);
+  ss << "Calculating radius " << std::setprecision(2);
+  fractals::log_radius(ss, d);
   ss << " to " << iterations << " iterations";
 
   ui->statusbar->showMessage(ss.str().c_str());
@@ -152,8 +139,8 @@ void MainWindow::startCalculating(double d, int iterations) {
 
 void MainWindow::completed(const fractals::RenderingMetrics *metrics) {
   std::stringstream ss;
-  ss << "Radius ";
-  log_radius(ss, metrics->log_radius);
+  ss << "Radius " << std::setprecision(2);
+  fractals::log_radius(ss, metrics->log_radius);
   ss << " completed in " << metrics->render_time_seconds << " seconds, depth "
      << (int)metrics->min_depth << "-" << (int)metrics->max_depth;
 
