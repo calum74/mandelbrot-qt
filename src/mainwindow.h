@@ -30,6 +30,7 @@ public:
   MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks = {},
              QWidget *parent = nullptr);
   ~MainWindow();
+  void closeEvent(QCloseEvent *) override;
 
 public slots:
   void startCalculating(double d, int i);

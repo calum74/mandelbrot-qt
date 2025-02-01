@@ -1,7 +1,14 @@
 # Task list
 
+Orbit-tree:
+- Think of it as a skip-forward for any position.
+  (a) skip-forward using series
+  (b) skip-forward using linear jumps.
+
+Bugs:
 - [ ] Closing window does not kill all calculations
 - [ ] Multiple toplevels don't sync bookmarks
+  Menus not updated properly
 - [ ] Is there a memory leak on multiple toplevel windows???
 - [ ] Lock window
 - [ ] Karatsuba multiplication

@@ -271,3 +271,8 @@ void MainWindow::newWindow() {
   auto w = new MainWindow(bookmarks);
   w->show();
 }
+
+void MainWindow::closeEvent(QCloseEvent *) {
+  delete ui->centralwidget;
+  ui->centralwidget = 0;
+}
