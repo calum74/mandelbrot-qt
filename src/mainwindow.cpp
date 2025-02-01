@@ -10,9 +10,11 @@
 #include <nlohmann/json.hpp>
 #include <sstream>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow), fractalsActionGroup(this),
-      zoomSpeedActionGroup(this), threadingActionGroup(this) {
+MainWindow::MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks0,
+                       QWidget *parent)
+    : QMainWindow(parent), ui(new Ui::MainWindow), bookmarks(bookmarks0),
+      fractalsActionGroup(this), zoomSpeedActionGroup(this),
+      threadingActionGroup(this) {
   ui->setupUi(this);
   connect(ui->centralwidget, &ViewerWidget::startCalculating, this,
           &MainWindow::startCalculating);
@@ -56,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent)
           &ViewerWidget::scalePalette);
   connect(ui->actionOpen, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::open);
+  connect(ui->actionNew_window, &QAction::triggered, this,
+          &MainWindow::newWindow);
   connect(ui->actionSave, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::save);
   connect(ui->actionZoom_in, &QAction::triggered, ui->centralwidget,
@@ -96,7 +100,13 @@ MainWindow::MainWindow(QWidget *parent)
   QApplication::setWindowIcon(icon);
 
   loadBookmarks(QFile(":/new/prefix1/bookmarks.json"), false);
-  loadBookmarks(getBookmarksFile(), true);
+  if (!bookmarks) {
+    bookmarks = std::make_shared<SharedBookmarks>();
+    loadBookmarks(getBookmarksFile(), true);
+  } else {
+    for (auto &bm : bookmarks->bookmarks)
+      doAddBookmark(bm, false);
+  }
 
   fractalsActionGroup.setExclusionPolicy(
       QActionGroup::ExclusionPolicy::Exclusive);
@@ -215,7 +225,7 @@ void MainWindow::doAddBookmark(const fractals::view_parameters &params,
           &ViewerWidget::openBookmark);
   menu->addAction(bookmark);
   if (isUser)
-    bookmarks.push_back(bookmark);
+    bookmarks->bookmarks.push_back(params);
 }
 
 void MainWindow::addBookmark() {
@@ -249,10 +259,15 @@ void MainWindow::saveBookmarks() {
   QFile file = getBookmarksFile();
   if (file.open(QIODevice::WriteOnly)) {
     nlohmann::json js = nlohmann::json::array();
-    for (auto *bookmark : bookmarks) {
-      js.push_back(write_json(bookmark->params));
+    for (const auto &bookmark : bookmarks->bookmarks) {
+      js.push_back(write_json(bookmark));
     }
     auto contents = js.dump(4);
     file.write(contents.data(), contents.size());
   }
+}
+
+void MainWindow::newWindow() {
+  auto w = new MainWindow(bookmarks);
+  w->show();
 }

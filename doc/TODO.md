@@ -1,55 +1,25 @@
 # Task list
+
+- [ ] Closing window does not kill all calculations
+- [ ] Multiple toplevels don't sync bookmarks
+- [ ] Is there a memory leak on multiple toplevel windows???
+- [ ] Lock window
+- [ ] Karatsuba multiplication
+
+- [ ] Better filename for bookmarks.json
 - [ ] Zoom in goes too far
-
-Next steps:
-- [x] Hierarchical bookmarks
-- When fractal not found, default to mandelbrot
-- [ ] Load/save user bookmarks in ~/.mandelbrot.json
-- [ ] Separator for user fractals??
-
-- [x] Add bookmark dialog box
-  Note: Text says where bookmark is saved.
-- [x] Bookmark gets added to the menu
-
-- [x] Copy coords to copy the JSON
-- [x] Embed JSON in saved images
-
-- [x] Goto dialog box to display radius in engineering units
-- [x] Animation speed is on the "Go" menu
+- [ ] Maybe load the bookmarks async??
+- [ ] Comparative MB sets - can we look at 2 regions side-by-side?
+  - New toplevel window
 
 Idea for orbit-finding: 
 - If the Taylor series is valid, we can find a delta which makes the orbit coincide with the starting point.
 - Using Newton Raphson.
-- 
 
 - [ ] Display the time without setprecision(2)??
 
-JSON format
-
-- [ ] Rename / name alias for fractals.
-  All unknown fractals default to the Mandelbrot set
-- [ ] Import/export bookmarks file?
-- [ ] Class bookmarks?
-- Different fractal types/names
-- Copy to copy the JSON to clipboard
-- Output engineering notation
-- Load json without recompiling everything
-- Edit bookmarks on disk
-  - user-bookmarks.json
-- Paths in the bookmarks
-- Embed JSON in the image when loading/saving
-- Add bookmark ^B
-  Fill in the name
-  View:
-  X,Y,Radius (in engineering format)
-  Colour
-  Gradient
-
 - Animate to here still carries on zooming mysteriously
   I think we need to cancel the current calculation as it only happens when there is still a rendering going on?
-
-Paste coordinates
-e.g. 
 
 - [ ] Bugs in New Year fractal. (imprecision of some kind)
 - [ ] Glitches in Magnus Opus Ex
@@ -60,7 +30,7 @@ Zooming:
   - Zoom step = fast
 
 Can we approximate "32 steps" using perturbation theory?
-
+- Only for low epslions.
 
 Suddenly a nasty judder whilst rendering.
 

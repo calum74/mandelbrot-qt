@@ -18,37 +18,43 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
+struct SharedBookmarks {
+  std::vector<fractals::view_parameters> bookmarks;
+};
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+  MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks = {},
+             QWidget *parent = nullptr);
+  ~MainWindow();
 
-  public slots:
-    void startCalculating(double d, int i);
-    void completed(const fractals::RenderingMetrics *metrics);
-    void openGoToDialog();
-    void changeFractal(class ChangeFractalAction *src,
-                       const fractals::PointwiseFractal &fractal);
-    void fractalChanged(const char *name);
-    void cancelAnimations();
-    void addBookmark();
+public slots:
+  void startCalculating(double d, int i);
+  void completed(const fractals::RenderingMetrics *metrics);
+  void openGoToDialog();
+  void changeFractal(class ChangeFractalAction *src,
+                     const fractals::PointwiseFractal &fractal);
+  void fractalChanged(const char *name);
+  void cancelAnimations();
+  void addBookmark();
+  void newWindow();
 
-  private:
-    Ui::MainWindow *ui;
-    QActionGroup fractalsActionGroup;
-    QActionGroup zoomSpeedActionGroup;
-    QActionGroup threadingActionGroup;
+private:
+  Ui::MainWindow *ui;
+  QActionGroup fractalsActionGroup;
+  QActionGroup zoomSpeedActionGroup;
+  QActionGroup threadingActionGroup;
 
-    void doAddBookmark(const fractals::view_parameters &params, bool isUser);
-    std::vector<Bookmark *> bookmarks;
+  void doAddBookmark(const fractals::view_parameters &params, bool isUser);
+  std::shared_ptr<SharedBookmarks> bookmarks;
 
-    void loadBookmarks(QFile &&file, bool isUser);
-    void saveBookmarks();
+  void loadBookmarks(QFile &&file, bool isUser);
+  void saveBookmarks();
 
-    QFile getBookmarksFile();
+  QFile getBookmarksFile();
 };
 
 class ChangeFractalAction : public QAction {
@@ -79,7 +85,7 @@ private slots:
 signals:
   void selected(const fractals::view_parameters *);
 
-public:
+private:
   fractals::view_parameters params;
 };
 

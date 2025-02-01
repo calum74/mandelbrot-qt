@@ -1,0 +1,432 @@
+[
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 135,
+        "Gradient": 20.0,
+        "Im": "-0.66166",
+        "Iterations": 195,
+        "Name": "Just a place",
+        "Radius": "5.051e-2",
+        "Re": "-0.62358"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 135,
+        "Gradient": 20.0,
+        "Im": "-0.272480761386846201053165637257939295636576685318116715928337065055361895501307640072763535054304111981700309633379250",
+        "Iterations": 299789,
+        "Name": "Black holes/Deep/2",
+        "Radius": "1.699e-114",
+        "Re": "-0.960259463422302752444503999293134329195605938845615202401575420783673900433122163773791348065821239649887579032876007"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 140,
+        "Gradient": 20.0,
+        "Im": "0.00000000000000000000000000005742496107",
+        "Iterations": 12129,
+        "Name": "Julia sets/Colourful",
+        "Radius": "9.18e-36",
+        "Re": "-1.89503686811589420955578284011260801311"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 141,
+        "Gradient": 364.71998778674947,
+        "Im": "-0.001559790254903397358923156661478967957464602845328450727129709419794267924840054609563053240636065279355807899232",
+        "Iterations": 41519,
+        "Name": "Lattice/1",
+        "Radius": "6.65e-111",
+        "Re": "0.259437320292333978412653413267285915573228683085719781061620978043224736927202257841351473276358991331568093868582"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 115,
+        "Gradient": 4.007780158752576,
+        "Im": "-0.019441400149312213527054351002448295761648491989311001131409313503181281122714741611766839966481777346523630366730022866321119602098073028887043276370005075853585735",
+        "Iterations": 15360,
+        "Name": "Artists/Calum Grant/Virus",
+        "Radius": "3.799e-162",
+        "Re": "-1.786863009234215163303408784459081735636634104644206294950666813896824970594100310844176771236284897924096729697266511293830892742390106485031321102837570770525732130"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 119,
+        "Gradient": 67.3655279712139,
+        "Im": "0.55030230775285487965251552923883719069",
+        "Iterations": 18126,
+        "Name": "Artist/Calum Grant/Swirls",
+        "Radius": "5.247e-35",
+        "Re": "-0.46535212402487444298582695279197932413"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 135,
+        "Gradient": 311.1773982324076,
+        "Im": "-0.661080851995916345433878915994314076546881007673205214810760375905609330",
+        "Iterations": 309271,
+        "Name": "Artist/Calum Grant/Sleepy eye",
+        "Radius": "5.021e-69",
+        "Re": "-0.597977250862983218507717650922917956133840462829488089352021135031237053"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 140,
+        "Gradient": 54.24565361524772,
+        "Im": "0.0008065977",
+        "Iterations": 12400,
+        "Name": "Artist/Calum Grant/Fireglow",
+        "Radius": "4.932e-7",
+        "Re": "-1.3940719708"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 140,
+        "Gradient": 54.24565361524772,
+        "Im": "0.0008066401780977987171906",
+        "Iterations": 25138,
+        "Name": "Black holes/Wheels/Another cartwheel",
+        "Radius": "7.827e-23",
+        "Re": "-1.3940723208675479076924035"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 147,
+        "Gradient": 65.36296195958708,
+        "Im": "-0.6278138836",
+        "Iterations": 2076,
+        "Name": "Power 7/Starfield",
+        "Radius": "5.9e-7",
+        "Re": "-0.5044812979"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 151,
+        "Gradient": 5400.044886708624,
+        "Im": "-0.53687879081",
+        "Iterations": 42792,
+        "Name": "Power 7/Spiral mirror",
+        "Radius": "4.349e-8",
+        "Re": "-0.30997130958"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 151,
+        "Gradient": 5400.044886708624,
+        "Im": "-0.5368787755828",
+        "Iterations": 21250,
+        "Name": "Power 7/Starry night",
+        "Radius": "4.687e-10",
+        "Re": "-0.3099713108570"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 151,
+        "Gradient": 5400.044886708624,
+        "Im": "-0.53687877544709",
+        "Iterations": 18299,
+        "Name": "Power 7/Blackstar",
+        "Radius": "2.911e-11",
+        "Re": "-0.30997131031377"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 160,
+        "Gradient": 125.24097946318167,
+        "Im": "-0.56429823051640510371154",
+        "Iterations": 72573,
+        "Name": "Power 7/Lappice",
+        "Radius": "3.003e-20",
+        "Re": "-0.72146507425912470681843"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 160,
+        "Gradient": 125.24097946318167,
+        "Im": "-0.564298230516405103726799",
+        "Iterations": 77565,
+        "Name": "Power 7/Butterfly",
+        "Radius": "3.661e-21",
+        "Re": "-0.721465074259124706809969"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 7,
+        "Gradient": 3051.555064038206,
+        "Im": "-0.0417394251631923794705",
+        "Iterations": 53316,
+        "Name": "Julia/Random",
+        "Radius": "6.617e-20",
+        "Re": "-1.7664124679543373303410"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 9,
+        "Gradient": 20.0,
+        "Im": "-0.000000103100",
+        "Iterations": 572,
+        "Name": "Randoms/Flare",
+        "Radius": "1.402e-9",
+        "Re": "-1.942476359389"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 135,
+        "Gradient": 20.0,
+        "Im": "-0.66166",
+        "Iterations": 195,
+        "Name": "Just a place",
+        "Radius": "5.051e-2",
+        "Re": "-0.62358"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 140,
+        "Gradient": 20.0,
+        "Im": "0.00000000000000000000000000005742496107",
+        "Iterations": 12129,
+        "Name": "Julia sets/Colourful",
+        "Radius": "9.18e-36",
+        "Re": "-1.89503686811589420955578284011260801311"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 141,
+        "Gradient": 364.71998778674947,
+        "Im": "-0.001559790254903397358923156661478967957464602845328450727129709419794267924840054609563053240636065279355807899232",
+        "Iterations": 41519,
+        "Name": "Lattice/1",
+        "Radius": "6.65e-111",
+        "Re": "0.259437320292333978412653413267285915573228683085719781061620978043224736927202257841351473276358991331568093868582"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 115,
+        "Gradient": 4.007780158752576,
+        "Im": "-0.019441400149312213527054351002448295761648491989311001131409313503181281122714741611766839966481777346523630366730022866321119602098073028887043276370005075853585735",
+        "Iterations": 15360,
+        "Name": "Artists/Calum Grant/Virus",
+        "Radius": "3.799e-162",
+        "Re": "-1.786863009234215163303408784459081735636634104644206294950666813896824970594100310844176771236284897924096729697266511293830892742390106485031321102837570770525732130"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 119,
+        "Gradient": 67.3655279712139,
+        "Im": "0.55030230775285487965251552923883719069",
+        "Iterations": 18126,
+        "Name": "Artist/Calum Grant/Swirls",
+        "Radius": "5.247e-35",
+        "Re": "-0.46535212402487444298582695279197932413"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 135,
+        "Gradient": 311.1773982324076,
+        "Im": "-0.661080851995916345433878915994314076546881007673205214810760375905609330",
+        "Iterations": 309271,
+        "Name": "Artist/Calum Grant/Sleepy eye",
+        "Radius": "5.021e-69",
+        "Re": "-0.597977250862983218507717650922917956133840462829488089352021135031237053"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 140,
+        "Gradient": 54.24565361524772,
+        "Im": "0.0008065977",
+        "Iterations": 12400,
+        "Name": "Artist/Calum Grant/Fireglow",
+        "Radius": "4.932e-7",
+        "Re": "-1.3940719708"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 140,
+        "Gradient": 54.24565361524772,
+        "Im": "0.0008066401780977987171906",
+        "Iterations": 25138,
+        "Name": "Black holes/Wheels/Another cartwheel",
+        "Radius": "7.827e-23",
+        "Re": "-1.3940723208675479076924035"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 147,
+        "Gradient": 65.36296195958708,
+        "Im": "-0.6278138836",
+        "Iterations": 2076,
+        "Name": "Power 7/Starfield",
+        "Radius": "5.9e-7",
+        "Re": "-0.5044812979"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 151,
+        "Gradient": 5400.044886708624,
+        "Im": "-0.53687879081",
+        "Iterations": 42792,
+        "Name": "Power 7/Spiral mirror",
+        "Radius": "4.349e-8",
+        "Re": "-0.30997130958"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 151,
+        "Gradient": 5400.044886708624,
+        "Im": "-0.5368787755828",
+        "Iterations": 21250,
+        "Name": "Power 7/Starry night",
+        "Radius": "4.687e-10",
+        "Re": "-0.3099713108570"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 151,
+        "Gradient": 5400.044886708624,
+        "Im": "-0.53687877544709",
+        "Iterations": 18299,
+        "Name": "Power 7/Blackstar",
+        "Radius": "2.911e-11",
+        "Re": "-0.30997131031377"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 160,
+        "Gradient": 125.24097946318167,
+        "Im": "-0.56429823051640510371154",
+        "Iterations": 72573,
+        "Name": "Power 7/Lappice",
+        "Radius": "3.003e-20",
+        "Re": "-0.72146507425912470681843"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 160,
+        "Gradient": 125.24097946318167,
+        "Im": "-0.564298230516405103726799",
+        "Iterations": 77565,
+        "Name": "Power 7/Butterfly",
+        "Radius": "3.661e-21",
+        "Re": "-0.721465074259124706809969"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 7,
+        "Gradient": 3051.555064038206,
+        "Im": "-0.0417394251631923794705",
+        "Iterations": 53316,
+        "Name": "Julia/Random",
+        "Radius": "6.617e-20",
+        "Re": "-1.7664124679543373303410"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 9,
+        "Gradient": 25.551546051338665,
+        "Im": "-0.041739425163192482411449530385950951903920711244489",
+        "Iterations": 184520,
+        "Name": "Randoms/Frisbee",
+        "Radius": "3.176e-48",
+        "Re": "-1.766412467954338982044252105996026430662116620407613"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 135,
+        "Gradient": 20.0,
+        "Im": "-0.57740",
+        "Iterations": 4153,
+        "Name": "Test",
+        "Radius": "5.024e-2",
+        "Re": "-0.55446"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 135,
+        "Gradient": 20.0,
+        "Im": "-0.57740",
+        "Iterations": 4153,
+        "Name": "Test2",
+        "Radius": "5.024e-2",
+        "Re": "-0.55446"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 135,
+        "Gradient": 20.0,
+        "Im": "-0.000000001480",
+        "Iterations": 154,
+        "Name": "Where",
+        "Radius": "5.504e-9",
+        "Re": "-1.684247115740"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 160,
+        "Gradient": 125.24097946318167,
+        "Im": "-0.56429823051640510372593625717",
+        "Iterations": 95566,
+        "Name": "Power 7/Julia",
+        "Radius": "2.523e-26",
+        "Re": "-0.72146507425912470680959937078"
+    },
+    {
+        "Algorithm": "Mandelflake (power 7)",
+        "Colour": 174,
+        "Gradient": 7063.47146322991,
+        "Im": "-0.5642982305164051037259362606853410",
+        "Iterations": 141112,
+        "Name": "P6 Julia",
+        "Radius": "3.163e-31",
+        "Re": "-0.7214650742591247068095993692432145"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 138,
+        "Gradient": 595.1631011595343,
+        "Im": "0.4475114080765633",
+        "Iterations": 9904,
+        "Name": "Just Julia",
+        "Radius": "2.189e-13",
+        "Re": "-0.6548304298114502"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 138,
+        "Gradient": 595.1631011595343,
+        "Im": "0.44751140807656655",
+        "Iterations": 14605,
+        "Name": "Random/Julia set",
+        "Radius": "9.729e-15",
+        "Re": "-0.65483042981145651"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 138,
+        "Gradient": 595.1631011595343,
+        "Im": "0.447511408076568089030181655",
+        "Iterations": 19036,
+        "Name": "Random/Ant farm",
+        "Radius": "6.102e-24",
+        "Re": "-0.654830429811464535561628918"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 141,
+        "Gradient": 595.1631011595343,
+        "Im": "0.447511408076568089030181655",
+        "Iterations": 18967,
+        "Name": "Random/Ant farm 2",
+        "Radius": "6.102e-24",
+        "Re": "-0.654830429811464535561628918"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 141,
+        "Gradient": 595.1631011595343,
+        "Im": "0.4475114080765680890301815300669155572330696253322200749543864067877",
+        "Iterations": 187530,
+        "Name": "Random/Another wheel",
+        "Radius": "8.277e-65",
+        "Re": "-0.6548304298114645355616289665409544290511218270410688668586146658984"
+    }
+]
