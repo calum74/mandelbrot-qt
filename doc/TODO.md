@@ -2,12 +2,11 @@
 
 - Tidy up bookmarks
 - Plant flags on all the bookmarks.
-  - Bookmarks don't move properly during animation.
-  - Calculation of the position is wrong in AnimatedRenderer
-
-  - Checkbox - show flags
   - Size of icon relates to distance
-  - How to map bookmarks to locations?
+    Return the difference of the logs of the radius.
+    If negative, hide it.
+    Size = k * log(size_ratio)
+  - Don't show bookmark if we've gone past it
 - Use openmp
 
 Bugs:

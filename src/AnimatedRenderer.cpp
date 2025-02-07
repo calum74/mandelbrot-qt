@@ -289,7 +289,7 @@ fractals::AnimatedRenderer::BackgroundViewport::BackgroundViewport(
     AnimatedRenderer &renderer)
     : renderer(renderer) {}
 
-std::pair<int, int>
+fractals::mapped_point
 fractals::AnimatedRenderer::map_point(const view_coords &c) const {
 
   // Look at the zoom ratio
@@ -303,11 +303,8 @@ fractals::AnimatedRenderer::map_point(const view_coords &c) const {
         original_coords.zoom(2.0 * rendered_zoom_ratio, viewport.width,
                              viewport.height, zoom_x, zoom_y);
 
-    auto p = zoomed_coords.map_point(viewport.width, viewport.height, c);
-
-    return {p.first, p.second};
+    return zoomed_coords.map_point(viewport.width, viewport.height, c);
   } else {
-    auto p = original_coords.map_point(viewport.width, viewport.height, c);
-    return {p.first, p.second};
+    return original_coords.map_point(viewport.width, viewport.height, c);
   }
 }

@@ -464,9 +464,18 @@ void ViewerWidget::calculateFlagLocations() {
   for (auto &bm : bookmarksToDraw) {
     if (bm.algorithm == name) {
       auto p = renderer.map_point(bm.coords);
-      if (p.first >= 0 && p.first < viewport.width &&
-          p.second >= 0 & p.second < viewport.height)
-        newFlags.push_back({p.first, p.second, 20});
+      if (p.x >= 0 && p.x < viewport.width &&
+          p.y >= 0 & p.y < viewport.height) {
+        int size = p.log_distance;
+        if (size > 0) {
+          size = 40 - size;
+          if (size < 15)
+            size = 15;
+          if (size > 40)
+            size = 40;
+          newFlags.push_back({int(p.x), int(p.y), size});
+        }
+      }
     }
   }
 

@@ -9,6 +9,7 @@
 #include <chrono>
 
 namespace fractals {
+class mapped_point;
 /*
 Logic for creating animations.
 
@@ -58,7 +59,7 @@ public: // !! Ideally private
     zoomatcursor
   } current_animation = AnimationType::none;
 
-  std::pair<int, int> map_point(const view_coords &c) const;
+  mapped_point map_point(const view_coords &c) const;
 
 private:
   bool zooming = false;

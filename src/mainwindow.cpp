@@ -101,13 +101,14 @@ MainWindow::MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks0,
   QIcon icon(":/new/prefix1/icon.ico");
   QApplication::setWindowIcon(icon);
 
-  loadBookmarks(QFile(":/new/prefix1/bookmarks.json"), false);
   if (!bookmarks) {
     bookmarks = std::make_shared<SharedBookmarks>();
-    loadBookmarks(getBookmarksFile(), true);
+    loadBookmarks(QFile(":/new/prefix1/bookmarks.json"), false, true);
+    loadBookmarks(getBookmarksFile(), true, false);
   } else {
+    loadBookmarks(QFile(":/new/prefix1/bookmarks.json"), false, false);
     for (auto &bm : bookmarks->bookmarks)
-      doAddBookmark(bm, false, true);
+      doAddBookmark(bm, false, false);
   }
 
   fractalsActionGroup.setExclusionPolicy(
@@ -243,7 +244,7 @@ void MainWindow::addBookmark() {
   }
 }
 
-void MainWindow::loadBookmarks(QFile &&file, bool isUser) {
+void MainWindow::loadBookmarks(QFile &&file, bool isUser, bool isBuiltin) {
   if (file.open(QIODevice::ReadOnly)) {
     QByteArray contents = file.readAll();
     nlohmann::json data =
@@ -252,7 +253,7 @@ void MainWindow::loadBookmarks(QFile &&file, bool isUser) {
     // Turn it into JSON
     for (auto &item : data) {
       auto params = read_json(item);
-      doAddBookmark(params, isUser, false);
+      doAddBookmark(params, isUser, isBuiltin);
     }
   }
 }

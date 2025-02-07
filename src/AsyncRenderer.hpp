@@ -53,8 +53,8 @@ public:
   void set_threading(int threads) override;
   void get_depth_range(double &min, double &p, double &max) override;
   bool get_auto_zoom(int &x, int &y) override;
-  std::pair<int, int> map_point(const Viewport &vp,
-                                const view_coords &c) const override;
+  mapped_point map_point(const Viewport &vp,
+                         const view_coords &c) const override;
 
   // An array of all non-zero depths (?? Needed)
 

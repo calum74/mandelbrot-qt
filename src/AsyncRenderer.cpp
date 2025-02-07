@@ -408,8 +408,9 @@ double fractals::AsyncRenderer::my_rendering_sequence::get_point(int x, int y) {
   return depth;
 }
 
-std::pair<int, int>
+fractals::mapped_point
 fractals::AsyncRenderer::map_point(const Viewport &vp,
                                    const view_coords &c) const {
+
   return coords.map_point(vp.width, vp.height, c);
 }

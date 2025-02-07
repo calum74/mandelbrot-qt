@@ -56,7 +56,7 @@ private:
                      bool isBuiltin);
   std::shared_ptr<SharedBookmarks> bookmarks;
 
-  void loadBookmarks(QFile &&file, bool isUser);
+  void loadBookmarks(QFile &&file, bool isUser, bool isBuiltin);
   void saveBookmarks();
 
   QFile getBookmarksFile();
