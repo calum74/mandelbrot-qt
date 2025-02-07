@@ -2,11 +2,13 @@
 
 - Tidy up bookmarks
 - Plant flags on all the bookmarks.
+  - Bookmarks don't move properly during animation.
+  - Calculation of the position is wrong in AnimatedRenderer
+
   - Checkbox - show flags
   - Size of icon relates to distance
   - How to map bookmarks to locations?
-
-
+- Use openmp
 
 Bugs:
 - [ ] Multiple toplevels don't sync bookmarks

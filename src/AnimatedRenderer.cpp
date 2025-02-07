@@ -288,3 +288,26 @@ bool fractals::AnimatedRenderer::is_animating() const { return zooming; }
 fractals::AnimatedRenderer::BackgroundViewport::BackgroundViewport(
     AnimatedRenderer &renderer)
     : renderer(renderer) {}
+
+std::pair<int, int>
+fractals::AnimatedRenderer::map_point(const view_coords &c) const {
+
+  // Look at the zoom ratio
+  // Use zoom_x, zoom_y and rendered_zoom_ratio
+
+  auto original_coords = renderer->get_coords();
+
+  if (zooming) {
+
+    auto zoomed_coords =
+        original_coords.zoom(2.0 * rendered_zoom_ratio, viewport.width,
+                             viewport.height, zoom_x, zoom_y);
+
+    auto p = zoomed_coords.map_point(viewport.width, viewport.height, c);
+
+    return {p.first, p.second};
+  } else {
+    auto p = original_coords.map_point(viewport.width, viewport.height, c);
+    return {p.first, p.second};
+  }
+}

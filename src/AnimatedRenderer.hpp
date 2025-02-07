@@ -58,6 +58,8 @@ public: // !! Ideally private
     zoomatcursor
   } current_animation = AnimationType::none;
 
+  std::pair<int, int> map_point(const view_coords &c) const;
+
 private:
   bool zooming = false;
   std::atomic<bool> calculationFinished = false;

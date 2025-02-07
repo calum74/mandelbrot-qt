@@ -49,7 +49,7 @@ void ViewerWidget::calculate() {
   viewport.height = image.height();
 
   renderer.calculate_async();
-  calculateFlagLocations();
+  // calculateFlagLocations();
 }
 
 void ViewerWidget::draw() {
@@ -58,6 +58,7 @@ void ViewerWidget::draw() {
 
   painter.drawImage(this->rect(), image);
 
+  std::lock_guard<std::mutex> lock(bookmarksMutex);
   if (!flagsToDraw.empty()) {
     // QIcon::ThemeIcon::EditUndo
     // QIcon::ThemeIcon::NetworkWireless
@@ -148,11 +149,16 @@ void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
   }
 }
 
+void ViewerWidget::doUpdate() {
+  calculateFlagLocations();
+  update();
+}
+
 void ViewerWidget::MyViewport::updated() {
   // Note will be called on different threads
   if (!widget.pending_redraw) {
     ++widget.pending_redraw;
-    widget.update();
+    widget.doUpdate();
   }
 }
 
@@ -355,16 +361,14 @@ void ViewerWidget::open() {
 }
 
 void ViewerWidget::openBookmark(const fractals::view_parameters *params) {
-    renderer.cancel_animations();
+  renderer.cancel_animations();
 
-      renderer.renderer->load(*params, viewport);
-      renderer.colourMap->load(*params);
-      fractalChanged(
-          renderer.renderer->get_fractal_name()); // Update menus if needed
-      calculate();
-
+  renderer.renderer->load(*params, viewport);
+  renderer.colourMap->load(*params);
+  fractalChanged(
+      renderer.renderer->get_fractal_name()); // Update menus if needed
+  calculate();
 }
-
 
 void ViewerWidget::save() {
   auto str = QFileDialog::getSaveFileName(this, "Save file", "fractal.png",
@@ -382,7 +386,10 @@ void ViewerWidget::zoomIn() {
 
 void ViewerWidget::smoothZoomIn() { renderer.smooth_zoom_in(); }
 
-void ViewerWidget::updateFrame() { renderer.timer(); }
+void ViewerWidget::updateFrame() {
+  // calculateFlagLocations();
+  renderer.timer();
+}
 
 void ViewerWidget::MyViewport::start_timer() {
   widget.renderingTimer.start(10);
@@ -439,27 +446,30 @@ void ViewerWidget::enableOversampling(bool checked) {
 void ViewerWidget::showBookmarks(const fractals::view_parameters *params,
                                  int size) {
   bookmarksToDraw.assign(params, params + size);
-  calculateFlagLocations();
-  update();
+  // calculateFlagLocations();
+  doUpdate();
 }
 
 void ViewerWidget::hideBookmarks() {
   bookmarksToDraw.clear();
-  update();
+  // calculateFlagLocations();
+  doUpdate();
 }
 
 void ViewerWidget::calculateFlagLocations() {
   std::vector<flag_location> newFlags;
   auto name = renderer.renderer->get_fractal_name();
 
+  // !! This might not be threadsafe
   for (auto &bm : bookmarksToDraw) {
     if (bm.algorithm == name) {
-      auto p = renderer.renderer->map_point(viewport, bm.coords);
+      auto p = renderer.map_point(bm.coords);
       if (p.first >= 0 && p.first < viewport.width &&
           p.second >= 0 & p.second < viewport.height)
         newFlags.push_back({p.first, p.second, 20});
     }
   }
 
+  std::lock_guard<std::mutex> lock(bookmarksMutex);
   flagsToDraw = std::move(newFlags);
 }

@@ -5,6 +5,8 @@
 #include <QTimer>
 #include <QWidget>
 
+#include <mutex>
+
 #include "AnimatedRenderer.hpp"
 #include "ColourMap.hpp"
 #include "Renderer.hpp"
@@ -41,6 +43,7 @@ class ViewerWidget : public QWidget {
   void calculate();
   void draw();
 
+  std::mutex bookmarksMutex;
   std::atomic<int> pending_redraw;
 
   void setSpeedEstimate(double secondsPerPixel);
@@ -51,6 +54,7 @@ class ViewerWidget : public QWidget {
 
   std::vector<fractals::view_parameters> bookmarksToDraw;
   std::vector<flag_location> flagsToDraw;
+  void doUpdate();
 
 public:
   explicit ViewerWidget(QWidget *parent = nullptr);
