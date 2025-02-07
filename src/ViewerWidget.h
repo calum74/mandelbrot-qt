@@ -45,6 +45,13 @@ class ViewerWidget : public QWidget {
 
   void setSpeedEstimate(double secondsPerPixel);
 
+  struct flag_location {
+    int x, y, size;
+  };
+
+  std::vector<fractals::view_parameters> bookmarksToDraw;
+  std::vector<flag_location> flagsToDraw;
+
 public:
   explicit ViewerWidget(QWidget *parent = nullptr);
 
@@ -66,6 +73,11 @@ public:
   listFractals();
 
   void saveToFile(const QString &image_filename);
+
+  void showBookmarks(const fractals::view_parameters *params, int size);
+  void hideBookmarks();
+
+  void calculateFlagLocations();
 
 public slots:
   void copyCoords();

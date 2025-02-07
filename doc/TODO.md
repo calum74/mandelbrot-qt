@@ -1,112 +1,75 @@
 # Task list
 
-Orbit-tree:
-- Think of it as a skip-forward for any position.
-  (a) skip-forward using series
-  (b) skip-forward using linear jumps.
+- Tidy up bookmarks
+- Plant flags on all the bookmarks.
+  - Checkbox - show flags
+  - Size of icon relates to distance
+  - How to map bookmarks to locations?
+
+
 
 Bugs:
-- [ ] Closing window does not kill all calculations
 - [ ] Multiple toplevels don't sync bookmarks
   Menus not updated properly
-- [ ] Is there a memory leak on multiple toplevel windows???
+- [ ] Zoom in goes too far
+- [ ] Display the time without setprecision(2)??
+- [ ] Bugs in New Year fractal. (imprecision of some kind)
+- [ ] Glitches in Magnus Opus Ex
+- [ ] Animate to here still carries on zooming mysteriously
+  I think we need to cancel the current calculation as it only happens when there is still a rendering going on?
+- [ ] Suddenly a nasty judder whilst rendering.
+- [ ] Scrolling disrupts depth calculations
+- [ ] Smooth zoom stops now if there's not enough pixels to update the depth
+
+Improvements:
+- [ ] Implement a reference Mandelbrot (perturbation only)
 - [ ] Lock window
 - [ ] Karatsuba multiplication
-
-- [ ] Better filename for bookmarks.json
-- [ ] Zoom in goes too far
+- [ ] Carry on animating during window resizing
 - [ ] Maybe load the bookmarks async??
 - [ ] Comparative MB sets - can we look at 2 regions side-by-side?
   - New toplevel window
-
-Idea for orbit-finding: 
-- If the Taylor series is valid, we can find a delta which makes the orbit coincide with the starting point.
-- Using Newton Raphson.
-
-- [ ] Display the time without setprecision(2)??
-
-- Animate to here still carries on zooming mysteriously
-  I think we need to cancel the current calculation as it only happens when there is still a rendering going on?
-
-- [ ] Bugs in New Year fractal. (imprecision of some kind)
-- [ ] Glitches in Magnus Opus Ex
-
-Zooming:
-- Different defaults for different actions:
-  - Continuous zoom = smooth
-  - Zoom step = fast
-
-Can we approximate "32 steps" using perturbation theory?
-- Only for low epslions.
-
-Suddenly a nasty judder whilst rendering.
-
-- [ ] Class OrbitConfiguration which contains all of the parameters for the orbit
-
-
-Mandelbrot explorer
-Where mathematics meets art
-
-
-
-Features:
-- [ ] Click to start continuous zoom option
-  If no drag, then we start the zoom
-  Reset the zoom speed on zoom in.
-- [ ] Zoom in is always "fast"?
-- [ ] Navigate is always "smooth"
-
-
-
-
-
-Resume does not always work in quality mode
-
+- [ ] Better filename for bookmarks.json
+- [ ] Zoom step is always fast?
+- [ ] Continuous zoom is always smooth
+- [ ] Eta/ progress indicator.
 - [ ] Smoother zoom out??
 - [ ] GPL license
 - [ ] Esc to stop animations
-- [ ] Multiple top-level windows
-
-
-Bugs:
-- [ ] Animate to here still continues to zoom in after an autozoom (Windows?)
-- [x] Zooming in slightly on a mandelbrot often leaves dots in the black area (glitches?)
-  Need to check the length of the reference orbit and maybe force recalculation
-  Problem is if the primary orbit maxed out and didn't escape.
-  Then we need to extend it.
-  If the primary did escape, then we are probably good.
-
-- [ ] Scrolling disrupts depth calculations
-
-
-
-Each point has a "closest point" calculation to see if it returns back to c. The closer the closest point, the closer we are to a minibrot.
-Return value is actually "period of closest point"
-This also works for the black area as well, surely.
-
-
-Algorithm:
-For each orbit (after the initial skip), we'll compute the norm of the distance to c. Keep the minimum value and its iteration number.
-
-Bugs:
-- Ensure "calculating" status message takes priority
-- In black areas, ending a continuous zoom sometimes does not update
-  all points (e.g. black areas?). Glitches?
-  Solid colour interpolation bug?
-
-- Express gradient in the inverse: Iterations per colour
-
 - When we scroll, we'll sometimes lose pixels
-
 - Sometimes shows finished calculation when it's actually calculating something new
   - Ensure that "calculating" takes priority
   - Depth 0-0 looks silly
-
 - Better normalization logic for high_exponent_real
 - On open, resume previous place visited?
-
 - [ ] "1 CPU core, "4 CPU cores", "All CPU cores"
 - [ ] Rename "oversampling" to "High definition"
+- [ ] Better gradient enhancements
+- [ ] Shading
+- [ ] Import/export bookmarks?
+- [ ] Show number of iterations skipped
+- [ ] Put a "flag" icon next to each bookmark
+- [ ] Dynamic length of number?
+
+BLA:
+- What's the imprecision on our epsilon? It may be that we can actually manage a much longer sequence in a branch, as we are only dealing with a worst-case.
+- What did the terms look like in our "shadow tree" underneath our current branch that we didn't actually calculate?
+
+For our shadow tree, we can calculate our distance to the reference orbit $\Epsilon'_i$ using the initial branch. We obviously have our $\Delta$ relative to the first branch. 
+
+Then for a point around the orbit at $z''_i = A'_{j,i-j}\epsilon'_j + B'_{j,i-j}\delta = A_{j,i-j}\epsilon_j + 
+
+
+Ideas: 
+- If the Taylor series is valid, we can find a delta which makes the orbit coincide with the starting point.
+- Using Newton Raphson.
+- Can we approximate "32 steps" using perturbation theory?
+  - Only for low epslions.
+- [ ] Class OrbitConfiguration which contains all of the parameters for the orbit
+
+# Mandelbrot explorer
+Where mathematics meets art
+
 
 Classification project:
 a. Basic shape
@@ -148,11 +111,6 @@ Paper cuts:
 Refactoring:
 - [ ] Store radius in engineering format
 - [ ] Hexadecimal number format
-
-Then: JSON format
-- Autosave to JSON
-- Bookmarks menu
-- Quick zoom to a location
 
 
 Then: Windows installed MSIX package

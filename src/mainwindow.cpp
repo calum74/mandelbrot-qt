@@ -83,6 +83,8 @@ MainWindow::MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks0,
           &MainWindow::fractalChanged);
   connect(ui->actionAdd_bookmark, &QAction::triggered, this,
           &MainWindow::addBookmark);
+  connect(ui->actionShow_bookmark_locations, &QAction::triggered, this,
+          &MainWindow::showBookmarks);
 
   zoomSpeedActionGroup.setExclusionPolicy(
       QActionGroup::ExclusionPolicy::Exclusive);
@@ -105,7 +107,7 @@ MainWindow::MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks0,
     loadBookmarks(getBookmarksFile(), true);
   } else {
     for (auto &bm : bookmarks->bookmarks)
-      doAddBookmark(bm, false);
+      doAddBookmark(bm, false, true);
   }
 
   fractalsActionGroup.setExclusionPolicy(
@@ -198,7 +200,7 @@ Bookmark::Bookmark(const fractals::view_parameters &params) : params(params) {
 void Bookmark::triggered(bool checked) { selected(&params); }
 
 void MainWindow::doAddBookmark(const fractals::view_parameters &params,
-                               bool isUser) {
+                               bool isUser, bool isBuiltin) {
   // Split the name of the parameter
   std::string_view name = params.title;
   QMenu *menu = ui->menuBookmarks_2;
@@ -226,6 +228,8 @@ void MainWindow::doAddBookmark(const fractals::view_parameters &params,
   menu->addAction(bookmark);
   if (isUser)
     bookmarks->bookmarks.push_back(params);
+  if (isBuiltin)
+    bookmarks->builtinBookmarks.push_back(params);
 }
 
 void MainWindow::addBookmark() {
@@ -234,7 +238,7 @@ void MainWindow::addBookmark() {
     fractals::view_parameters params;
     ui->centralwidget->getCoords(params);
     params.title = dialog.getName().toStdString();
-    doAddBookmark(params, true);
+    doAddBookmark(params, true, false);
     saveBookmarks();
   }
 }
@@ -248,7 +252,7 @@ void MainWindow::loadBookmarks(QFile &&file, bool isUser) {
     // Turn it into JSON
     for (auto &item : data) {
       auto params = read_json(item);
-      doAddBookmark(params, isUser);
+      doAddBookmark(params, isUser, false);
     }
   }
 }
@@ -275,4 +279,17 @@ void MainWindow::newWindow() {
 void MainWindow::closeEvent(QCloseEvent *) {
   delete ui->centralwidget;
   ui->centralwidget = 0;
+}
+
+void MainWindow::showBookmarks(bool checked) {
+  if (checked) {
+    std::vector<fractals::view_parameters> bookmarksToShow =
+        bookmarks->builtinBookmarks;
+    bookmarksToShow.insert(bookmarksToShow.end(), bookmarks->bookmarks.begin(),
+                           bookmarks->bookmarks.end());
+    ui->centralwidget->showBookmarks(bookmarksToShow.data(),
+                                     bookmarksToShow.size());
+  } else {
+    ui->centralwidget->hideBookmarks();
+  }
 }

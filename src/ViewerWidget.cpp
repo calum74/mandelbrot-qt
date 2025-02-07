@@ -49,6 +49,7 @@ void ViewerWidget::calculate() {
   viewport.height = image.height();
 
   renderer.calculate_async();
+  calculateFlagLocations();
 }
 
 void ViewerWidget::draw() {
@@ -56,6 +57,20 @@ void ViewerWidget::draw() {
   QPainter painter(this);
 
   painter.drawImage(this->rect(), image);
+
+  if (!flagsToDraw.empty()) {
+    // QIcon::ThemeIcon::EditUndo
+    // QIcon::ThemeIcon::NetworkWireless
+    // QIcon::ThemeIcon::ZoomIn
+    // QIcon::ThemeIcon::GoUp
+    // QIcon::ThemeIcon::GoDown
+
+    QIcon icon = QIcon::fromTheme(QIcon::ThemeIcon::CameraPhoto);
+
+    for (auto &p : flagsToDraw) {
+      icon.paint(&painter, p.x, p.y, p.size, p.size);
+    }
+  }
 }
 
 constexpr fractals::RGB grey = fractals::make_rgbx(100, 100, 100, 127);
@@ -419,4 +434,32 @@ void ViewerWidget::enableOversampling(bool checked) {
   QResizeEvent s(size(), size());
   imageScale = checked ? 2.0 : 1.0;
   resizeEvent(&s);
+}
+
+void ViewerWidget::showBookmarks(const fractals::view_parameters *params,
+                                 int size) {
+  bookmarksToDraw.assign(params, params + size);
+  calculateFlagLocations();
+  update();
+}
+
+void ViewerWidget::hideBookmarks() {
+  bookmarksToDraw.clear();
+  update();
+}
+
+void ViewerWidget::calculateFlagLocations() {
+  std::vector<flag_location> newFlags;
+  auto name = renderer.renderer->get_fractal_name();
+
+  for (auto &bm : bookmarksToDraw) {
+    if (bm.algorithm == name) {
+      auto p = renderer.renderer->map_point(viewport, bm.coords);
+      if (p.first >= 0 && p.first < viewport.width &&
+          p.second >= 0 & p.second < viewport.height)
+        newFlags.push_back({p.first, p.second, 20});
+    }
+  }
+
+  flagsToDraw = std::move(newFlags);
 }

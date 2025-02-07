@@ -39,7 +39,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>menu/menu/title</string>
+    <string>User/Unsorted/</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">

@@ -66,7 +66,7 @@
             "program": "${workspaceFolder}/build.dir/src/mandelbrot-qt.app/Contents/MacOS/mandelbrot-qt",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "lldb"

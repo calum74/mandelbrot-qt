@@ -20,6 +20,7 @@ QT_END_NAMESPACE
 
 struct SharedBookmarks {
   std::vector<fractals::view_parameters> bookmarks;
+  std::vector<fractals::view_parameters> builtinBookmarks;
 };
 
 class MainWindow : public QMainWindow
@@ -43,13 +44,16 @@ public slots:
   void addBookmark();
   void newWindow();
 
+  void showBookmarks(bool checked);
+
 private:
   Ui::MainWindow *ui;
   QActionGroup fractalsActionGroup;
   QActionGroup zoomSpeedActionGroup;
   QActionGroup threadingActionGroup;
 
-  void doAddBookmark(const fractals::view_parameters &params, bool isUser);
+  void doAddBookmark(const fractals::view_parameters &params, bool isUser,
+                     bool isBuiltin);
   std::shared_ptr<SharedBookmarks> bookmarks;
 
   void loadBookmarks(QFile &&file, bool isUser);

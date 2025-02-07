@@ -73,6 +73,8 @@ public:
   virtual void center(Viewport &vp);
   virtual void zoom_in(Viewport &vp);
   virtual bool get_auto_zoom(int &x, int &y) = 0;
+  virtual std::pair<int, int> map_point(const Viewport &vp,
+                                        const view_coords &c) const = 0;
 };
 
 std::unique_ptr<Renderer> make_renderer(Registry &);
