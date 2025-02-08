@@ -10,29 +10,31 @@ A region to render. It is essentially a buffer of pixels
 */
 class Viewport {
 public:
-  using value_type = RGB;
   using size_type = int;
 
-  int width() const { return w; }
+  size_type width() const { return w; }
 
-  int height() const { return h; }
+  size_type height() const { return h; }
 
-  // The buffer to receive the pixels, stored in row-order.
-  // data must be width*height elements large.
-  value_type *data = 0;
-  std::vector<std::uint8_t> error_data;
+  void init(size_type w, size_type h);
 
-  void init(int w, int h, value_type *data);
+  struct pixel
+  {
+    std::uint32_t colour:24;
+    std::uint8_t error:8;
 
-  value_type &operator()(size_type x, size_type y) { return data[x + y * w]; }
+    static constexpr int max_error = 127;
+  };
+
+  using value_type = pixel;
+
+  value_type &operator()(size_type x, size_type y) { return pixels[x + y * w]; }
+
+  value_type & operator[](size_type x) { return pixels[x]; }
 
   const value_type &operator()(size_type x, size_type y) const {
-    return data[x + y * w];
+    return pixels[x + y * w];
   }
-
-  // Get/set the error corresponding to a value
-  std::uint8_t &error(value_type &x) { return error_data[&x - data]; }
-  std::uint8_t error(const value_type *x) const { return error_data[x - data]; }
 
   using iterator = value_type *;
   using const_iterator = const value_type *;
@@ -40,7 +42,7 @@ public:
   const_iterator end() const;
   iterator begin();
   iterator end();
-  int size() const; // width * height
+  size_type size() const; // width * height
 
   void invalidateAllPixels();
 
@@ -63,6 +65,7 @@ public:
 
 private:
   int w = 0, h = 0;
+  std::vector<value_type> pixels;
 };
 
 // Perform a pixel-by-pixel remapping and interpolation from src to dest.

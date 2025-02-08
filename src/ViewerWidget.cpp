@@ -54,6 +54,10 @@ void ViewerWidget::draw() {
   pending_redraw = 0;
   QPainter painter(this);
 
+  std::uint32_t * image_data = (std::uint32_t*)image.bits();
+  for(int i=0; i<viewport.size(); ++i)
+    image_data[i] = 0xff000000 | viewport[i].colour;
+
   painter.drawImage(this->rect(), image);
 
   std::lock_guard<std::mutex> lock(bookmarksMutex);
@@ -72,7 +76,7 @@ void ViewerWidget::draw() {
   }
 }
 
-constexpr fractals::RGB grey = fractals::make_rgb(100, 100, 100);
+constexpr fractals::Viewport::pixel grey = {fractals::make_rgb(100, 100, 100), 127};
 
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
   renderer.cancel_animations();
@@ -82,11 +86,9 @@ void ViewerWidget::resizeEvent(QResizeEvent *event) {
   // Should stop the current calculation
   renderer.renderer->set_aspect_ratio(w, h);
 
-  viewport.invalidateAllPixels();
+  viewport.init(w, h);
   image = QImage(w, h, QImage::Format_RGB32);
-  viewport.init(image.width(), image.height(), (fractals::RGB *)image.bits());
   std::fill(viewport.begin(), viewport.end(), grey);
-  viewport.invalidateAllPixels();
   calculate();
 }
 

@@ -18,7 +18,7 @@ bool fractals::maybe_fill_region(Viewport &vp, int x0, int y0, int x1, int y1) {
   // If all 4 corners have the same colour, claim that the filled in colour is
   // accurate and does not need to be recalculated 1 means more speed 0 means
   // more accuracy
-  if (c00 == c10 && c00 == c11 && c00 == c01) {
+  if (c00.colour == c10.colour && c00.colour == c11.colour && c00.colour == c01.colour) {
     for (int j = y0; j <= y1; ++j)
       for (int i = x0; i <= x1; ++i)
         vp(i, j) = c00;
@@ -45,9 +45,9 @@ void fractals::interpolate_region(Viewport &vp, int cx, int cy, int x0, int y0,
       int error = ex + ey;
       auto &p = vp(i, j);
       // This is the condition that gives the artistic effects on the zoom
-      if (error < vp.error(p)) {
+      if (error < p.error) {
         p=c;
-        vp.error(p) = error;
+        p.error = error;
       }
     }
   }

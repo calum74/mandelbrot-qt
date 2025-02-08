@@ -74,12 +74,14 @@ private:
   int view_min, view_max;
 
   double estimatedSecondsPerPixel = 0;
-  std::vector<fractals::RGB> previousImagePixels, backgroundImagePixels;
+  // std::vector<fractals::RGB> backgroundImagePixels;
 
   bool fixZoomSpeed = false;
   std::chrono::duration<double> fixZoomDuration;
 
-  std::vector<fractals::RGB> previousImageData, computedImageData;
+  fractals::Viewport previousVp;
+
+  // std::vector<fractals::RGB> computedImageData;
 
   struct BackgroundViewport : public fractals::Viewport {
     BackgroundViewport(AnimatedRenderer &);

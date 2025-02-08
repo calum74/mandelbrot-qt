@@ -38,9 +38,9 @@ void fractals::AsyncRenderer::increase_iterations(Viewport &vp) {
   for (int j = 0; j < vp.height(); ++j)
     for (int i = 0; i < vp.width(); ++i) {
       auto &c = vp(i, j);
-      if (!c) {
+      if (!c.colour) {
         // Only redraw final coloured points
-        vp.error(c) = 127;
+        c.error = 127;
       }
     }
   coords.max_iterations *= 2;
@@ -233,13 +233,10 @@ void fractals::AsyncRenderer::remap_viewport(Viewport &vp, double dx, double dy,
     we calculate it properly.
   */
 
-  std::vector<RGB> new_contents(vp.width() * vp.height(), grey);
-
   Viewport dest;
-  dest.init(vp.width(), vp.height(), new_contents.data());
+  dest.init(vp.width(), vp.height());
   map_viewport(vp, dest, dx, dy, r);
-  std::copy(new_contents.begin(), new_contents.end(), vp.data);
-  std::copy(dest.error_data.begin(), dest.error_data.end(), vp.error_data.begin());
+  vp = dest;
 }
 
 void fractals::AsyncRenderer::redraw(Viewport &vp) {
@@ -305,7 +302,7 @@ void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
     double depth = output[x + y * vp.width()];
 
     if (!std::isnan(depth)) {
-      vp(x, y) = cm(depth);
+      vp(x, y) = {(std::uint32_t)cm(depth), 0};
       if (depth > 0) {
         depths.push_back({depth, x, y});
       }
@@ -341,7 +338,7 @@ void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
 }
 
 double fractals::AsyncRenderer::my_rendering_sequence::get_point(int x, int y) {
-  if (vp.error(vp(x, y)) == 0)
+  if (vp(x, y).error == 0)
     return std::numeric_limits<double>::quiet_NaN();
   ++calculated_pixels;
   auto depth = calculation.calculate(x, y);

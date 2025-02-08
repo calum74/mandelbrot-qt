@@ -27,12 +27,12 @@ void fractals::AnimatedRenderer::render_update_background_image() {
   // if (!zooming)
   //    return;
   assert(viewport.size() == background_viewport.size());
-  for (int i = 0; i < viewport.size(); ++i) {
-    auto &from_pixel = background_viewport.data[i];
-    auto &to_pixel = viewport.data[i];
-    to_pixel = from_pixel;
-    if (background_viewport.error(from_pixel) < viewport.error(to_pixel)) {
-      viewport.error(to_pixel) = background_viewport.error(from_pixel);
+  for(int j=0; j<viewport.height(); ++j)
+  for (int i = 0; i < viewport.width(); ++i) {
+    auto &from_pixel = background_viewport(i,j);
+    auto &to_pixel = viewport(i,j);
+    if (from_pixel.error < to_pixel.error) {
+      to_pixel = from_pixel;
     }
   }
   viewport.updated();
@@ -49,13 +49,10 @@ void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter) {
   calculationFinished = false;
   zoomTimeout = false;
 
-  computedImageData.resize(viewport.width() * viewport.height());
   zoom_x = x;
   zoom_y = y;
 
-  previousImageData.resize(viewport.width() * viewport.height());
-  std::copy(viewport.begin(), viewport.end(), previousImageData.begin());
-  std::copy(viewport.begin(), viewport.end(), computedImageData.begin());
+  previousVp = viewport;  // Copy everything by value
 
   zoom_start = std::chrono::system_clock::now();
   // Add a 10% buffer to reduce stuttering
@@ -70,7 +67,7 @@ void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter) {
   if (fixZoomSpeed)
     zoom_duration = fixZoomDuration; // Override for speed
 
-  background_viewport.init(viewport.width(), viewport.height(), computedImageData.data());
+  (fractals::Viewport&)background_viewport = viewport;  // Copy everything over
   rendered_zoom_ratio = 1.0;
   calculated_points = 0;
   view_min = view_max = 0;
@@ -145,8 +142,6 @@ void fractals::AnimatedRenderer::timer() {
       // Copy the zoomed image exactly,
       // then superimpose whatever we calculated
       rendered_zoom_ratio = 0.5;
-      fractals::Viewport previousVp;
-      previousVp.init(viewport.width(), viewport.height(), previousImageData.data());
 
       fractals::map_viewport(
           previousVp, viewport, zoom_x * (1.0 - rendered_zoom_ratio),
@@ -164,8 +159,6 @@ void fractals::AnimatedRenderer::timer() {
     // The scaling ratio is exponential, not linear !!
     // Project the current view into the frame
     rendered_zoom_ratio = std::pow(0.5, time_ratio);
-    fractals::Viewport previousVp;
-    previousVp.init(viewport.width(), viewport.height(), previousImageData.data());
 
     fractals::map_viewport(
         previousVp, viewport, zoom_x * (1.0 - rendered_zoom_ratio),
@@ -189,8 +182,6 @@ void fractals::AnimatedRenderer::cancel_animations() {
       // Overwrite the viewport with the background image again
       // since this is more accurate than what's in the renderer
       // !! Refactor if this works
-      fractals::Viewport previousVp;
-      previousVp.init(viewport.width(), viewport.height(), previousImageData.data());
 
       fractals::map_viewport(
           previousVp, viewport, zoom_x * (1.0 - rendered_zoom_ratio),

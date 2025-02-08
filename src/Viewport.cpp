@@ -1,11 +1,11 @@
 #include "Viewport.hpp"
 #include <cassert>
 
-constexpr fractals::RGB grey = fractals::make_rgb(100, 100, 100);
+constexpr fractals::Viewport::value_type grey = {fractals::make_rgb(100, 100, 100), 127};
 
-fractals::Viewport::iterator fractals::Viewport::begin() { return data; }
+fractals::Viewport::iterator fractals::Viewport::begin() { return pixels.data(); }
 
-fractals::Viewport::iterator fractals::Viewport::end() { return data + size(); }
+fractals::Viewport::iterator fractals::Viewport::end() { return pixels.data() + pixels.size(); }
 
 int fractals::Viewport::size() const { return w * h; }
 
@@ -21,15 +21,14 @@ void fractals::Viewport::stop_timer() {}
 void fractals::Viewport::invalidateAllPixels() {
   for (auto j = 0; j < h; ++j)
     for (auto i = 0; i < w; ++i) {
-      error((*this)(i, j)) = 127;
+      (*this)(i, j).error = 127;
     }
 }
 
-void fractals::Viewport::init(int w0, int h0, RGB *d) {
+void fractals::Viewport::init(int w0, int h0) {
   w = w0;
   h = h0;
-  data = d;
-  error_data.resize(w * h);
+  pixels.resize(w * h);
   invalidateAllPixels();
 }
 
@@ -47,8 +46,6 @@ void fractals::map_viewport(const Viewport &src, Viewport &dest, double dx,
       int i2 = r * i + dx;
       int j2 = r * j + dy;
       auto &to_pixel = dest(i, j);
-      // int i2 = i2d;
-      // int j2 = j2d;
       if (i2 >= 0 && i2 < dest.width() && j2 >= 0 && j2 < dest.height()) {
 #if 0
         // This is so slow!!!
@@ -68,18 +65,17 @@ void fractals::map_viewport(const Viewport &src, Viewport &dest, double dx,
 #endif
         to_pixel = from_pixel;
         if (zoom_eq)
-          dest.error(to_pixel) = src.error(&from_pixel);
+          ; // Skip
         else if (zoom_out)
-          dest.error(to_pixel) = 20;
+          to_pixel.error = 20;
         else {
-          auto ex = src.error(&from_pixel) + 1; // Ensure result is overdrawn
+          auto ex = from_pixel.error + 1; // Ensure result is overdrawn
           if (ex > 20)
             ex = 20;
-          dest.error(to_pixel) = ex;
+          to_pixel.error = ex;
         }
       } else {
         to_pixel = grey;
-        dest.error(to_pixel) = 127;
       }
     }
 }
