@@ -49,18 +49,18 @@ void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter) {
   calculationFinished = false;
   zoomTimeout = false;
 
-  computedImageData.resize(viewport.width * viewport.height);
+  computedImageData.resize(viewport.width() * viewport.height());
   zoom_x = x;
   zoom_y = y;
 
-  previousImageData.resize(viewport.width * viewport.height);
+  previousImageData.resize(viewport.width() * viewport.height());
   std::copy(viewport.begin(), viewport.end(), previousImageData.begin());
   std::copy(viewport.begin(), viewport.end(), computedImageData.begin());
 
   zoom_start = std::chrono::system_clock::now();
   // Add a 10% buffer to reduce stuttering
   zoom_duration = std::chrono::milliseconds(
-      int(estimatedSecondsPerPixel * 1000 * viewport.width * viewport.height *
+      int(estimatedSecondsPerPixel * 1000 * viewport.width() * viewport.height() *
           1.10)); // Stupid stupid std::chrono
 
   // Stop the zoom duration getting too out of hand
@@ -70,7 +70,7 @@ void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter) {
   if (fixZoomSpeed)
     zoom_duration = fixZoomDuration; // Override for speed
 
-  background_viewport.init(viewport.width, viewport.height, computedImageData.data());
+  background_viewport.init(viewport.width(), viewport.height(), computedImageData.data());
   rendered_zoom_ratio = 1.0;
   calculated_points = 0;
   view_min = view_max = 0;
@@ -146,7 +146,7 @@ void fractals::AnimatedRenderer::timer() {
       // then superimpose whatever we calculated
       rendered_zoom_ratio = 0.5;
       fractals::Viewport previousVp;
-      previousVp.init(viewport.width, viewport.height, previousImageData.data());
+      previousVp.init(viewport.width(), viewport.height(), previousImageData.data());
 
       fractals::map_viewport(
           previousVp, viewport, zoom_x * (1.0 - rendered_zoom_ratio),
@@ -165,7 +165,7 @@ void fractals::AnimatedRenderer::timer() {
     // Project the current view into the frame
     rendered_zoom_ratio = std::pow(0.5, time_ratio);
     fractals::Viewport previousVp;
-    previousVp.init(viewport.width, viewport.height, previousImageData.data());
+    previousVp.init(viewport.width(), viewport.height(), previousImageData.data());
 
     fractals::map_viewport(
         previousVp, viewport, zoom_x * (1.0 - rendered_zoom_ratio),
@@ -190,7 +190,7 @@ void fractals::AnimatedRenderer::cancel_animations() {
       // since this is more accurate than what's in the renderer
       // !! Refactor if this works
       fractals::Viewport previousVp;
-      previousVp.init(viewport.width, viewport.height, previousImageData.data());
+      previousVp.init(viewport.width(), viewport.height(), previousImageData.data());
 
       fractals::map_viewport(
           previousVp, viewport, zoom_x * (1.0 - rendered_zoom_ratio),
@@ -208,7 +208,7 @@ void fractals::AnimatedRenderer::start_next_calculation() {
     break;
   case AnimationType::zoomtopoint:
     if (renderer->log_width() > zoomtopoint_limit)
-      smooth_zoom_to(viewport.width / 2, viewport.height / 2, true);
+      smooth_zoom_to(viewport.width() / 2, viewport.height() / 2, true);
     break;
   case AnimationType::zoomatcursor:
     smooth_zoom_to(move_x, move_y, false);
@@ -294,11 +294,11 @@ fractals::AnimatedRenderer::map_point(const view_coords &c) const {
   if (zooming) {
 
     auto zoomed_coords =
-        original_coords.zoom(2.0 * rendered_zoom_ratio, viewport.width,
-                             viewport.height, zoom_x, zoom_y);
+        original_coords.zoom(2.0 * rendered_zoom_ratio, viewport.width(),
+                             viewport.height(), zoom_x, zoom_y);
 
-    return zoomed_coords.map_point(viewport.width, viewport.height, c);
+    return zoomed_coords.map_point(viewport.width(), viewport.height(), c);
   } else {
-    return original_coords.map_point(viewport.width, viewport.height, c);
+    return original_coords.map_point(viewport.width(), viewport.height(), c);
   }
 }

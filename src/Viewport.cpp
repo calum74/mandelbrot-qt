@@ -7,7 +7,7 @@ fractals::Viewport::iterator fractals::Viewport::begin() { return data; }
 
 fractals::Viewport::iterator fractals::Viewport::end() { return data + size(); }
 
-int fractals::Viewport::size() const { return width * height; }
+int fractals::Viewport::size() const { return w * h; }
 
 void fractals::Viewport::calculation_started(double log_radius,
                                              int iterations) {}
@@ -19,15 +19,15 @@ void fractals::Viewport::start_timer() {}
 void fractals::Viewport::stop_timer() {}
 
 void fractals::Viewport::invalidateAllPixels() {
-  for (auto j = 0; j < height; ++j)
-    for (auto i = 0; i < width; ++i) {
+  for (auto j = 0; j < h; ++j)
+    for (auto i = 0; i < w; ++i) {
       error((*this)(i, j)) = 127;
     }
 }
 
-void fractals::Viewport::init(int w, int h, RGB *d) {
-  width = w;
-  height = h;
+void fractals::Viewport::init(int w0, int h0, RGB *d) {
+  w = w0;
+  h = h0;
   data = d;
   error_data.resize(w * h);
   invalidateAllPixels();
@@ -42,14 +42,14 @@ void fractals::map_viewport(const Viewport &src, Viewport &dest, double dx,
   bool zoom_eq = r == 1.0;
   bool zoom_out = r > 1.0;
 
-  for (int j = 0; j < dest.height; ++j)
-    for (int i = 0; i < dest.width; ++i) {
+  for (int j = 0; j < dest.height(); ++j)
+    for (int i = 0; i < dest.width(); ++i) {
       int i2 = r * i + dx;
       int j2 = r * j + dy;
       auto &to_pixel = dest(i, j);
       // int i2 = i2d;
       // int j2 = j2d;
-      if (i2 >= 0 && i2 < dest.width && j2 >= 0 && j2 < dest.height) {
+      if (i2 >= 0 && i2 < dest.width() && j2 >= 0 && j2 < dest.height()) {
 #if 0
         // This is so slow!!!
         auto i22 = i2 < dest.width - 1 ? i2 + 1 : i2;

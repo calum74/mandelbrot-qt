@@ -35,8 +35,8 @@ void fractals::AsyncRenderer::save(view_parameters &params) const {
 
 void fractals::AsyncRenderer::increase_iterations(Viewport &vp) {
   stop_current_calculation();
-  for (int j = 0; j < vp.height; ++j)
-    for (int i = 0; i < vp.width; ++i) {
+  for (int j = 0; j < vp.height(); ++j)
+    for (int i = 0; i < vp.width(); ++i) {
       auto &c = vp(i, j);
       if (!c) {
         // Only redraw final coloured points
@@ -116,7 +116,7 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
     t0 = std::chrono::high_resolution_clock::now();
 
     calculation =
-        current_fractal->create(coords, view.width, view.height, stop);
+        current_fractal->create(coords, view.width(), view.height(), stop);
 
     metrics.min_depth = 0;
     metrics.max_depth = 0;
@@ -156,7 +156,7 @@ bool fractals::AsyncRenderer::zoom(double r, int cx, int cy, bool lockCenter,
   stop_current_calculation();
 
   auto new_coords =
-      lockCenter ? coords.zoom(r) : coords.zoom(r, vp.width, vp.height, cx, cy);
+      lockCenter ? coords.zoom(r) : coords.zoom(r, vp.width(), vp.height(), cx, cy);
 
   if (!current_fractal->valid_for(new_coords)) {
     return false;
@@ -185,11 +185,11 @@ int fractals::AsyncRenderer::iterations() const {
 
 void fractals::AsyncRenderer::center(Viewport &vp) {
   if (max_x > 0 && max_y > 0)
-    scroll(max_x - vp.width / 2, max_y - vp.height / 2, vp);
+    scroll(max_x - vp.width() / 2, max_y - vp.height() / 2, vp);
 }
 
 void fractals::AsyncRenderer::zoom_in(Viewport &vp) {
-  zoom(0.5, vp.width / 2, vp.height / 2, true, vp);
+  zoom(0.5, vp.width() / 2, vp.height() / 2, true, vp);
 }
 
 bool fractals::AsyncRenderer::get_auto_zoom(int &x, int &y) {
@@ -233,10 +233,10 @@ void fractals::AsyncRenderer::remap_viewport(Viewport &vp, double dx, double dy,
     we calculate it properly.
   */
 
-  std::vector<RGB> new_contents(vp.width * vp.height, grey);
+  std::vector<RGB> new_contents(vp.width() * vp.height(), grey);
 
   Viewport dest;
-  dest.init(vp.width, vp.height, new_contents.data());
+  dest.init(vp.width(), vp.height(), new_contents.data());
   map_viewport(vp, dest, dx, dy, r);
   std::copy(new_contents.begin(), new_contents.end(), vp.data);
   std::copy(dest.error_data.begin(), dest.error_data.end(), vp.error_data.begin());
@@ -262,7 +262,7 @@ void fractals::AsyncRenderer::scroll(int dx, int dy, Viewport &vp) {
   stop_current_calculation();
 
   // TODO: Only recalculate necessary regions
-  coords = coords.scroll(vp.width, vp.height, dx, dy);
+  coords = coords.scroll(vp.width(), vp.height(), dx, dy);
 
   remap_viewport(vp, dx, dy, 1.0);
 
@@ -289,7 +289,7 @@ void fractals::AsyncRenderer::get_depth_range(double &min, double &p,
 fractals::AsyncRenderer::my_rendering_sequence::my_rendering_sequence(
     const PointwiseCalculation &calculation, const ColourMap &cm, Viewport &vp,
     std::vector<depth_value> &depths)
-    : fractals::buffered_rendering_sequence<double>(vp.width, vp.height, 16),
+    : fractals::buffered_rendering_sequence<double>(vp.width(), vp.height(), 16),
       calculation(calculation), cm(cm), vp(vp), depths(depths) {
   depths.clear();
 }
@@ -297,12 +297,12 @@ fractals::AsyncRenderer::my_rendering_sequence::my_rendering_sequence(
 void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
     int stride) {
   // Transfer and interpolate to the current viewport
-  fractals::rendering_sequence seq(vp.width, vp.height, 16);
+  fractals::rendering_sequence seq(vp.width(), vp.height(), 16);
   seq.start_at_stride(stride);
   int x, y, s;
   bool c;
   while (seq.next(x, y, s, c) && stride == s) {
-    double depth = output[x + y * vp.width];
+    double depth = output[x + y * vp.width()];
 
     if (!std::isnan(depth)) {
       vp(x, y) = cm(depth);
@@ -323,12 +323,12 @@ void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
         int y1 = y + d;
         if (x0 < 0)
           x0 = 0;
-        if (x1 >= vp.width)
-          x1 = vp.width - 1;
+        if (x1 >= vp.width())
+          x1 = vp.width() - 1;
         if (y0 < 0)
           y0 = 0;
-        if (y1 >= vp.height)
-          y1 = vp.height - 1;
+        if (y1 >= vp.height())
+          y1 = vp.height() - 1;
         interpolate_region(vp, x, y, x0, y0, x1, y1);
       }
 #endif
@@ -362,5 +362,5 @@ fractals::mapped_point
 fractals::AsyncRenderer::map_point(const Viewport &vp,
                                    const view_coords &c) const {
 
-  return coords.map_point(vp.width, vp.height, c);
+  return coords.map_point(vp.width(), vp.height(), c);
 }
