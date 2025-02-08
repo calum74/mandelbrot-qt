@@ -161,7 +161,7 @@ void fractals::AnimatedRenderer::timer() {
     }
   } else {
     // Update the current view using the
-    // The scaling ratio isn't actually linear !!
+    // The scaling ratio is exponential, not linear !!
     // Project the current view into the frame
     rendered_zoom_ratio = std::pow(0.5, time_ratio);
     fractals::Viewport previousVp;

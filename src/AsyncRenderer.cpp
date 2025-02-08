@@ -62,7 +62,7 @@ double fractals::AsyncRenderer::get_average_skipped_iterations() const {
 
 void fractals::AsyncRenderer::discovered_depth(
     const RenderingMetrics &metrics) {
-  if (metrics.non_black_points > 1000 &&
+  if (!metrics.last_action_was_a_scroll && metrics.non_black_points > 1000 &&
       metrics.discovered_depth > 0)                       // Fudge factor
     coords.max_iterations = metrics.discovered_depth * 2; // Fudge factor
 }
@@ -166,6 +166,7 @@ bool fractals::AsyncRenderer::zoom(double r, int cx, int cy, bool lockCenter,
 
   remap_viewport(vp, cx * (1 - r), cy * (1 - r), r);
 
+  metrics.last_action_was_a_scroll = false;
   vp.updated();
   return true;
 }
@@ -251,6 +252,7 @@ void fractals::AsyncRenderer::set_aspect_ratio(int new_width, int new_height) {
 }
 
 bool fractals::AsyncRenderer::set_coords(const view_coords &c, Viewport &vp) {
+  metrics.last_action_was_a_scroll = false;
   redraw(vp);
   coords = c; // TODO: Update aspect ratio
   return true;
@@ -264,6 +266,7 @@ void fractals::AsyncRenderer::scroll(int dx, int dy, Viewport &vp) {
 
   remap_viewport(vp, dx, dy, 1.0);
 
+  metrics.last_action_was_a_scroll = true;
   vp.updated();
 }
 

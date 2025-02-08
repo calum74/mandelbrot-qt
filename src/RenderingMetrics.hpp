@@ -4,6 +4,8 @@
 namespace fractals {
 // For reporting on what happened during rendering a view
 struct RenderingMetrics {
+  bool last_action_was_a_scroll;
+
   // These metrics are always reported
   double log_radius; // The natural log of the radius
   double min_depth;

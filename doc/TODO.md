@@ -1,6 +1,13 @@
 # Task list
 
-Fix up the alpha channel.
+Scrolling gives invalid depth estimates
+  calculate_async() -> finished(const RenderingMetrics &metrics);
+Need to mark the metrics with an initiating action:
+  Was it a scroll?
+
+Refactor the alpha channel handling as it's quite a mess!
+
+
 
 - Tidy up bookmarks
 - Plant flags on all the bookmarks.
