@@ -1,5 +1,7 @@
 # Task list
 
+Fix up the alpha channel.
+
 - Tidy up bookmarks
 - Plant flags on all the bookmarks.
   - Size of icon relates to distance
@@ -8,6 +10,8 @@
     Size = k * log(size_ratio)
   - Don't show bookmark if we've gone past it
 - Use openmp
+- Bookmarks get overwritten by new values
+  - Maybe we need a string representation?
 
 Bugs:
 - [ ] Multiple toplevels don't sync bookmarks

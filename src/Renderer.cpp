@@ -29,7 +29,7 @@ bool fractals::maybe_fill_region(Viewport &vp, int x0, int y0, int x1, int y1) {
 
 void fractals::interpolate_region(Viewport &vp, int cx, int cy, int x0, int y0,
                                   int x1, int y1) {
-  auto c = vp(cx, cy);
+  auto &c = vp(cx, cy);
   assert(x0 >= 0);
   assert(x1 < vp.width);
   assert(y0 >= 0);
@@ -44,8 +44,11 @@ void fractals::interpolate_region(Viewport &vp, int cx, int cy, int x0, int y0,
       int ex = dx < 0 ? -dx : dx;
       int error = ex + ey;
       auto &p = vp(i, j);
-      if (error < extra(p))
-        p = with_extra(c, error);
+      // This is the condition that gives the artistic effects on the zoom
+      if (error < vp.error(p)) {
+        p=c;
+        vp.error(p) = error;
+      }
     }
   }
 }
@@ -59,9 +62,7 @@ void fractals::Renderer::center(Viewport &vp) {}
 void fractals::Renderer::zoom_in(Viewport &vp) {}
 
 void fractals::Renderer::redraw(Viewport &vp) {
-  for (int j = 0; j < vp.height; ++j)
-    for (int i = 0; i < vp.width; ++i)
-      vp(i, j) = with_extra(vp(i, j), 127);
+  vp.invalidateAllPixels();
 }
 
 void fractals::Renderer::enable_auto_depth(bool value) {}
@@ -85,13 +86,6 @@ void fractals::Renderer::discovered_depth(const RenderingMetrics &) {}
 
 // Arguable these should be pure virtual functions
 void fractals::Renderer::set_fractal(const fractals::PointwiseFractal &) {}
-
-void fractals::Viewport::invalidateAllPixels() {
-  for (auto j = 0; j < height; ++j)
-    for (auto i = 0; i < width; ++i) {
-      (*this)(i, j) = with_extra((*this)(i, j), 127);
-    }
-}
 
 void fractals::Renderer::load(const view_parameters &params, Viewport &vp) {}
 

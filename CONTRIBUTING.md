@@ -42,10 +42,12 @@ The Actions workflows do create an installer, but this is only using the shared/
 
 On Mac: Download the source code using the Qt installer https://www.qt.io/download-qt-installer-oss (e.g. version 6.8.1). 
 
+Or, `git clone https://github.com/qt/qtbase.git`, followed by
+
 ```
 ./configure -static
 cmake --build . --parallel
-cmake --install .
+sudo cmake --install .
 ```
 
 Then, reconfigure cmake to use the static Qt build,

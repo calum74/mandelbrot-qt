@@ -144,6 +144,9 @@ void MainWindow::startCalculating(double d, int iterations) {
 
 void MainWindow::completed(const fractals::RenderingMetrics *metrics) {
   std::stringstream ss;
+#ifndef NDEBUG
+  ss << "DEBUG BUILD ";
+#endif
   ss << "Radius " << std::setprecision(2);
   fractals::log_radius(ss, metrics->log_radius);
   ss << " completed in " << metrics->render_time_seconds << " seconds, depth "

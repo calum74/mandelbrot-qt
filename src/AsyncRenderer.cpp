@@ -40,7 +40,7 @@ void fractals::AsyncRenderer::increase_iterations(Viewport &vp) {
       auto &c = vp(i, j);
       if (!c) {
         // Only redraw final coloured points
-        c = with_extra(vp(i, j), 127);
+        vp.error(c) = 127;
       }
     }
   coords.max_iterations *= 2;
@@ -48,10 +48,7 @@ void fractals::AsyncRenderer::increase_iterations(Viewport &vp) {
 
 void fractals::AsyncRenderer::decrease_iterations(Viewport &vp) {
   stop_current_calculation();
-  for (int j = 0; j < vp.height; ++j)
-    for (int i = 0; i < vp.width; ++i) {
-      vp(i, j) = with_extra(vp(i, j), 127);
-    }
+  vp.invalidateAllPixels();
   coords.max_iterations /= 2;
 }
 
@@ -204,7 +201,7 @@ bool fractals::AsyncRenderer::get_auto_zoom(int &x, int &y) {
   return false;
 }
 
-constexpr fractals::RGB grey = fractals::make_rgbx(100, 100, 100, 127);
+constexpr fractals::RGB grey = fractals::make_rgb(100, 100, 100);
 
 namespace fractals {
 RGB blend(RGB c1, RGB c2, double w1, double w2) {
@@ -213,55 +210,6 @@ RGB blend(RGB c1, RGB c2, double w1, double w2) {
                   (blue(c1) * w1 + blue(c2) * w2) / (w1 + w2));
 }
 } // namespace fractals
-
-void fractals::map_viewport(const Viewport &src, Viewport &dest, double dx,
-                            double dy, double r) {
-
-  // One day, we might be able to remap to a different size
-  assert(src.width == dest.width);
-  assert(src.height == dest.height);
-
-  bool zoom_eq = r == 1.0;
-  bool zoom_out = r > 1.0;
-
-  for (int j = 0; j < dest.height; ++j)
-    for (int i = 0; i < dest.width; ++i) {
-      int i2 = r * i + dx;
-      int j2 = r * j + dy;
-      // int i2 = i2d;
-      // int j2 = j2d;
-      if (i2 >= 0 && i2 < dest.width && j2 >= 0 && j2 < dest.height) {
-#if 0
-        // This is so slow!!!
-        auto i22 = i2 < dest.width - 1 ? i2 + 1 : i2;
-        auto j22 = j2 < dest.height - 1 ? j2 + 1 : j2;
-        auto p1 = src(i2, j2);
-        auto p2 = src(i22, j2);
-        auto p3 = src(i2, j22);
-        auto p4 = src(i22, j22);
-        auto di = i2d - i2;
-        auto dj = j2d - j2;
-        auto c1 = blend(p1, p2, 1 - di, di);
-        auto c2 = blend(p3, p4, 1 - di, di);
-        auto orig = blend(c1, c2, 1 - dj, dj);
-#else
-        auto orig = src(i2, j2);
-        auto p1 = orig;
-#endif
-        if (zoom_eq)
-          dest(i, j) = orig;
-        else if (zoom_out)
-          dest(i, j) = with_extra(orig, 20);
-        else {
-          auto ex = extra(orig) + 1; // Ensure result is overdrawn
-          if (ex > 20)
-            ex = 20;
-          dest(i, j) = with_extra(orig, ex);
-        }
-      } else
-        dest(i, j) = grey;
-    }
-}
 
 void fractals::AsyncRenderer::remap_viewport(Viewport &vp, double dx, double dy,
                                              double r) const {
@@ -287,11 +235,10 @@ void fractals::AsyncRenderer::remap_viewport(Viewport &vp, double dx, double dy,
   std::vector<RGB> new_contents(vp.width * vp.height, grey);
 
   Viewport dest;
-  dest.width = vp.width;
-  dest.height = vp.height;
-  dest.data = new_contents.data();
+  dest.init(vp.width, vp.height, new_contents.data());
   map_viewport(vp, dest, dx, dy, r);
   std::copy(new_contents.begin(), new_contents.end(), vp.data);
+  std::copy(dest.error_data.begin(), dest.error_data.end(), vp.error_data.begin());
 }
 
 void fractals::AsyncRenderer::redraw(Viewport &vp) {
@@ -391,7 +338,7 @@ void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
 }
 
 double fractals::AsyncRenderer::my_rendering_sequence::get_point(int x, int y) {
-  if (extra(vp(x, y)) == 0)
+  if (vp.error(vp(x, y)) == 0)
     return std::numeric_limits<double>::quiet_NaN();
   ++calculated_pixels;
   auto depth = calculation.calculate(x, y);

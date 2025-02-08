@@ -44,9 +44,7 @@ void ViewerWidget::calculate() {
 
   assert(image.width() > 0);
 
-  viewport.data = (fractals::RGB *)image.bits();
-  viewport.width = image.width();
-  viewport.height = image.height();
+  // viewport.init(image.width(), image.height(), (fractals::RGB *)image.bits());
 
   renderer.calculate_async();
   // calculateFlagLocations();
@@ -74,7 +72,7 @@ void ViewerWidget::draw() {
   }
 }
 
-constexpr fractals::RGB grey = fractals::make_rgbx(100, 100, 100, 127);
+constexpr fractals::RGB grey = fractals::make_rgb(100, 100, 100);
 
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
   renderer.cancel_animations();
@@ -86,11 +84,9 @@ void ViewerWidget::resizeEvent(QResizeEvent *event) {
 
   viewport.invalidateAllPixels();
   image = QImage(w, h, QImage::Format_RGB32);
-  viewport.data = (fractals::RGB *)image.bits();
-  viewport.width = image.width();
-  viewport.height = image.height();
+  viewport.init(image.width(), image.height(), (fractals::RGB *)image.bits());
   std::fill(viewport.begin(), viewport.end(), grey);
-  // viewport.invalidateAllPixels();
+  viewport.invalidateAllPixels();
   calculate();
 }
 

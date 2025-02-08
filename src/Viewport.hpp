@@ -1,5 +1,6 @@
 #pragma once
 #include "RGB.hpp"
+#include <vector>
 
 namespace fractals {
 struct RenderingMetrics;
@@ -16,13 +17,21 @@ struct Viewport {
   // The buffer to receive the pixels, stored in row-order.
   // data must be width*height elements large.
   value_type *data = 0;
+  std::vector<std::uint8_t> error_data;
+
+  void init(int w, int h, value_type * data);
 
   value_type &operator()(size_type x, size_type y) {
     return data[x + y * width];
   }
-  value_type operator()(size_type x, size_type y) const {
+
+  const value_type &operator()(size_type x, size_type y) const {
     return data[x + y * width];
   }
+
+  // Get/set the error corresponding to a value
+  std::uint8_t & error(value_type&x) { return error_data[&x-data]; }
+  std::uint8_t error(const value_type*x) const { return error_data[x-data]; }
 
   using iterator = value_type *;
   using const_iterator = const value_type *;
