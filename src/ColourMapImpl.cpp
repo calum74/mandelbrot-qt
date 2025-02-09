@@ -11,7 +11,7 @@ fractals::ColourMapImpl::ColourMapImpl() {
   randomize();
 }
 
-void fractals::ColourMapImpl::resetGradient() { gradient = 20; }
+void fractals::ColourMapImpl::resetGradient() { gradient = 30; }
 
 fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   if (d == 0)
