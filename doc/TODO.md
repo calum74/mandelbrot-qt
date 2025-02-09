@@ -1,18 +1,7 @@
 # Task list
 
-- [ ] We've lost some of the art around zooming :-(
 - Bookmarks flags can appear in the wrong place when starting a zoom in
-
-- [ ] When you halt a zoom, all pixels are invalidated
-
-Scrolling gives invalid depth estimates
-  calculate_async() -> finished(const RenderingMetrics &metrics);
-Need to mark the metrics with an initiating action:
-  Was it a scroll?
-
-Refactor the alpha channel handling as it's quite a mess!
-
-
+- Avoid updating flag locations if not needed
 
 - Tidy up bookmarks
 - Plant flags on all the bookmarks.

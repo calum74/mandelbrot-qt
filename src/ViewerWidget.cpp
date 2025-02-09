@@ -44,7 +44,8 @@ void ViewerWidget::calculate() {
 
   assert(image.width() > 0);
 
-  // viewport.init(image.width(), image.height(), (fractals::RGB *)image.bits());
+  // viewport.init(image.width(), image.height(), (fractals::RGB
+  // *)image.bits());
 
   renderer.calculate_async();
   // calculateFlagLocations();
@@ -54,8 +55,8 @@ void ViewerWidget::draw() {
   pending_redraw = 0;
   QPainter painter(this);
 
-  std::uint32_t * image_data = (std::uint32_t*)image.bits();
-  for(int i=0; i<viewport.size(); ++i)
+  std::uint32_t *image_data = (std::uint32_t *)image.bits();
+  for (int i = 0; i < viewport.size(); ++i)
     image_data[i] = 0xff000000 | viewport[i].colour;
 
   painter.drawImage(this->rect(), image);
@@ -76,7 +77,8 @@ void ViewerWidget::draw() {
   }
 }
 
-constexpr fractals::Viewport::pixel grey = {fractals::make_rgb(100, 100, 100), 127};
+constexpr fractals::Viewport::pixel grey = {fractals::make_rgb(100, 100, 100),
+                                            127};
 
 void ViewerWidget::resizeEvent(QResizeEvent *event) {
   renderer.cancel_animations();
@@ -443,14 +445,16 @@ void ViewerWidget::enableOversampling(bool checked) {
 
 void ViewerWidget::showBookmarks(const fractals::view_parameters *params,
                                  int size) {
-  bookmarksToDraw.assign(params, params + size);
-  // calculateFlagLocations();
+  std::vector<BookmarkToDraw> newBookmarks;
+  for (int i = 0; i < size; ++i) {
+    newBookmarks.push_back({params[i].algorithm, params[i]});
+  }
+  bookmarksToDraw = std::move(newBookmarks);
   doUpdate();
 }
 
 void ViewerWidget::hideBookmarks() {
   bookmarksToDraw.clear();
-  // calculateFlagLocations();
   doUpdate();
 }
 

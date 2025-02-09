@@ -24,29 +24,20 @@ template <typename T> void read(const QString &src, T &result) {
 }
 
 void GoToDialog::getCoords(fractals::view_parameters &params) const {
-  read(ui->xCoord->toPlainText(), params.coords.x);
-  read(ui->yCoord->toPlainText(), params.coords.y);
-  read(ui->sizeCoord->toPlainText(), params.coords.r);
-  read(ui->maxIterations->toPlainText(), params.coords.max_iterations);
+  read(ui->xCoord->toPlainText(), params.x);
+  read(ui->yCoord->toPlainText(), params.y);
+  read(ui->sizeCoord->toPlainText(), params.r);
+  read(ui->maxIterations->toPlainText(), params.max_iterations);
   read(ui->colour->toPlainText(), params.colour_seed);
   read(ui->gradient->toPlainText(), params.colour_gradient);
 }
 
 void GoToDialog::setCoords(const fractals::view_parameters &params) {
-  std::stringstream ss1;
-  ss1 << std::setprecision(params.coords.get_precision()) << params.coords.x;
-  ui->xCoord->setPlainText(ss1.str().c_str());
+  ui->xCoord->setPlainText(params.x.c_str());
+  ui->yCoord->setPlainText(params.y.c_str());
+  ui->sizeCoord->setPlainText(params.r.c_str());
 
-  std::stringstream ss2;
-  ss2 << std::setprecision(params.coords.get_precision()) << params.coords.y;
-  ui->yCoord->setPlainText(ss2.str().c_str());
-
-  std::stringstream ss3;
-  ss3 << std::setprecision(3);
-  fractals::log_radius(ss3, params.coords.ln_r());
-  ui->sizeCoord->setPlainText(ss3.str().c_str());
-
-  ui->maxIterations->setPlainText(to_qstring(params.coords.max_iterations));
+  ui->maxIterations->setPlainText(to_qstring(params.max_iterations));
   ui->colour->setPlainText(to_qstring(params.colour_seed));
   ui->gradient->setPlainText(to_qstring(params.colour_gradient));
 }

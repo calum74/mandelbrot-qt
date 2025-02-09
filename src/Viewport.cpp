@@ -49,8 +49,8 @@ void fractals::map_viewport(const Viewport &src, Viewport &dest, double dx,
       if (i2 >= 0 && i2 < dest.width() && j2 >= 0 && j2 < dest.height()) {
 #if 0
         // This is so slow!!!
-        auto i22 = i2 < dest.width - 1 ? i2 + 1 : i2;
-        auto j22 = j2 < dest.height - 1 ? j2 + 1 : j2;
+        auto i22 = i2 < dest.width() - 1 ? i2 + 1 : i2;
+        auto j22 = j2 < dest.height() - 1 ? j2 + 1 : j2;
         auto p1 = src(i2, j2);
         auto p2 = src(i22, j2);
         auto p3 = src(i2, j22);

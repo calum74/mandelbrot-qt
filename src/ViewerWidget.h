@@ -52,7 +52,12 @@ class ViewerWidget : public QWidget {
     int x, y, size;
   };
 
-  std::vector<fractals::view_parameters> bookmarksToDraw;
+  struct BookmarkToDraw {
+    std::string algorithm;
+    fractals::view_coords coords;
+  };
+
+  std::vector<BookmarkToDraw> bookmarksToDraw;
   std::vector<flag_location> flagsToDraw;
   void doUpdate();
 

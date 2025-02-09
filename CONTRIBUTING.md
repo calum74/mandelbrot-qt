@@ -34,7 +34,11 @@ On Windows/Mac:
 
 Install Qt from https://www.qt.io/download-qt-installer-oss. If you install QtCreator then it should be able to just open your project (`CMakeLists.txt`) and build it.
 
-If Cmake fails, try running the specific generator for your platform, e.g. `C:\Qt\6.8.1\msvc2022_64\bin\qt-cmake`.
+If CMake fails, try running the specific generator for your platform, e.g. `C:\Qt\6.8.1\msvc2022_64\bin\qt-cmake`.
+
+On Mac:
+
+Homebrew also contains Qt, and you will need `brew install cmake qt`.
 
 ## Creating an installer
 
