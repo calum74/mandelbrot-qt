@@ -1,9 +1,10 @@
 # Task list
 
+- New toplevel colour that's not horrible
 - Bookmarks flags can appear in the wrong place when starting a zoom in
-- Avoid updating flag locations if not needed
 
 - Tidy up bookmarks
+- Maybe sort them
 - Plant flags on all the bookmarks.
   - Size of icon relates to distance
     Return the difference of the logs of the radius.
@@ -11,8 +12,6 @@
     Size = k * log(size_ratio)
   - Don't show bookmark if we've gone past it
 - Use openmp
-- Bookmarks get overwritten by new values
-  - Maybe we need a string representation?
 
 Bugs:
 - [ ] Multiple toplevels don't sync bookmarks
