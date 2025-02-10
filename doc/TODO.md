@@ -1,6 +1,140 @@
 # Task list
 
-- New toplevel colour that's not horrible
+BLA ideas:
+1. Check the actual size of the error - do the maths!
+  What's the maximum norm(delta) at each step? Record this?
+  Ensure that individual steps don't go wrong by being close to 0.
+2. Think about batching jumps into steps of 512.
+    Does this give a better utilization?
+    Store an A_i_n and B_i_n in each entry
+3. Find a way to report the orbit reuse
+   > Developer features
+   - Switches on verbose output
+   - Show additional mandelbrots:
+    - Experimental
+    - Reference MB
+    - Naive MB
+
+Radius 5-21 completed in 0.12 seconds, depth 159-1279, skipped 1000/1200 (80%)
+
+Stage as three algorithms:
+1. Linear coefficients, with cached single-orbit translation
+2. Bilinear coefficients, with a fixed step size (e.g. 100)
+3. Hybrid: Linear + adaptive step sizes.
+
+Why it works:
+- We can efficiently translate our reference orbit since it turns out that all BLA coefficients are the same within their region of validity. We tend to render adjacent pixels together, which means that when we render an adjacent pixel, we use the BLA coefficients for a reference orbit that's adjacent to the pixel we are calculating.
+
+**Theorem 1:** (Fundamental theorem of BLA)
+
+If $|\epsilon_i| < \epsilon|z_i|$ and $ |\epsilon_i|^2 < \frac{\epsilon|\delta|}{2}$ then BLA is valid.
+
+Proof: $\epsilon_{i+1} = 2\epsilon_iz_i + \epsilon_i^2 + \delta \approxeq 2\epsilon_iz_i + \delta$
+
+$\iff |\epsilon_i^2| < \epsilon|2\epsilon_iz_i + \delta|$
+
+$\impliedby |\epsilon_i^2| < \epsilon|\epsilon_iz_i|$ and $ |\epsilon_i^2| < \frac{\epsilon|\delta|}{2}$
+
+$\iff |\epsilon_i|^2 < \epsilon|\epsilon_i||z_i|$ and $ |\epsilon_i|^2 < \frac{\epsilon|\delta|}{2}$
+
+$\iff |\epsilon_i| < \epsilon|z_i|$ and $ |\epsilon_i|^2 < \frac{\epsilon|\delta|}{2}$
+
+$\square$
+
+**Theorem 2:**
+
+If
+$|\delta| < \frac{\epsilon|z_i|}{|B_i|}$ and $|\delta| < \frac{\epsilon}{2|B_i|^2}$
+then the linear approximation $\epsilon_i \approxeq B_i\delta$ is accurate.
+
+Proof: $\epsilon_i \approxeq B_i\delta$
+
+$\impliedby |\epsilon_i| < \epsilon|z_i|$ and $ |\epsilon_i|^2 < \frac{\epsilon|\delta|}{2}$
+
+$\iff |B_i\delta| < \epsilon|z_i|$ and $ |B_i\delta|^2 < \frac{\epsilon|\delta|}{2}$
+
+$\iff |B_i||\delta| < \epsilon|z_i|$ and $ |B_i|^2|\delta| < \frac{\epsilon}{2}$
+
+$\iff |\delta| < \frac{\epsilon|z_i|}{|B_i|}$ and $|\delta| < \frac{\epsilon}{2|B_i|^2}$
+
+$\square$
+
+Let's instead look at the cumulative error $E_i$
+
+$E_i = z_i - B_i\delta$
+
+
+
+Theorem 2 gives us a maximum value of $|\delta|$ at each iteration.
+
+Do we need to track this for every iteration, which we can implement by storing a $|\delta|_{max,i}$ for each iteration, and ensuring that $|\delta|_{max,i} = min(|\delta|_{max,i-1},\frac{\epsilon|z_i|}{|B_i|},\frac{\epsilon}{2|B_i|^2})$, or is this condition already baked into $B_i$?
+
+Implementation: Every 512 steps, reset the jump-forward.
+
+**Theorem 3:** (Validity of BLA coefficients)
+
+If
+
+$|A_i| < \frac{2\epsilon|z_i|}{|\epsilon_j|}$ and
+${|A_i|} < \frac{2\epsilon}{|\epsilon_j|\sqrt{|B_i|}}$ and
+${|A_i|} < \frac{2\epsilon}{|\epsilon_j||B_i|}$ and
+$|\delta| < \frac{2\epsilon|z_i|}{|B_i|}$ and 
+$|\delta| < \frac{2\epsilon}{|B_i|^2}$
+
+then 
+
+$\epsilon_{i} \approxeq A_i\epsilon_j + B_i\delta$
+
+Proof:
+
+$\epsilon_{i} \approxeq A_i\epsilon_j + B_i\delta$
+
+$\impliedby |\epsilon_i| < \epsilon|z_i|$ and $ |\epsilon_i|^2 < \frac{\epsilon|\delta|}{2}$
+
+$\iff |A_i\epsilon_j + B_i\delta| < \epsilon|z_i|$ and $|A_i\epsilon_j + B_i\delta|^2 < \frac{\epsilon|\delta|}{2}$
+
+$\impliedby |A_i\epsilon_j| + |B_i\delta| < \epsilon|z_i|$ and $|A_i\epsilon_j + B_i\delta| < \sqrt\frac{\epsilon|\delta|}{2}$
+
+$\impliedby |A_i\epsilon_j| + |B_i\delta| < \epsilon|z_i|$ and $|A_i\epsilon_j| + |B_i\delta| < \sqrt\frac{\epsilon|\delta|}{2}$
+
+$\impliedby |A_i||\epsilon_j| + |B_i||\delta| < \epsilon|z_i|$ and $|A_i||\epsilon_j| + |B_i||\delta| < \sqrt\frac{\epsilon|\delta|}{2}$
+
+$\impliedby \frac{|A_i||\epsilon_j|}{2} < \epsilon|z_i|$ and $\frac{|B_i||\delta|}{2} < \epsilon|z_i|$ and 
+$\frac{|A_i||\epsilon_j|}{2} < \sqrt\frac{\epsilon|\delta|}{2}$
+and $\frac{|B_i||\delta|}{2} < \sqrt\frac{\epsilon|\delta|}{2}$
+
+$\iff |A_i| < \frac{2\epsilon|z_i|}{|\epsilon_j|}$ and
+$|\delta| < \frac{2\epsilon|z_i|}{|B_i|}$ and 
+${|A_i|^2}|\epsilon_j|^2 < 2\epsilon|\delta|$ and
+$|\delta| < \frac{2\epsilon}{|B_i|^2}$
+
+$\iff |A_i| < \frac{2\epsilon|z_i|}{|\epsilon_j|}$ and
+$|\delta| < \frac{2\epsilon|z_i|}{|B_i|}$ and 
+${|A_i|^2} < \frac{2\epsilon|\delta|}{|\epsilon_j|^2}$ and
+$|\delta| < \frac{2\epsilon}{|B_i|^2}$
+
+$\impliedby |A_i| < \frac{2\epsilon|z_i|}{|\epsilon_j|}$ and
+$|\delta| < \frac{2\epsilon|z_i|}{|B_i|}$ and 
+${|A_i|^2} < \frac{2\epsilon}{|\epsilon_j|^2}\frac{2\epsilon|z_i|}{|B_i|}$ and
+${|A_i|^2} < \frac{2\epsilon}{|\epsilon_j|^2}\frac{2\epsilon}{|B_i|^2}$ and
+$|\delta| < \frac{2\epsilon}{|B_i|^2}$
+
+$\iff |A_i| < \frac{2\epsilon|z_i|}{|\epsilon_j|}$ and
+$|\delta| < \frac{2\epsilon|z_i|}{|B_i|}$ and 
+${|A_i|^2} < \frac{4\epsilon^2}{|\epsilon_j|^2|B_i|}$ and
+${|A_i|^2} < \frac{4\epsilon^2}{|\epsilon_j|^2|B_i|^2}$ and
+$|\delta| < \frac{2\epsilon}{|B_i|^2}$
+
+$\iff |A_i| < \frac{2\epsilon|z_i|}{|\epsilon_j|}$ and
+$|\delta| < \frac{2\epsilon|z_i|}{|B_i|}$ and 
+${|A_i|} < \frac{2\epsilon}{|\epsilon_j|\sqrt{|B_i|}}$ and
+${|A_i|} < \frac{2\epsilon}{|\epsilon_j||B_i|}$ and
+$|\delta| < \frac{2\epsilon}{|B_i|^2}$
+
+$\square$
+
+This does not help at all!
+
 - Bookmarks flags can appear in the wrong place when starting a zoom in
 
 - Tidy up bookmarks
