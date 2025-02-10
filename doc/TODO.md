@@ -146,6 +146,30 @@ This does not help at all!
     Size = k * log(size_ratio)
   - Don't show bookmark if we've gone past it
 - Use openmp
+Goals for this week:
+- [ ] Finally fix the animation bug as well
+- [ ] Bookmarks flags can appear in the wrong place when starting a zoom in
+  - Thinks it's still zooming probably
+- [ ] Think about BLA imprecision
+- [ ] Adding a second rung to BLA maybe
+
+
+
+
+
+- [ ] Sort bookmarks
+- [ ] Invert y axis
+- [ ] Detect loops
+- [ ] Adaptive colour map
+
+BLA:
+1. Fix bugs. Is it that there's imprecision and we need to check each step??
+2. Higher terms & general displacement
+3. What's the precision
+3. Can we implement a second rung?
+ - Problem is that the second rung already has a large epsilon
+ - So we can use higher terms
+
 
 Bugs:
 - [ ] Multiple toplevels don't sync bookmarks
@@ -153,14 +177,16 @@ Bugs:
 - [ ] Zoom in goes too far
 - [ ] Display the time without setprecision(2)??
 - [ ] Bugs in New Year fractal. (imprecision of some kind)
-- [ ] Glitches in Magnus Opus Ex
+- [x] Glitches in Magnus Opus Ex
 - [ ] Animate to here still carries on zooming mysteriously
-  I think we need to cancel the current calculation as it only happens when there is still a rendering going on?
+  It only happens when there is still a rendering going on?
 - [ ] Suddenly a nasty judder whilst rendering.
-- [ ] Scrolling disrupts depth calculations
+- [ ] Scrolling disrupts depth calculations. Still not perfect
 - [ ] Smooth zoom stops now if there's not enough pixels to update the depth
+- [ ] Some of the bookmarks moved due to imprecision bug
 
 Improvements:
+- [ ] Use openmp
 - [ ] Implement a reference Mandelbrot (perturbation only)
 - [ ] Lock window
 - [ ] Karatsuba multiplication
@@ -189,15 +215,8 @@ Improvements:
 - [ ] Show number of iterations skipped
 - [ ] Put a "flag" icon next to each bookmark
 - [ ] Dynamic length of number?
-
-BLA:
-- What's the imprecision on our epsilon? It may be that we can actually manage a much longer sequence in a branch, as we are only dealing with a worst-case.
-- What did the terms look like in our "shadow tree" underneath our current branch that we didn't actually calculate?
-
-For our shadow tree, we can calculate our distance to the reference orbit $\Epsilon'_i$ using the initial branch. We obviously have our $\Delta$ relative to the first branch. 
-
-Then for a point around the orbit at $z''_i = A'_{j,i-j}\epsilon'_j + B'_{j,i-j}\delta = A_{j,i-j}\epsilon_j + 
-
+- [ ] Smooth zoom out
+- [ ] Support zoom up to 10-e10000
 
 Ideas: 
 - If the Taylor series is valid, we can find a delta which makes the orbit coincide with the starting point.

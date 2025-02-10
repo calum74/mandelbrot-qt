@@ -14,6 +14,34 @@ When creating a PR, bear in mind,
 - Adhere to existing conventions
 - Where possible, create unit tests or benchmarks that demonstrate the fix. If something is just an aesthetic improvement or a theoretical improvement, it might get rejected.
 
+## Prerequisites
+
+You will need Qt, C++ and CMake, which should work on Linux, Mac and Windows.
+
+On Windows: The simplest way to get Qt installed is via https://www.qt.io/download-qt-installer-oss.
+
+On Linux:
+
+```
+sudo apt install git clang cmake qt6-base-dev libxkbcommon-dev
+```
+
+On Mac:
+
+```
+brew install cmake qt6
+```
+
+## Building Qt from source
+
+## Downloading the source code
+
+## When Qt breaks
+
+This happens a lot.
+
+
+
 ## Building the software
 
 Trying to build anything with Qt is an utterly miserable and demoralising experience. Mandelbrot-Qt using C++ and Qt, and is built using CMake.
@@ -30,11 +58,13 @@ make
 sudo make install
 ```
 
+If it fails (which happens around 70% of the time, thanks trolls), you will have to build Qt yourself locally.
+
 On Windows/Mac:
 
 Install Qt from https://www.qt.io/download-qt-installer-oss. If you install QtCreator then it should be able to just open your project (`CMakeLists.txt`) and build it.
 
-If CMake fails, try running the specific generator for your platform, e.g. `C:\Qt\6.8.1\msvc2022_64\bin\qt-cmake`.
+If CMake fails, try running the specific generator for your platform, e.g. `C:\Qt\6.8.1\msvc2022_64\bin\qt-cmake`, or `/usr/local/Qt-6.10.0/bin/qt-cmake ../mandelbrot-qt -DCMAKE_BUILD_TYPE=Release` for example.
 
 On Mac:
 
