@@ -149,8 +149,11 @@ void MainWindow::completed(const fractals::RenderingMetrics *metrics) {
 #endif
   ss << "Radius " << std::setprecision(2);
   fractals::log_radius(ss, metrics->log_radius);
-  ss << " completed in " << metrics->render_time_seconds << " seconds, depth "
+  ss << " completed in " << std::fixed << metrics->render_time_seconds << " seconds, depth "
      << (int)metrics->min_depth << "-" << (int)metrics->max_depth;
+
+  // Extra metrics
+  ss << " (skipped " << (100.0 * metrics->average_skipped_iterations / metrics->average_iterations) << "%)";
 
   // Log the number of iterations skipped if you want
   // (also, could display this somehow)
