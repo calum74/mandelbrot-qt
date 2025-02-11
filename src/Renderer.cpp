@@ -31,9 +31,9 @@ void fractals::interpolate_region(Viewport &vp, int cx, int cy, int x0, int y0,
                                   int x1, int y1) {
   auto &c = vp(cx, cy);
   assert(x0 >= 0);
-  assert(x1 < vp.width);
+  assert(x1 < vp.width());
   assert(y0 >= 0);
-  assert(y0 < vp.height);
+  assert(y0 < vp.height());
 
   // Solid colour
   for (int j = y0; j < y1; ++j) {

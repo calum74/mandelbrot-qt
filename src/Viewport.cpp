@@ -35,8 +35,8 @@ void fractals::Viewport::init(int w0, int h0) {
 void fractals::map_viewport(const Viewport &src, Viewport &dest, double dx,
                             double dy, double r) {
   // One day, we might be able to remap to a different size
-  assert(src.width == dest.width);
-  assert(src.height == dest.height);
+  assert(src.width() == dest.width());
+  assert(src.height() == dest.height());
 
   bool zoom_eq = r == 1.0;
   bool zoom_out = r > 1.0;

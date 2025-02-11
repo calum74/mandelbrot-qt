@@ -63,7 +63,7 @@
             "name": "Mandelbrot-Qt",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build.dir/src/mandelbrot-qt.app/Contents/MacOS/mandelbrot-qt",
+            "program": "${workspaceFolder}/build/src/mandelbrot-qt.app/Contents/MacOS/mandelbrot-qt",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
