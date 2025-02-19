@@ -148,5 +148,95 @@
         "Name": "User/Unsorted/Experimental imprecision 2",
         "Radius": "2.76e-23",
         "Re": "-0.57006965988624363559681002"
+    },
+    {
+        "Algorithm": "Experiment",
+        "Colour": 0,
+        "Gradient": 10.0,
+        "Im": "-0.00323861229896339240644",
+        "Iterations": 1448,
+        "Name": "User/Unsorted/Experiment 9",
+        "Radius": "7.4e-21",
+        "Re": "-1.76853491265529668127666"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 168,
+        "Gradient": 3619.813178359771,
+        "Im": "0.0006238",
+        "Iterations": 53450,
+        "Name": "User/Unsorted/Starry Elephant",
+        "Radius": "1.133e-4",
+        "Re": "0.2550980"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 0,
+        "Gradient": 3235.2,
+        "Im": "-0.00323861229896339148766383591399776646042178291183238809330728701147605274239",
+        "Iterations": 241332,
+        "Name": "User/Unsorted/Deep MB e-74",
+        "Radius": "2.439e-74",
+        "Re": "-1.76853491265529667899486358020965685428222007172742996862930825892751118483441"
+    },
+    {
+        "Algorithm": "Cubic Mandelbrot (power 3)",
+        "Colour": 163,
+        "Gradient": 3811.3548225607424,
+        "Im": "-0.499997157502203682410015621720078",
+        "Iterations": 50767,
+        "Name": "User/Unsorted/Cubic Julia",
+        "Radius": "9.517e-31",
+        "Re": "-0.635435620529585421380123572598578"
+    },
+    {
+        "Algorithm": "Cubic Mandelbrot (power 3)",
+        "Colour": 163,
+        "Gradient": 3547.5667910346774,
+        "Im": "-0.49999715750220368241001562172006026474454243217449406079",
+        "Iterations": 90972,
+        "Name": "User/Unsorted/Cubic Julia 2",
+        "Radius": "1.067e-53",
+        "Re": "-0.63543562052958542138012357259854335383452420384982056109"
+    },
+    {
+        "Algorithm": "Experiment",
+        "Colour": 2,
+        "Gradient": 93.38521645473588,
+        "Im": "-0.00323861229896339240640549223168866048034",
+        "Iterations": 6296,
+        "Name": "User/Unsorted/Experimental Javelin",
+        "Radius": "2.548e-38",
+        "Re": "-1.76853491265529668127667077042327877394790"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 2,
+        "Gradient": 93.38521645473588,
+        "Im": "-0.00323861229896339240640549223168866286588683110820461223077092467956096801416",
+        "Iterations": 9402,
+        "Name": "User/Unsorted/Larvae",
+        "Radius": "5.734e-74",
+        "Re": "-1.76853491265529668127667077042327876937976242504254039039522358914284719516875"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 42,
+        "Gradient": 163.4307106862356,
+        "Im": "-0.0000000000000000000000000101",
+        "Iterations": 4502,
+        "Name": "User/Unsorted/Mirror",
+        "Radius": "4.316e-25",
+        "Re": "-1.4898011760124323612073076123"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 42,
+        "Gradient": 163.4307106862356,
+        "Im": "0.00000000000000000000000000000000024377",
+        "Iterations": 11652,
+        "Name": "User/Unsorted/Distortion",
+        "Radius": "8.279e-35",
+        "Re": "-1.48980117601243236120730766453413544968"
     }
 ]

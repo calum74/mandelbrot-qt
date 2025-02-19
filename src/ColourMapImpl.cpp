@@ -17,7 +17,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   if (d == 0)
     return make_rgb(0, 0, 0);
 
-  d = pow(d, gamma) / gradient;
+  d = std::pow(d, gamma) / gradient;
   int i = d;
   auto f = d - i;
   i %= colours.size();
