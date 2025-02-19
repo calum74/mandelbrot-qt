@@ -5,9 +5,13 @@ Refactor:
   - `fractals` is so lame
   - 'fractal.hpp` is also lame
 - [ ] high_precision_real needs a better size unit
+- [ ] Move functions into `detail`
+
+Better API for adding new fractals!
 
 When we break off an animation, we lose where we were heading :-(
 - Keep a record of the final zoom depth so we can just use that by default
+- Resize window - super tricky!
 
 - [ ] Tidy up and document header files
 - [ ] Documentation

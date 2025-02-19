@@ -24,10 +24,10 @@
             "MIMode": "lldb"
         },
         {
-            "name": "High precision tests",
+            "name": "Arithmeric tests",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build.dir/mandelbrot/test/high_precision_tests",
+            "program": "${workspaceFolder}/build/mandelbrot/test/arithmetic",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

@@ -3,6 +3,7 @@
 #include "AsyncRenderer.hpp"
 #include "Viewport.hpp"
 #include "mandelbrot.hpp"
+#include <cassert>
 
 // !! Not used
 
