@@ -22,7 +22,7 @@ bool maybe_fill_region(Viewport &vp, int x0, int y0, int x1, int y1);
 class AsyncRenderer : public Renderer {
 
 public:
-  AsyncRenderer(const PointwiseFractal &fractal, Registry &registry);
+  AsyncRenderer(const pointwise_fractal &fractal, Registry &registry);
   ~AsyncRenderer();
 
   void load(const view_parameters &params, Viewport &vp) override;
@@ -32,7 +32,7 @@ public:
   double get_average_iterations() const override;
   double get_average_skipped_iterations() const override;
   void discovered_depth(const RenderingMetrics &metrics) override;
-  void set_fractal(const fractals::PointwiseFractal &f) override;
+  void set_fractal(const fractals::pointwise_fractal &f) override;
   const char *get_fractal_name() const override;
   const char *get_fractal_family() const override;
   view_coords initial_coords() const override;
@@ -71,7 +71,7 @@ public:
       : public fractals::buffered_rendering_sequence<double> {
 
   public:
-    my_rendering_sequence(const PointwiseCalculation &calculation,
+    my_rendering_sequence(const pointwise_calculation &calculation,
                           const ColourMap &cm, Viewport &vp,
                           std::vector<depth_value> &depths);
 
@@ -84,7 +84,7 @@ public:
     double get_point(int x, int y) override;
 
   private:
-    const PointwiseCalculation &calculation;
+    const pointwise_calculation &calculation;
     const ColourMap &cm;
     Viewport &vp;
   };
@@ -95,12 +95,12 @@ public:
                                   std::atomic<bool> &stop);
 
 private:
-  std::shared_ptr<PointwiseCalculationFactory> current_fractal;
+  std::shared_ptr<pointwise_calculationFactory> current_fractal;
   view_coords coords;
   Registry &registry;
   std::future<void> current_calculation;
   std::atomic<bool> stop;
-  std::shared_ptr<PointwiseCalculation> calculation;
+  std::shared_ptr<pointwise_calculation> calculation;
 
   std::chrono::time_point<std::chrono::high_resolution_clock> t0;
 

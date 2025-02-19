@@ -7,7 +7,7 @@
 #include "registry.hpp"
 #include "view_parameters.hpp"
 
-fractals::AsyncRenderer::AsyncRenderer(const PointwiseFractal &fractal,
+fractals::AsyncRenderer::AsyncRenderer(const pointwise_fractal &fractal,
                                        Registry &registry)
     : current_fractal(fractal.create()), registry(registry) {
   coords = initial_coords();
@@ -67,7 +67,7 @@ void fractals::AsyncRenderer::discovered_depth(
     coords.max_iterations = metrics.discovered_depth * 2; // Fudge factor
 }
 
-void fractals::AsyncRenderer::set_fractal(const fractals::PointwiseFractal &f) {
+void fractals::AsyncRenderer::set_fractal(const fractals::pointwise_fractal &f) {
   stop_current_calculation();
   current_fractal = f.create();
 }
@@ -284,7 +284,7 @@ void fractals::AsyncRenderer::get_depth_range(double &min, double &p,
 }
 
 fractals::AsyncRenderer::my_rendering_sequence::my_rendering_sequence(
-    const PointwiseCalculation &calculation, const ColourMap &cm, Viewport &vp,
+    const pointwise_calculation &calculation, const ColourMap &cm, Viewport &vp,
     std::vector<depth_value> &depths)
     : fractals::buffered_rendering_sequence<double>(vp.width(), vp.height(), 16),
       calculation(calculation), cm(cm), vp(vp), depths(depths) {

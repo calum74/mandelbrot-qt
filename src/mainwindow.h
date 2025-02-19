@@ -38,7 +38,7 @@ public slots:
   void completed(const fractals::RenderingMetrics *metrics);
   void openGoToDialog();
   void changeFractal(class ChangeFractalAction *src,
-                     const fractals::PointwiseFractal &fractal);
+                     const fractals::pointwise_fractal &fractal);
   void fractalChanged(const char *name);
   void cancelAnimations();
   void addBookmark();
@@ -66,17 +66,17 @@ class ChangeFractalAction : public QAction {
   Q_OBJECT
 public:
   ChangeFractalAction(const char *name,
-                      const fractals::PointwiseFractal &fractal, bool checked);
+                      const fractals::pointwise_fractal &fractal, bool checked);
 
 signals:
   void changeFractal(ChangeFractalAction *src,
-                     const fractals::PointwiseFractal &);
+                     const fractals::pointwise_fractal &);
 
 private slots:
   void select(bool checked);
 
 private:
-  const fractals::PointwiseFractal &fractal;
+  const fractals::pointwise_fractal &fractal;
 };
 
 class Bookmark : public QAction {

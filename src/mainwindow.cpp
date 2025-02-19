@@ -129,7 +129,7 @@ MainWindow::MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks0,
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::changeFractal(ChangeFractalAction *src,
-                               const fractals::PointwiseFractal &fractal) {
+                               const fractals::pointwise_fractal &fractal) {
   ui->centralwidget->changeFractal(fractal);
 }
 
@@ -175,7 +175,7 @@ void MainWindow::openGoToDialog() {
 }
 
 ChangeFractalAction::ChangeFractalAction(
-    const char *name, const fractals::PointwiseFractal &fractal, bool checked)
+    const char *name, const fractals::pointwise_fractal &fractal, bool checked)
     : QAction{name}, fractal{fractal} {
   setCheckable(true);
   setChecked(checked);

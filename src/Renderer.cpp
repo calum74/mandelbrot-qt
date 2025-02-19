@@ -86,7 +86,7 @@ void fractals::Viewport::finished(const RenderingMetrics &metrics) {}
 void fractals::Renderer::discovered_depth(const RenderingMetrics &) {}
 
 // Arguable these should be pure virtual functions
-void fractals::Renderer::set_fractal(const fractals::PointwiseFractal &) {}
+void fractals::Renderer::set_fractal(const fractals::pointwise_fractal &) {}
 
 void fractals::Renderer::load(const view_parameters &params, Viewport &vp) {}
 
