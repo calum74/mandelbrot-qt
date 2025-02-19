@@ -1,7 +1,8 @@
 #include "registry.hpp"
-#include "fractal.hpp"
+#include "pointwise_fractal.hpp"
 
 #include <string>
+
 
 namespace {
 using namespace fractals;

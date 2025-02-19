@@ -355,7 +355,7 @@ void ViewerWidget::open() {
     renderer.renderer->load(params, viewport);
     renderer.colourMap->load(params);
     fractalChanged(
-        renderer.renderer->get_fractal_name()); // Update menus if needed
+        renderer.renderer->get_fractal_name().c_str()); // Update menus if needed
     calculate();
   }
 }
@@ -366,7 +366,7 @@ void ViewerWidget::openBookmark(const fractals::view_parameters *params) {
   renderer.renderer->load(*params, viewport);
   renderer.colourMap->load(*params);
   fractalChanged(
-      renderer.renderer->get_fractal_name()); // Update menus if needed
+      renderer.renderer->get_fractal_name().c_str()); // Update menus if needed
   calculate();
 }
 

@@ -6,6 +6,7 @@
 #include "percentile.hpp"
 #include "registry.hpp"
 #include "view_parameters.hpp"
+#include "pointwise_calculation.hpp"
 
 fractals::AsyncRenderer::AsyncRenderer(const pointwise_fractal &fractal,
                                        Registry &registry)
@@ -72,11 +73,11 @@ void fractals::AsyncRenderer::set_fractal(const fractals::pointwise_fractal &f) 
   current_fractal = f.create();
 }
 
-const char *fractals::AsyncRenderer::get_fractal_family() const {
+std::string fractals::AsyncRenderer::get_fractal_family() const {
   return current_fractal->family();
 }
 
-const char *fractals::AsyncRenderer::get_fractal_name() const {
+std::string fractals::AsyncRenderer::get_fractal_name() const {
   return current_fractal->name();
 }
 

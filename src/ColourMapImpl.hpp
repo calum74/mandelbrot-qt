@@ -1,5 +1,4 @@
 #include "ColourMap.hpp"
-#include "fractal.hpp"
 #include <vector>
 
 namespace fractals {

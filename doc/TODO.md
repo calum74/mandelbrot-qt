@@ -1,28 +1,13 @@
 # Task list
 
-- [ ] Fractals should name themselves?
-- [ ] `namespace fractools`
-- [ ] How to register a new fractal?
-
-```c++
-
-class myfrac {};
-
-const fractals::pointwise_fractal &mandelbrot7_fractal = fractools::make_fractal<>();
-
-void my_fractals()
-{
-  register_fractal(mandelbrot7_fractal);
-  whatever here...
-}
-```
-
-make_fractal could do something? e.g. create a static.
-
-
-
-
 Better API for adding new fractals!
+
+rename 
+pointwise_calculation -> fractal_calculation
+fractals -> fractools
+
+Sort out the header files properly.
+fwd.hpp -> mandelbrot_fwd
 
 Refactor:
 - [ ] New namespaces

@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include "RenderingMetrics.hpp"
-#include "fractal.hpp"
+#include "fwd.hpp"
 #include "view_parameters.hpp"
 #include <QAction>
 #include <QActionGroup>

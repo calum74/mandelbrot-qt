@@ -61,8 +61,8 @@ public:
   virtual view_coords initial_coords() const = 0;
 
   virtual void set_fractal(const pointwise_fractal &fractal) = 0;
-  virtual const char *get_fractal_family() const = 0;
-  virtual const char *get_fractal_name() const = 0;
+  virtual std::string get_fractal_family() const = 0;
+  virtual std::string get_fractal_name() const = 0;
 
   virtual double get_average_iterations() const;
   virtual double get_average_skipped_iterations() const;

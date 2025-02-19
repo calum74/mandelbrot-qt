@@ -11,7 +11,7 @@
 #include "ColourMap.hpp"
 #include "Renderer.hpp"
 #include "Viewport.hpp"
-#include "fractal.hpp"
+#include "pointwise_fractal.hpp"
 #include "registry.hpp"
 
 class ViewerWidget : public QWidget {

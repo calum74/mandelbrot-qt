@@ -2,9 +2,10 @@
 
 #include "Renderer.hpp"
 #include "RenderingMetrics.hpp"
-#include "fractal.hpp"
+#include "pointwise_fractal.hpp"
 #include "rendering_sequence.hpp"
 #include "view_coords.hpp"
+#include "fwd.hpp"
 
 #include <future>
 
@@ -33,8 +34,8 @@ public:
   double get_average_skipped_iterations() const override;
   void discovered_depth(const RenderingMetrics &metrics) override;
   void set_fractal(const fractals::pointwise_fractal &f) override;
-  const char *get_fractal_name() const override;
-  const char *get_fractal_family() const override;
+  std::string get_fractal_name() const override;
+  std::string get_fractal_family() const override;
   view_coords initial_coords() const override;
 
   void calculate_async(fractals::Viewport &view, const ColourMap &cm) override;
