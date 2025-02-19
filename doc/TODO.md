@@ -1,13 +1,34 @@
 # Task list
 
+- [ ] Fractals should name themselves?
+- [ ] `namespace fractools`
+- [ ] How to register a new fractal?
+
+```c++
+
+class myfrac {};
+
+const fractals::pointwise_fractal &mandelbrot7_fractal = fractools::make_fractal<>();
+
+void my_fractals()
+{
+  register_fractal(mandelbrot7_fractal);
+  whatever here...
+}
+```
+
+make_fractal could do something? e.g. create a static.
+
+
+
+
+Better API for adding new fractals!
+
 Refactor:
 - [ ] New namespaces
   - `fractals` is so lame
   - 'fractal.hpp` is also lame
-- [ ] high_precision_real needs a better size unit
-- [ ] Move functions into `detail`
 
-Better API for adding new fractals!
 
 When we break off an animation, we lose where we were heading :-(
 - Keep a record of the final zoom depth so we can just use that by default

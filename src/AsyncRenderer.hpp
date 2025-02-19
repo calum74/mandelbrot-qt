@@ -95,7 +95,7 @@ public:
                                   std::atomic<bool> &stop);
 
 private:
-  std::shared_ptr<pointwise_calculationFactory> current_fractal;
+  std::shared_ptr<pointwise_calculation_factory> current_fractal;
   view_coords coords;
   Registry &registry;
   std::future<void> current_calculation;
