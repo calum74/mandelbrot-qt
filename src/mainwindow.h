@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include "RenderingMetrics.hpp"
-#include "fwd.hpp"
+#include "mandelbrot_fwd.hpp"
 #include "view_parameters.hpp"
 #include <QAction>
 #include <QActionGroup>
@@ -38,7 +38,7 @@ public slots:
   void completed(const fractals::RenderingMetrics *metrics);
   void openGoToDialog();
   void changeFractal(class ChangeFractalAction *src,
-                     const fractals::pointwise_fractal &fractal);
+                     const fractals::fractal &fractal);
   void fractalChanged(const char *name);
   void cancelAnimations();
   void addBookmark();
@@ -66,17 +66,17 @@ class ChangeFractalAction : public QAction {
   Q_OBJECT
 public:
   ChangeFractalAction(const char *name,
-                      const fractals::pointwise_fractal &fractal, bool checked);
+                      const fractals::fractal &fractal, bool checked);
 
 signals:
   void changeFractal(ChangeFractalAction *src,
-                     const fractals::pointwise_fractal &);
+                     const fractals::fractal &);
 
 private slots:
   void select(bool checked);
 
 private:
-  const fractals::pointwise_fractal &fractal;
+  const fractals::fractal &fractal;
 };
 
 class Bookmark : public QAction {

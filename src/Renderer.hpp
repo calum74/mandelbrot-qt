@@ -7,7 +7,7 @@ namespace fractals {
 class Viewport;
 class ColourMap;
 class view_coords;
-class pointwise_fractal;
+class fractal;
 struct RenderingMetrics;
 class Registry;
 struct view_parameters;
@@ -60,7 +60,7 @@ public:
 
   virtual view_coords initial_coords() const = 0;
 
-  virtual void set_fractal(const pointwise_fractal &fractal) = 0;
+  virtual void set_fractal(const fractal &fractal) = 0;
   virtual std::string get_fractal_family() const = 0;
   virtual std::string get_fractal_name() const = 0;
 

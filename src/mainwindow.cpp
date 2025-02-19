@@ -3,6 +3,7 @@
 #include "gotodialog.h"
 #include "json.hpp"
 #include "ui_mainwindow.h"
+#include "view_coords.hpp"
 #include <QFile>
 #include <QKeyEvent>
 #include <cmath>
@@ -129,7 +130,7 @@ MainWindow::MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks0,
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::changeFractal(ChangeFractalAction *src,
-                               const fractals::pointwise_fractal &fractal) {
+                               const fractals::fractal &fractal) {
   ui->centralwidget->changeFractal(fractal);
 }
 
@@ -175,7 +176,7 @@ void MainWindow::openGoToDialog() {
 }
 
 ChangeFractalAction::ChangeFractalAction(
-    const char *name, const fractals::pointwise_fractal &fractal, bool checked)
+    const char *name, const fractals::fractal &fractal, bool checked)
     : QAction{name}, fractal{fractal} {
   setCheckable(true);
   setChecked(checked);

@@ -2,10 +2,10 @@
 
 #include "Renderer.hpp"
 #include "RenderingMetrics.hpp"
-#include "pointwise_fractal.hpp"
+#include "fractal.hpp"
 #include "rendering_sequence.hpp"
 #include "view_coords.hpp"
-#include "fwd.hpp"
+#include "mandelbrot_fwd.hpp"
 
 #include <future>
 
@@ -23,7 +23,7 @@ bool maybe_fill_region(Viewport &vp, int x0, int y0, int x1, int y1);
 class AsyncRenderer : public Renderer {
 
 public:
-  AsyncRenderer(const pointwise_fractal &fractal, Registry &registry);
+  AsyncRenderer(const fractal &fractal, Registry &registry);
   ~AsyncRenderer();
 
   void load(const view_parameters &params, Viewport &vp) override;
@@ -33,7 +33,7 @@ public:
   double get_average_iterations() const override;
   double get_average_skipped_iterations() const override;
   void discovered_depth(const RenderingMetrics &metrics) override;
-  void set_fractal(const fractals::pointwise_fractal &f) override;
+  void set_fractal(const fractals::fractal &f) override;
   std::string get_fractal_name() const override;
   std::string get_fractal_family() const override;
   view_coords initial_coords() const override;
@@ -72,7 +72,7 @@ public:
       : public fractals::buffered_rendering_sequence<double> {
 
   public:
-    my_rendering_sequence(const pointwise_calculation &calculation,
+    my_rendering_sequence(const fractal_calculation &calculation,
                           const ColourMap &cm, Viewport &vp,
                           std::vector<depth_value> &depths);
 
@@ -85,7 +85,7 @@ public:
     double get_point(int x, int y) override;
 
   private:
-    const pointwise_calculation &calculation;
+    const fractal_calculation &calculation;
     const ColourMap &cm;
     Viewport &vp;
   };
@@ -96,12 +96,12 @@ public:
                                   std::atomic<bool> &stop);
 
 private:
-  std::shared_ptr<pointwise_calculation_factory> current_fractal;
+  std::shared_ptr<fractal_calculation_factory> current_fractal;
   view_coords coords;
   Registry &registry;
   std::future<void> current_calculation;
   std::atomic<bool> stop;
-  std::shared_ptr<pointwise_calculation> calculation;
+  std::shared_ptr<fractal_calculation> calculation;
 
   std::chrono::time_point<std::chrono::high_resolution_clock> t0;
 

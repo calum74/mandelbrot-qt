@@ -16,6 +16,7 @@
 #include "json.hpp"
 #include "mandelbrot.hpp"
 #include "nlohmann/json.hpp"
+#include "fractal_calculation.hpp"
 #include "view_parameters.hpp"
 
 #include <filesystem>
@@ -249,7 +250,7 @@ void ViewerWidget::resetCurrentFractal() {
   calculate();
 }
 
-void ViewerWidget::changeFractal(const fractals::pointwise_fractal &fractal) {
+void ViewerWidget::changeFractal(const fractals::fractal &fractal) {
   renderer.cancel_animations();
 
   std::string old_family = renderer.renderer->get_fractal_family();
@@ -262,7 +263,7 @@ void ViewerWidget::changeFractal(const fractals::pointwise_fractal &fractal) {
   calculate();
 }
 
-std::vector<std::pair<std::string, const fractals::pointwise_fractal &>>
+std::vector<std::pair<std::string, const fractals::fractal &>>
 ViewerWidget::listFractals() {
   return renderer.registry->listFractals();
 }

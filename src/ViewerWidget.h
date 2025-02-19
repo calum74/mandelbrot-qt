@@ -11,7 +11,8 @@
 #include "ColourMap.hpp"
 #include "Renderer.hpp"
 #include "Viewport.hpp"
-#include "pointwise_fractal.hpp"
+#include "fractal.hpp"
+#include "view_coords.hpp"
 #include "registry.hpp"
 
 class ViewerWidget : public QWidget {
@@ -78,7 +79,7 @@ public:
   void getCoords(fractals::view_parameters &params) const;
   bool setCoords(const fractals::view_parameters &params);
 
-  std::vector<std::pair<std::string, const fractals::pointwise_fractal &>>
+  std::vector<std::pair<std::string, const fractals::fractal &>>
   listFractals();
 
   void saveToFile(const QString &image_filename);
@@ -93,7 +94,7 @@ public slots:
   void pasteCoords();
   void recolourPalette();
   void resetCurrentFractal();
-  void changeFractal(const fractals::pointwise_fractal &fractal);
+  void changeFractal(const fractals::fractal &fractal);
   void enableThreading(bool checked);
   void singleThreaded(bool checked);
   void maxThreading(bool checked);

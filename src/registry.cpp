@@ -1,5 +1,5 @@
 #include "registry.hpp"
-#include "pointwise_fractal.hpp"
+#include "fractal.hpp"
 
 #include <string>
 
@@ -8,15 +8,15 @@ namespace {
 using namespace fractals;
 
 class RegistryImpl : public Registry {
-  void add(const pointwise_fractal &f) override {
+  void add(const fractal &f) override {
     fractals.push_back(
-        std::pair<std::string, const pointwise_fractal &>{f.name(), f});
+        std::pair<std::string, const fractal &>{f.name(), f});
   }
 
-  std::vector<std::pair<std::string, const fractals::pointwise_fractal &>>
+  std::vector<std::pair<std::string, const fractals::fractal &>>
       fractals;
 
-  const pointwise_fractal *lookup(const std::string &query) const override {
+  const fractal *lookup(const std::string &query) const override {
     if (fractals.empty())
       return {};
     // !! Linear search
@@ -27,7 +27,7 @@ class RegistryImpl : public Registry {
     return &fractals.front().second;
   }
 
-  std::vector<std::pair<std::string, const fractals::pointwise_fractal &>>
+  std::vector<std::pair<std::string, const fractals::fractal &>>
   listFractals() const override {
     return fractals;
   }

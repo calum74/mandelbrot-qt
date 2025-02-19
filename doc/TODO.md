@@ -3,11 +3,11 @@
 Better API for adding new fractals!
 
 rename 
-pointwise_calculation -> fractal_calculation
+fractal_calculation -> fractal_calculation
+fractal -> fractal
+
 fractals -> fractools
 
-Sort out the header files properly.
-fwd.hpp -> mandelbrot_fwd
 
 Refactor:
 - [ ] New namespaces
