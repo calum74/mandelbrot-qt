@@ -34,6 +34,9 @@ void fractals::ColourMapImpl::setRange(double min, double max) {
   gradient = (max - min) / 5.0;
 }
 
+void fractals::ColourMapImpl::maybeUpdateRange(double min, double max) {
+}
+
 void fractals::ColourMapImpl::randomize() {
   seed++;
   create_colours();

@@ -27,14 +27,14 @@ void fractals::AnimatedRenderer::render_update_background_image() {
   // if (!zooming)
   //    return;
   assert(viewport.size() == background_viewport.size());
-  for(int j=0; j<viewport.height(); ++j)
-  for (int i = 0; i < viewport.width(); ++i) {
-    auto &from_pixel = background_viewport(i,j);
-    auto &to_pixel = viewport(i,j);
-    if (from_pixel.error < to_pixel.error) {
-      to_pixel = from_pixel;
+  for (int j = 0; j < viewport.height(); ++j)
+    for (int i = 0; i < viewport.width(); ++i) {
+      auto &from_pixel = background_viewport(i, j);
+      auto &to_pixel = viewport(i, j);
+      if (from_pixel.error < to_pixel.error) {
+        to_pixel = from_pixel;
+      }
     }
-  }
   viewport.updated();
 }
 
@@ -52,13 +52,13 @@ void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter) {
   zoom_x = x;
   zoom_y = y;
 
-  previousVp = viewport;  // Copy everything by value
+  previousVp = viewport; // Copy everything by value
 
   zoom_start = std::chrono::system_clock::now();
   // Add a 10% buffer to reduce stuttering
   zoom_duration = std::chrono::milliseconds(
-      int(estimatedSecondsPerPixel * 1000 * viewport.width() * viewport.height() *
-          1.10)); // Stupid stupid std::chrono
+      int(estimatedSecondsPerPixel * 1000 * viewport.width() *
+          viewport.height() * 1.10)); // Stupid stupid std::chrono
 
   // Stop the zoom duration getting too out of hand
   if (zoom_duration < fixZoomDuration)
@@ -67,7 +67,7 @@ void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter) {
   if (fixZoomSpeed)
     zoom_duration = fixZoomDuration; // Override for speed
 
-  (fractals::Viewport&)background_viewport = viewport;  // Copy everything over
+  (fractals::Viewport &)background_viewport = viewport; // Copy everything over
   rendered_zoom_ratio = 1.0;
   calculated_points = 0;
   view_min = view_max = 0;
@@ -291,5 +291,14 @@ fractals::AnimatedRenderer::map_point(const view_coords &c) const {
     return zoomed_coords.map_point(viewport.width(), viewport.height(), c);
   } else {
     return original_coords.map_point(viewport.width(), viewport.height(), c);
+  }
+}
+
+void fractals::AnimatedRenderer::discovered_depth(
+    const RenderingMetrics &metrics) {
+  renderer->discovered_depth(metrics);
+
+  if (!metrics.last_action_was_a_scroll && metrics.points_calculated > 1000 && metrics.min_depth>0) {
+    colourMap->maybeUpdateRange(metrics.min_depth, metrics.max_depth);
   }
 }

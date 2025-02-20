@@ -15,6 +15,7 @@ public:
   void randomize() override;
   void resetGradient() override;
   void setRange(double min, double max) override;
+  void maybeUpdateRange(double min, double max) override;
   void load(const view_parameters &) override;
   void save(view_parameters &) const override;
   void create_colours();

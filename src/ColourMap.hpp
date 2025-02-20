@@ -11,6 +11,7 @@ public:
   virtual void randomize() = 0;
   virtual void resetGradient() = 0;
   virtual void setRange(double min, double max) = 0;
+  virtual void maybeUpdateRange(double min, double max) = 0;
   virtual RGB operator()(double f) const = 0;
 
   virtual void load(const view_parameters &) = 0;

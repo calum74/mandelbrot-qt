@@ -1,74 +1,78 @@
 # Task list
 
-- [ ] Hexadecimal numbers
+- [ ] Auto-scale palette
+  - If a palette range is higher than a certain threshold, auto-scale it
+  - If lower than a certain threshold, switch back
+  Hook into min/max depth calculations
+  - Problem is how to avoid flicking?
+  - Maybe we need to store the depths, and be able to dynamically recolour using sliders?
+
+
+- [ ] Refactor Async/AnimatedRenderer
+
 - [ ] Better API for adding new fractals
 - [ ] fractals -> fractools
-- [ ] When resizing, copy pixels across
 
-Resize option when resizing window.
-- Do the resize on the next animation step
-ViewerWidget::renderingFinishedSlot: This is when we resize the window
-
-
+Zooming:
+- [ ] Animation bug - actually the frame buffer hasn't been transferred properly.
+- Bookmarks flags can appear in the wrong place when starting a zoom in
+- [ ] Bookmarks flags can appear in the wrong place when starting a zoom in
+  - Thinks it's still zooming probably
+- [ ] Finally fix the animation bug as well
+- [ ] Animate to here still carries on zooming mysteriously
+  It only happens when there is still a rendering going on?
+- [ ] Zoom in goes too far
+- [ ] Override zoom
+  - [ ] Zoom step is always fast
+  - [ ] Continuous zoom is always smooth
+- [ ] Smooth zoom out
+- [ ] When resizing window, copy pixels across
 When we break off an animation, we lose where we were heading :-(
 - Keep a record of the final zoom depth so we can just use that by default
-- Resize window - super tricky!
+- Zoom in goes too far
 
-- [ ] Tidy up and document header files
-- [ ] Documentation
+Bookmarks:
+- [ ] Ensure they are synced between Windows
+  - Loaded lazily
+- Tidy up bookmarks
+- Maybe sort them
+
+Advanced mode:
+- [ ] Show additional fractals
+- [ ] Show number of iterations skipped
 
 
 Problems:
-
-- Bookmarks flags can appear in the wrong place when starting a zoom in
-
-- Tidy up bookmarks
-- Maybe sort them
-- Plant flags on all the bookmarks.
-- Keep breadcrumbs of where we have been?
-  - Size of icon relates to distance
-    Return the difference of the logs of the radius.
-    If negative, hide it.
-    Size = k * log(size_ratio)
-  - Don't show bookmark if we've gone past it
 - Use openmp
 Goals for this week:
-- [ ] Finally fix the animation bug as well
-- [ ] Bookmarks flags can appear in the wrong place when starting a zoom in
-  - Thinks it's still zooming probably
-
 - [ ] Sort bookmarks
 - [ ] Invert y axis
 - [ ] Detect loops
 - [ ] Adaptive colour map
 
-
 Bugs:
 - [ ] Multiple toplevels don't sync bookmarks
   Menus not updated properly
-- [ ] Zoom in goes too far
 - [ ] Display the time without setprecision(2)??
 - [ ] Bugs in New Year fractal. (imprecision of some kind)
 - [x] Glitches in Magnus Opus Ex
-- [ ] Animate to here still carries on zooming mysteriously
-  It only happens when there is still a rendering going on?
 - [ ] Suddenly a nasty judder whilst rendering.
 - [ ] Scrolling disrupts depth calculations. Still not perfect
 - [ ] Smooth zoom stops now if there's not enough pixels to update the depth
 - [ ] Some of the bookmarks moved due to imprecision bug
 
+Maths:
+- [ ] Karatsuba multiplication
+- [ ] Hexadecimal numbers
+- [ ] Tidy up tests a bit
+- [ ] Support zoom up to 10-e10000
+
 Improvements:
 - [ ] Use openmp
 - [ ] Implement a reference Mandelbrot (perturbation only)
 - [ ] Lock window
-- [ ] Karatsuba multiplication
-- [ ] Carry on animating during window resizing
 - [ ] Maybe load the bookmarks async??
-- [ ] Comparative MB sets - can we look at 2 regions side-by-side?
-  - New toplevel window
 - [ ] Better filename for bookmarks.json
-- [ ] Zoom step is always fast?
-- [ ] Continuous zoom is always smooth
 - [ ] Eta/ progress indicator.
 - [ ] Smoother zoom out??
 - [ ] GPL license
@@ -77,18 +81,13 @@ Improvements:
 - Sometimes shows finished calculation when it's actually calculating something new
   - Ensure that "calculating" takes priority
   - Depth 0-0 looks silly
-- Better normalization logic for high_exponent_real
 - On open, resume previous place visited?
 - [ ] "1 CPU core, "4 CPU cores", "All CPU cores"
 - [ ] Rename "oversampling" to "High definition"
 - [ ] Better gradient enhancements
 - [ ] Shading
 - [ ] Import/export bookmarks?
-- [ ] Show number of iterations skipped
-- [ ] Put a "flag" icon next to each bookmark
 - [ ] Dynamic length of number?
-- [ ] Smooth zoom out
-- [ ] Support zoom up to 10-e10000
 
 Ideas: 
 - If the Taylor series is valid, we can find a delta which makes the orbit coincide with the starting point.
@@ -123,7 +122,6 @@ b. Fractal type
 Next steps:
 - [ ] Mandelbrot finder based on orbits returning to the same place?
 - [ ] Option to reset colour gradient
-- [ ] Sometimes dots remain in black areas after a long calculation.
 
 - [ ] Make naming consistent with camelcase.
 - [ ] rename autozoom to autonavigate

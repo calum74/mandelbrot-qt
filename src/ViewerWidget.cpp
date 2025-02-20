@@ -185,7 +185,7 @@ void ViewerWidget::MyViewport::finished(
     const fractals::RenderingMetrics &metrics) {
 
   if (widget.renderer.renderer)
-    widget.renderer.renderer->discovered_depth(metrics);
+    widget.renderer.discovered_depth(metrics);
   widget.setSpeedEstimate(metrics.seconds_per_point);
 
   if (metrics.fully_evaluated)
