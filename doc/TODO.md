@@ -1,18 +1,13 @@
 # Task list
 
-Better API for adding new fractals!
+- [ ] Hexadecimal numbers
+- [ ] Better API for adding new fractals
+- [ ] fractals -> fractools
+- [ ] When resizing, copy pixels across
 
-rename 
-fractal_calculation -> fractal_calculation
-fractal -> fractal
-
-fractals -> fractools
-
-
-Refactor:
-- [ ] New namespaces
-  - `fractals` is so lame
-  - 'fractal.hpp` is also lame
+Resize option when resizing window.
+- Do the resize on the next animation step
+ViewerWidget::renderingFinishedSlot: This is when we resize the window
 
 
 When we break off an animation, we lose where we were heading :-(

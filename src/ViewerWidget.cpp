@@ -13,10 +13,10 @@
 #include <QWheelEvent>
 
 #include "RenderingMetrics.hpp"
+#include "fractal_calculation.hpp"
 #include "json.hpp"
 #include "mandelbrot.hpp"
 #include "nlohmann/json.hpp"
-#include "fractal_calculation.hpp"
 #include "view_parameters.hpp"
 
 #include <filesystem>
@@ -81,10 +81,9 @@ void ViewerWidget::draw() {
 constexpr fractals::Viewport::pixel grey = {fractals::make_rgb(100, 100, 100),
                                             127};
 
-void ViewerWidget::resizeEvent(QResizeEvent *event) {
-  renderer.cancel_animations();
-  int w = event->size().width() * imageScale;
-  int h = event->size().height() * imageScale;
+void ViewerWidget::doResize(int w, int h) {
+  w *= imageScale;
+  h *= imageScale;
 
   // Should stop the current calculation
   renderer.renderer->set_aspect_ratio(w, h);
@@ -92,6 +91,16 @@ void ViewerWidget::resizeEvent(QResizeEvent *event) {
   viewport.init(w, h);
   image = QImage(w, h, QImage::Format_RGB32);
   std::fill(viewport.begin(), viewport.end(), grey);
+  pending_resize = false;
+}
+
+void ViewerWidget::resizeEvent(QResizeEvent *event) {
+  if (renderer.is_animating()) {
+    pending_resize = true;
+    return;
+  }
+  doResize(event->size().width(), event->size().height());
+  renderer.cancel_animations();
   calculate();
 }
 
@@ -355,8 +364,8 @@ void ViewerWidget::open() {
 
     renderer.renderer->load(params, viewport);
     renderer.colourMap->load(params);
-    fractalChanged(
-        renderer.renderer->get_fractal_name().c_str()); // Update menus if needed
+    fractalChanged(renderer.renderer->get_fractal_name()
+                       .c_str()); // Update menus if needed
     calculate();
   }
 }
@@ -414,6 +423,13 @@ void ViewerWidget::setSpeedEstimate(double secondsPerPixel) {
 }
 
 void ViewerWidget::renderingFinishedSlot() {
+  // Is a resize pending?
+  if (pending_resize) {
+    // We don't resize the image whilst animating, but we can do it
+    // in between animation frames
+    doResize(width(), height());
+  }
+
   renderer.start_next_calculation();
 }
 

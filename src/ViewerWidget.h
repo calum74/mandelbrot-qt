@@ -40,6 +40,7 @@ class ViewerWidget : public QWidget {
   // Track the previous position of the mouse cursor
   int press_x, press_y, move_x, move_y, start_x, start_y;
   bool release_can_start_zooming;
+  bool pending_resize;
 
   void calculate();
   void draw();
@@ -88,6 +89,7 @@ public:
   void hideBookmarks();
 
   void calculateFlagLocations();
+  void doResize(int w, int h);
 
 public slots:
   void copyCoords();
