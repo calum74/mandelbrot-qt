@@ -9,6 +9,8 @@ public:
   RGB operator()(double d) const override;
   void randomize() override;
   void resetGradient() override;
+  void enableAutoGradient() override;
+  void disableAutoGradient() override;
   void setRange(double min, double max) override;
   void maybeUpdateRange(double min, double max) override;
   void load(const view_parameters &) override;
@@ -20,6 +22,7 @@ private:
   double gradient = 30;
   unsigned int seed = 168;
   unsigned int numColours = 100;
+  bool auto_gradient = true;
 
   // The `gradient` and `offset` are used for all colours above `iteration`
   struct colour_entry {

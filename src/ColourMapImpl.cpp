@@ -42,6 +42,10 @@ void fractals::ColourMapImpl::setRange(double min, double max) {
 }
 
 void fractals::ColourMapImpl::maybeUpdateRange(double min, double max) {
+
+  if (!auto_gradient)
+    return;
+
   // Remove any colours that are above the current max
   while (!colour_stack.empty() && colour_stack.back().iteration > max) {
     colour_stack.pop_back();
@@ -99,4 +103,13 @@ void fractals::ColourMapImpl::save(view_parameters &params) const {
 
 std::unique_ptr<fractals::ColourMap> fractals::make_colourmap() {
   return std::make_unique<ColourMapImpl>();
+}
+
+void fractals::ColourMapImpl::enableAutoGradient() {
+  auto_gradient = true;
+}
+
+void fractals::ColourMapImpl::disableAutoGradient() {
+  auto_gradient = false;
+  colour_stack.clear();
 }

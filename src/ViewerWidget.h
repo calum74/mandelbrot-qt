@@ -101,6 +101,7 @@ public slots:
   void singleThreaded(bool checked);
   void maxThreading(bool checked);
   void enableOversampling(bool checked);
+  void enableAutoGradient(bool checked);
 
   void enableAutoDepth(bool checked);
   void quickSave();

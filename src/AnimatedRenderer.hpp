@@ -47,6 +47,9 @@ public:
 
   bool is_animating() const;
 
+  void enable_auto_gradient();
+  void disable_auto_gradient();
+
 public: // !! Ideally private
   std::unique_ptr<fractals::Registry> registry;
   std::unique_ptr<fractals::Renderer> renderer;

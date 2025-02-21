@@ -501,3 +501,10 @@ void ViewerWidget::calculateFlagLocations() {
   std::lock_guard<std::mutex> lock(bookmarksMutex);
   flagsToDraw = std::move(newFlags);
 }
+
+void ViewerWidget::enableAutoGradient(bool checked) {
+  if(checked)
+    renderer.enable_auto_gradient();
+  else
+    renderer.disable_auto_gradient();
+}

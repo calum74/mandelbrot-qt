@@ -3,6 +3,7 @@
 Options for:
 - Auto-gradient
   -> Turn on and off
+  -> Make sure that bookmark, save and Go To correctly handle autogradient
 
 Some problems:
 1. Nice refactoring of pixmaps etc.

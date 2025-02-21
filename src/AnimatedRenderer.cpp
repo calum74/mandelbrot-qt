@@ -302,3 +302,14 @@ void fractals::AnimatedRenderer::discovered_depth(
     colourMap->maybeUpdateRange(metrics.min_depth, metrics.max_depth);
   }
 }
+
+void fractals::AnimatedRenderer::enable_auto_gradient() {
+  colourMap->enableAutoGradient();
+}
+
+void fractals::AnimatedRenderer::disable_auto_gradient() {
+  colourMap->disableAutoGradient();
+
+  if(is_animating())
+    renderer->redraw(viewport);
+}
