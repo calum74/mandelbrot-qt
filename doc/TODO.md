@@ -1,10 +1,8 @@
 # Task list
 
 Options for:
-- Advanced mode
 - Auto-gradient
-- Bug where sometimes the gradient is set too low???
-- Load bookmark -> where to set the gradient?? & reset
+  -> Turn on and off
 
 Some problems:
 1. Nice refactoring of pixmaps etc.
@@ -93,6 +91,10 @@ When we break off an animation, we lose where we were heading :-(
 - Keep a record of the final zoom depth so we can just use that by default
 - Zoom in goes too far
 Navigate randomly now randomly stops
+
+Scrolling:
+- Bug where sometimes the gradient is set too low???
+- Load bookmark -> where to set the gradient?? & reset
 
 Bookmarks:
 - [ ] Ensure they are synced between Windows

@@ -308,5 +308,25 @@
         "Name": "User/Unsorted/Key",
         "Radius": "5.073e-41",
         "Re": "-1.74786421634598542383554375615517726772040950"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 14,
+        "Gradient": 7341.48256675218,
+        "Im": "0.0768342771668856849241979158",
+        "Iterations": 102705,
+        "Name": "User/Unsorted/Bright red",
+        "Radius": "4.861e-25",
+        "Re": "-0.7583657208600898126855428992"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 14,
+        "Gradient": 25235.01169982447,
+        "Im": "0.0768342771668856849241979344251400556237",
+        "Iterations": 390696,
+        "Name": "User/Unsorted/Ringo",
+        "Radius": "1.712e-37",
+        "Re": "-0.7583657208600898126855428945397963358903"
     }
 ]

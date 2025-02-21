@@ -154,12 +154,9 @@ void MainWindow::completed(const fractals::RenderingMetrics *metrics) {
      << (int)metrics->min_depth << "-" << (int)metrics->max_depth;
 
   // Extra metrics
-  ss << " (skipped " << (100.0 * metrics->average_skipped_iterations / metrics->average_iterations) << "%)";
-
-  // Log the number of iterations skipped if you want
-  // (also, could display this somehow)
-  // std::cout << "Average " << avg << " iterations\n";
-  // std::cout << "Skipped " << skipped << " iterations\n";
+  if(ui->actionDeveloper_mode->isChecked()) {
+    ss << " (skipped " << (100.0 * metrics->average_skipped_iterations / metrics->average_iterations) << "%)";
+  }
 
   ui->statusbar->showMessage(ss.str().c_str());
 }
