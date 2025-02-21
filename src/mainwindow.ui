@@ -44,6 +44,8 @@
     <addaction name="separator"/>
     <addaction name="actionCopy"/>
     <addaction name="actionPaste_coords"/>
+    <addaction name="separator"/>
+    <addaction name="actionDeveloper_mode"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
     <property name="title">
@@ -57,6 +59,7 @@
     <addaction name="actionMultithreading"/>
     <addaction name="actionMax_threads"/>
     <addaction name="separator"/>
+    <addaction name="actionAutomatic_gradient"/>
     <addaction name="actionRandomize_palette"/>
     <addaction name="actionScale_palette"/>
     <addaction name="separator"/>
@@ -387,6 +390,25 @@
    </property>
    <property name="text">
     <string>Flag locations</string>
+   </property>
+  </action>
+  <action name="actionDeveloper_mode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Developer mode</string>
+   </property>
+  </action>
+  <action name="actionAutomatic_gradient">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Automatic gradient</string>
    </property>
   </action>
  </widget>

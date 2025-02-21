@@ -4,6 +4,7 @@ Options for:
 - Advanced mode
 - Auto-gradient
 - Bug where sometimes the gradient is set too low???
+- Load bookmark -> where to set the gradient?? & reset
 
 Some problems:
 1. Nice refactoring of pixmaps etc.

@@ -88,6 +88,7 @@ void fractals::ColourMapImpl::load(const view_parameters &params) {
   gradient = params.colour_gradient;
   if (gradient < 1.0)
     gradient = 1.0 / gradient;
+  colour_stack.clear();
   create_colours();
 }
 
