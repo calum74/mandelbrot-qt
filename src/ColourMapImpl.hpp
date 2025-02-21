@@ -5,11 +5,6 @@ namespace fractals {
 
 class ColourMapImpl : public ColourMap {
 public:
-  std::vector<RGB> colours;
-  double gradient = 30, gamma = 1.0;
-  unsigned int seed = 168;
-  unsigned int numColours = 100;
-
   ColourMapImpl();
   RGB operator()(double d) const override;
   void randomize() override;
@@ -19,5 +14,18 @@ public:
   void load(const view_parameters &) override;
   void save(view_parameters &) const override;
   void create_colours();
+
+private:
+  std::vector<RGB> colours;
+  double gradient = 30;
+  unsigned int seed = 168;
+  unsigned int numColours = 100;
+
+  // The `gradient` and `offset` are used for all colours above `iteration`
+  struct colour_entry {
+    double iteration, gradient, offset;
+  };
+
+  std::vector<colour_entry> colour_stack;
 };
 } // namespace fractals

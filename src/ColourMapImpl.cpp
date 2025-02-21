@@ -17,9 +17,15 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   if (d == 0)
     return make_rgb(0, 0, 0);
 
-  d = std::pow(d, gamma) / gradient;
-  int i = d;
-  auto f = d - i;
+  double scaled_colour = d / gradient;
+  for (auto j = colour_stack.rbegin(); j != colour_stack.rend(); ++j) {
+    if (d > j->iteration) {
+      scaled_colour = d / j->gradient + j->offset;
+      break;
+    }
+  }
+  int i = scaled_colour;
+  auto f = scaled_colour - i;
   i %= colours.size();
   int j = (i + 1) % colours.size();
   auto c1 = colours[i];
@@ -32,9 +38,30 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
 
 void fractals::ColourMapImpl::setRange(double min, double max) {
   gradient = (max - min) / 5.0;
+  colour_stack.clear();
 }
 
 void fractals::ColourMapImpl::maybeUpdateRange(double min, double max) {
+  // Remove any colours that are above the current max
+  while (!colour_stack.empty() && colour_stack.back().iteration > max) {
+    colour_stack.pop_back();
+  }
+
+  // Apply the new gradient to colours above the current max,
+  // so the new colours only apply to zooming in
+  auto new_gradient = (max - min) / 5.0;
+  auto last_gradient =
+      colour_stack.empty() ? gradient : colour_stack.back().gradient;
+  auto last_offset = colour_stack.empty() ? 0 : colour_stack.back().offset;
+
+  /*
+    To align the colours, we need to ensure that
+    max/last_gradient + last_offset = max/new_gradient + new_offset
+    -> new_offset = last_offset + max/last_gradient - max/new_gradient
+  */
+
+  auto new_offset = last_offset + max / last_gradient - max / new_gradient;
+  colour_stack.push_back({max, new_gradient, new_offset});
 }
 
 void fractals::ColourMapImpl::randomize() {

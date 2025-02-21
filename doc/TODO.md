@@ -1,5 +1,45 @@
 # Task list
 
+Options for:
+- Advanced mode
+- Auto-gradient
+- Bug where sometimes the gradient is set too low???
+
+Some problems:
+1. Nice refactoring of pixmaps etc.
+  a. Different calculation strategies
+  b. Colours vs values
+2. MB finding via Newton-Raphson
+  - Pick a point
+  - Find its closest return
+  - Pick 2 adjacent points
+  - Use the gradient to find the minimum??
+  - When finding the brot, surely we need to find the center of 2 local orbits
+3. Auto colourmapping somehow
+  a. Use zoning. An image has a gradient and an offset, such that it will always mesh with the previous image with no disruption.
+  b. Sew these things together smoothly.
+4. Make it easier to add new fractals
+  a. Developer mode
+
+Algorithm for zoning:
+- Each image has a threshold
+- Below threshold, one gradient
+- Above threshold, another gradient
+
+For a given image, we deduce its ideal gradient range. Then, for all depths higher than the max, this is their gradient.
+When a given gradient no longer used in the image, it's popped from the stack.
+When we render a pixel, we search from the top of the stack in order to find the correct gradient for the pixel.
+
+To correctly stitch gradients together, we apply an offset as well as a gradient to make sure that there are no discontinuitues.
+
+Problem: How do we prevent too many gradients??? We need to measure.
+Problem: How do we make this consistent?
+
+Or: every 100 iterations we recalculate the gradient? (Same as above idea)
+
+- MB finding
+- Find 2 points an
+
 - [ ] Auto-scale palette
   - If a palette range is higher than a certain threshold, auto-scale it
   - If lower than a certain threshold, switch back
@@ -7,8 +47,29 @@
   - Problem is how to avoid flicking?
   - Maybe we need to store the depths, and be able to dynamically recolour using sliders?
 
+For the current point, we
 
 - [ ] Refactor Async/AnimatedRenderer
+  - `fractal_calculation` that computes things
+  - `calculation_buffer` containing doubles and errors
+  - `pixmap<T>` that contains the pixels and can perform scaling and animations?
+      
+
+
+  - `calculated_points`
+    An array of values. Or just `double`?
+    Supports remapping as well
+    Supports caching and interpolation
+    Supports errors.
+  - `calculated_pixels`.
+  - `abstract_animator` that can zoom anything.
+
+
+  - Calculated that only outputs depths
+  - Interpolator (on the depths)
+  - Shader that turns depths into colours
+  - Animator that performs zooms.
+  - Window that displays it
 
 - [ ] Better API for adding new fractals
 - [ ] fractals -> fractools
@@ -30,6 +91,7 @@ Zooming:
 When we break off an animation, we lose where we were heading :-(
 - Keep a record of the final zoom depth so we can just use that by default
 - Zoom in goes too far
+Navigate randomly now randomly stops
 
 Bookmarks:
 - [ ] Ensure they are synced between Windows
