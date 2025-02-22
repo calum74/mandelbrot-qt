@@ -7,6 +7,7 @@
 
 #include <atomic>
 #include <chrono>
+#include <optional>
 
 namespace fractals {
 class mapped_point;
@@ -22,7 +23,7 @@ public:
   AnimatedRenderer(fractals::Viewport &viewport);
   ~AnimatedRenderer();
 
-  void smooth_zoom_to(int x, int y, bool lockCenter);
+  void smooth_zoom_to(int x, int y, bool lockCenter, std::optional<std::chrono::duration<double>> duration);
 
   void calculate_async();
 
@@ -71,6 +72,7 @@ private:
   std::atomic<bool> zoomTimeout = false;
   std::chrono::time_point<std::chrono::system_clock> zoom_start;
   std::chrono::duration<double> zoom_duration;
+  std::optional<std::chrono::duration<double>> continuous_zoom_duration, single_zoom_duration;
   int zoom_x, zoom_y;
   double zoomtopoint_limit;
   double rendered_zoom_ratio;

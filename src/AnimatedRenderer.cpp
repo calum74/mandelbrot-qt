@@ -15,6 +15,8 @@ fractals::AnimatedRenderer::AnimatedRenderer(fractals::Viewport &viewport)
       renderer{fractals::make_renderer(*registry)}, background_viewport(*this) {
 
   register_fractals(*registry);
+  single_zoom_duration = 50ms;
+  continuous_zoom_duration = 750ms;
 }
 
 fractals::AnimatedRenderer::~AnimatedRenderer() { renderer.reset(); }
@@ -44,7 +46,7 @@ void fractals::AnimatedRenderer::render_overwrite_background_image() {
   viewport.updated();
 }
 
-void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter) {
+void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter, std::optional<std::chrono::duration<double>> requested_duration) {
   zooming = true;
   calculationFinished = false;
   zoomTimeout = false;
@@ -66,6 +68,10 @@ void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter) {
 
   if (fixZoomSpeed)
     zoom_duration = fixZoomDuration; // Override for speed
+
+  if(requested_duration && fixZoomSpeed) {
+    zoom_duration = *requested_duration;
+  }
 
   (fractals::Viewport &)background_viewport = viewport; // Copy everything over
   rendered_zoom_ratio = 1.0;
@@ -199,10 +205,10 @@ void fractals::AnimatedRenderer::start_next_calculation() {
     break;
   case AnimationType::zoomtopoint:
     if (renderer->log_width() > zoomtopoint_limit)
-      smooth_zoom_to(viewport.width() / 2, viewport.height() / 2, true);
+      smooth_zoom_to(viewport.width() / 2, viewport.height() / 2, true, {});
     break;
   case AnimationType::zoomatcursor:
-    smooth_zoom_to(move_x, move_y, false);
+    smooth_zoom_to(move_x, move_y, false, continuous_zoom_duration);
     break;
   default:
     break;
@@ -214,7 +220,7 @@ void fractals::AnimatedRenderer::auto_navigate() {
   int x, y;
   if (renderer->get_auto_zoom(x, y)) {
     current_animation = AnimationType::autozoom;
-    smooth_zoom_to(x, y, false);
+    smooth_zoom_to(x, y, false, {});
   } else {
     std::cout << "Autozoom continue failed\n";
   }
@@ -243,7 +249,7 @@ void fractals::AnimatedRenderer::zoom_at_cursor() {
   } else {
     cancel_animations();
     current_animation = AnimationType::zoomatcursor;
-    smooth_zoom_to(move_x, move_y, false);
+    smooth_zoom_to(move_x, move_y, false, continuous_zoom_duration);
   }
 }
 
@@ -254,7 +260,7 @@ void fractals::AnimatedRenderer::smooth_zoom_in() {
     zooming = false;
   } else {
     cancel_animations();
-    smooth_zoom_to(move_x, move_y, false);
+    smooth_zoom_to(move_x, move_y, false, single_zoom_duration);
   }
 }
 

@@ -1,9 +1,32 @@
 # Task list
 
+Today:
+1. Zoom is always fast
+2. Zoom in is always "smooth"
+
+
+3. Refactor async_renderer
+  - based on calculations and array of doubles
+  - errors and not recalculating
+  - interpolation
+  - threading
+  - rendering sequence
+  - metrics 
+  - simple_renderer class
+
+- [ ] Make a view parameterizable by bit depth, and let the templates do it all
+
+```
+template<int Bits>
+struct mandelbrot_fractal
+{
+  using type = ...;
+};
+```
+
 Options for:
 - Auto-gradient
-  -> Turn on and off
-  -> Make sure that bookmark, save and Go To correctly handle autogradient
+  -> Scrolling messes up the auto-gradient
 
 Some problems:
 1. Nice refactoring of pixmaps etc.
@@ -15,46 +38,17 @@ Some problems:
   - Pick 2 adjacent points
   - Use the gradient to find the minimum??
   - When finding the brot, surely we need to find the center of 2 local orbits
-3. Auto colourmapping somehow
-  a. Use zoning. An image has a gradient and an offset, such that it will always mesh with the previous image with no disruption.
-  b. Sew these things together smoothly.
 4. Make it easier to add new fractals
   a. Developer mode
 
-Algorithm for zoning:
-- Each image has a threshold
-- Below threshold, one gradient
-- Above threshold, another gradient
-
-For a given image, we deduce its ideal gradient range. Then, for all depths higher than the max, this is their gradient.
-When a given gradient no longer used in the image, it's popped from the stack.
-When we render a pixel, we search from the top of the stack in order to find the correct gradient for the pixel.
-
-To correctly stitch gradients together, we apply an offset as well as a gradient to make sure that there are no discontinuitues.
-
-Problem: How do we prevent too many gradients??? We need to measure.
-Problem: How do we make this consistent?
-
-Or: every 100 iterations we recalculate the gradient? (Same as above idea)
-
 - MB finding
 - Find 2 points an
-
-- [ ] Auto-scale palette
-  - If a palette range is higher than a certain threshold, auto-scale it
-  - If lower than a certain threshold, switch back
-  Hook into min/max depth calculations
-  - Problem is how to avoid flicking?
-  - Maybe we need to store the depths, and be able to dynamically recolour using sliders?
-
-For the current point, we
 
 - [ ] Refactor Async/AnimatedRenderer
   - `fractal_calculation` that computes things
   - `calculation_buffer` containing doubles and errors
   - `pixmap<T>` that contains the pixels and can perform scaling and animations?
-      
-
+  - `animated_pixmap<T>` 
 
   - `calculated_points`
     An array of values. Or just `double`?
