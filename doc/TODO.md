@@ -1,9 +1,42 @@
 # Task list
 
-Today:
-1. Zoom is always fast
-2. Zoom in is always "smooth"
+rendering sequence?
+threads?
+errors?
 
+buffered_rendering_sequence is nonsense.
+
+- errors and interpolation
+
+```c++
+template<typename T>
+struct error_value
+{
+  T value;
+  int error;
+};
+
+class interpolated_pixmap
+{
+  pixmap<error_value<double>> values;
+
+  void calculate_point(int x, int y, int w)
+  {
+    if(values(x,y).error)
+    {
+      values(x,y) = { calculate(x,y), 0 };
+      // Interpolate it here...
+    }
+  }
+
+  virtual T calculate(int x, int y);
+};
+
+class calculation_pixmap : public interpolated_pixmap
+{
+  std::shared_ptr<fractal_calculation> calculation;
+};
+```
 
 3. Refactor async_renderer
   - based on calculations and array of doubles
@@ -13,6 +46,8 @@ Today:
   - rendering sequence
   - metrics 
   - simple_renderer class
+
+
 
 - [ ] Make a view parameterizable by bit depth, and let the templates do it all
 

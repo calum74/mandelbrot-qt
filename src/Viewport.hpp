@@ -1,6 +1,6 @@
 #pragma once
 #include "RGB.hpp"
-#include <vector>
+#include "pixmap.hpp"
 
 namespace fractals {
 struct RenderingMetrics;
@@ -12,9 +12,9 @@ class Viewport {
 public:
   using size_type = int;
 
-  size_type width() const { return w; }
+  size_type width() const { return pixels.width(); }
 
-  size_type height() const { return h; }
+  size_type height() const { return pixels.height(); }
 
   void init(size_type w, size_type h);
 
@@ -28,12 +28,12 @@ public:
 
   using value_type = pixel;
 
-  value_type &operator()(size_type x, size_type y) { return pixels[x + y * w]; }
+  value_type &operator()(size_type x, size_type y) { return pixels(x,y); }
 
   value_type & operator[](size_type x) { return pixels[x]; }
 
   const value_type &operator()(size_type x, size_type y) const {
-    return pixels[x + y * w];
+    return pixels(x,y);
   }
 
   using iterator = value_type *;
@@ -63,9 +63,7 @@ public:
   virtual void start_timer();
   virtual void stop_timer();
 
-private:
-  int w = 0, h = 0;
-  std::vector<value_type> pixels;
+  pixmap<value_type> pixels;
 };
 
 // Perform a pixel-by-pixel remapping and interpolation from src to dest.

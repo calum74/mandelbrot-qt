@@ -1,5 +1,6 @@
 #pragma once
 #include <cstddef>
+#include <cstdint>
 
 namespace fractals {
 // For reporting on what happened during rendering a view
@@ -10,8 +11,8 @@ struct RenderingMetrics {
   double log_radius; // The natural log of the radius
   double min_depth;
   double max_depth;
-  std::size_t points_calculated;
-  std::size_t non_black_points;
+  std::uint64_t points_calculated;
+  std::uint64_t non_black_points;
   double seconds_per_point;
 
   double discovered_depth; // The depth of the 99th percentile pixel
