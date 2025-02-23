@@ -1,5 +1,4 @@
 #pragma once
-#include "RGB.hpp"
 #include "pixmap.hpp"
 
 namespace fractals {
@@ -12,34 +11,25 @@ class Viewport {
 public:
   using size_type = int;
 
-  size_type width() const { return pixels.width(); }
+  size_type width() const { return values.width(); }
 
-  size_type height() const { return pixels.height(); }
+  size_type height() const { return values.height(); }
 
   void init(size_type w, size_type h);
 
-  struct pixel
-  {
-    std::uint32_t colour:24;
-    std::uint8_t error:8;
+  using value_type = error_value<double>;
 
-    static constexpr int max_error = 127;
-  };
+  value_type & operator[](size_type x) { return values[x]; }
 
-  using value_type = pixel;
-
-  value_type &operator()(size_type x, size_type y) { return pixels(x,y); }
-
-  value_type & operator[](size_type x) { return pixels[x]; }
-
-  const value_type &operator()(size_type x, size_type y) const {
-    return pixels(x,y);
+  value_type &operator()(size_type x, size_type y) {
+    return values(x,y);
   }
 
-  using iterator = value_type *;
-  using const_iterator = const value_type *;
-  const_iterator begin() const;
-  const_iterator end() const;
+  const value_type &operator()(size_type x, size_type y) const {
+    return values(x,y);
+  }
+
+  using iterator = typename pixmap<value_type>::iterator;
   iterator begin();
   iterator end();
   size_type size() const; // width * height
@@ -63,8 +53,9 @@ public:
   virtual void start_timer();
   virtual void stop_timer();
 
-  pixmap<value_type> pixels;
-  pixmap<error_value<double>> values;
+  pixmap<value_type> values;
+
+  value_type invalid_value() const;
 };
 
 // Perform a pixel-by-pixel remapping and interpolation from src to dest.

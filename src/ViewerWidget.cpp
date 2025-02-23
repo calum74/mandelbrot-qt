@@ -56,9 +56,11 @@ void ViewerWidget::draw() {
   pending_redraw = 0;
   QPainter painter(this);
 
+  auto &colourMap = *renderer.colourMap;
+
   std::uint32_t *image_data = (std::uint32_t *)image.bits();
   for (int i = 0; i < viewport.size(); ++i)
-    image_data[i] = 0xff000000 | viewport[i].colour;
+    image_data[i] = 0xff000000 | colourMap(viewport[i].value);
 
   painter.drawImage(this->rect(), image);
 
@@ -78,9 +80,6 @@ void ViewerWidget::draw() {
   }
 }
 
-constexpr fractals::Viewport::pixel grey = {fractals::make_rgb(100, 100, 100),
-                                            127};
-
 void ViewerWidget::doResize(int w, int h) {
   w *= imageScale;
   h *= imageScale;
@@ -90,7 +89,7 @@ void ViewerWidget::doResize(int w, int h) {
 
   viewport.init(w, h);
   image = QImage(w, h, QImage::Format_RGB32);
-  std::fill(viewport.begin(), viewport.end(), grey);
+  std::fill(viewport.begin(), viewport.end(), viewport.invalid_value());
   pending_resize = false;
 }
 

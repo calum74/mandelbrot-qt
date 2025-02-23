@@ -41,7 +41,7 @@ void fractals::AsyncRenderer::increase_iterations(Viewport &vp) {
   for (int j = 0; j < vp.height(); ++j)
     for (int i = 0; i < vp.width(); ++i) {
       auto &c = vp(i, j);
-      if (!c.colour) {
+      if (c.value>0) {
         // Only redraw final coloured points
         c.error = 127;
       }
@@ -96,10 +96,9 @@ void fractals::AsyncRenderer::stop_current_calculation() {
 }
 
 void fractals::AsyncRenderer::calculate_in_thread(fractals::Viewport &vp,
-                                                  const ColourMap &cm,
                                                   std::atomic<bool> &stop) {
 
-  my_rendering_sequence calculated_pixels(*calculation, cm, vp);
+  my_rendering_sequence calculated_pixels(*calculation, vp);
   calculated_pixels.calculate(threads, stop);
 
   // Find the depths.
@@ -143,8 +142,7 @@ void fractals::AsyncRenderer::calculate_in_thread(fractals::Viewport &vp,
   metrics.points_calculated = calculated_pixels.points_calculated;
 }
 
-void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
-                                              const ColourMap &cm) {
+void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view) {
   stop_current_calculation();
 
   stop = false;
@@ -160,7 +158,7 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
     metrics.discovered_depth = 0;
     metrics.p999 = 0;
     metrics.p9999 = 0;
-    calculate_in_thread(view, cm, stop);
+    calculate_in_thread(view, stop);
     auto t1 = std::chrono::high_resolution_clock::now();
 
     if (metrics.p999 > 0) {
@@ -302,16 +300,15 @@ void fractals::AsyncRenderer::get_depth_range(double &min, double &p,
 }
 
 fractals::AsyncRenderer::my_rendering_sequence::my_rendering_sequence(
-    fractal_calculation &calculation, const ColourMap &cm, Viewport &vp)
-    : cm(cm), vp(vp), calculation_pixmap(vp.values, 16, calculation) {}
+    fractal_calculation &calculation, Viewport &vp)
+    : vp(vp), calculation_pixmap(vp.values, 16, calculation) {}
 
 void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
     int stride) {
   // Transfer and interpolate to the current viewport
-  // !! Unfortunately we recalculate the colour each time
-  map_pixmap(pixels, vp.pixels, [&](auto c) {
-    return Viewport::value_type(cm(c.value), c.error);
-  });
+  //map_pixmap(pixels, vp.values, [&](auto c) {
+  //  return c;
+  //});
   vp.updated();
 }
 

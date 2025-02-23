@@ -22,7 +22,7 @@ fractals::AnimatedRenderer::AnimatedRenderer(fractals::Viewport &viewport)
 fractals::AnimatedRenderer::~AnimatedRenderer() { renderer.reset(); }
 
 void fractals::AnimatedRenderer::calculate_async() {
-  renderer->calculate_async(viewport, *colourMap);
+  renderer->calculate_async(viewport);
 }
 
 void fractals::AnimatedRenderer::render_update_background_image() {
@@ -79,7 +79,7 @@ void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter, s
   view_min = view_max = 0;
 
   renderer->zoom(0.5, zoom_x, zoom_y, lockCenter, background_viewport);
-  renderer->calculate_async(background_viewport, *colourMap);
+  renderer->calculate_async(background_viewport);
   viewport.start_timer();
 }
 

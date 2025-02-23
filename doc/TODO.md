@@ -1,8 +1,7 @@
 # Task list
 
 Refactoring:
-- When zooming in, the depths are not updated correctly
-- When fast animate in, it all goes black
+- When we go home, reset the gradient, particularly for a zoom in
 - The view should not contain the pixel buffer. We can generate that afterwards.
 
 

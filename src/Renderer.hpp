@@ -5,7 +5,6 @@
 
 namespace fractals {
 class Viewport;
-class ColourMap;
 class view_coords;
 class fractal;
 struct RenderingMetrics;
@@ -36,7 +35,7 @@ public:
 
   // Returns immediately, and vp will get called back at some time in the
   // future.
-  virtual void calculate_async(Viewport &vp, const ColourMap &cm);
+  virtual void calculate_async(Viewport &vp);
 
   // Also marks the relevant pixels to redraw in the viewport
   virtual void increase_iterations(Viewport &vp);

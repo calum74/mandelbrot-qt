@@ -33,7 +33,7 @@ public:
   std::string get_fractal_family() const override;
   view_coords initial_coords() const override;
 
-  void calculate_async(fractals::Viewport &view, const ColourMap &cm) override;
+  void calculate_async(fractals::Viewport &view) override;
   bool zoom(double r, int cx, int cy, bool lockCenter, Viewport &vp) override;
   view_coords get_coords() const override;
   double log_width() const override;
@@ -54,21 +54,17 @@ public:
 
   class my_rendering_sequence : public fractals::calculation_pixmap {
   public:
-    my_rendering_sequence(
-        fractal_calculation &calculation,
-        const ColourMap &cm, Viewport &vp);
+    my_rendering_sequence(fractal_calculation &calculation, Viewport &vp);
 
     void layer_complete(int stride) override;
 
   private:
-    const ColourMap &cm;
     Viewport &vp;
   };
 
   void stop_current_calculation();
 
-  void calculate_in_thread(fractals::Viewport &vp, const ColourMap &cm,
-                                  std::atomic<bool> &stop);
+  void calculate_in_thread(fractals::Viewport &vp, std::atomic<bool> &stop);
 
 private:
   std::shared_ptr<fractal_calculation_factory> current_fractal;
