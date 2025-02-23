@@ -1,13 +1,22 @@
 # Task list
 
 Refactoring:
-- When we go home, reset the gradient, particularly for a zoom in
-- The view should not contain the pixel buffer. We can generate that afterwards.
+- Can we refactor AsyncRenderer & AnimatedRenderer further?
 
+Papercuts:
+- Navigate randomly stops prematurely
+- When we go home, reset the gradient, particularly for a zoom in
+- Recolour to not recalculate
+
+Colour Dialog box:
+- Seed
+- Gradient
+- Offset
 
 
 Calculations:
 - [ ] Make a fractal parameterizable by bit depth, and let the templates do it all
+- [ ] Split into library and fractals
 
 ```
 template<int Bits>
@@ -16,10 +25,6 @@ struct mandelbrot_fractal
   using type = ...;
 };
 ```
-
-Options for:
-- Auto-gradient
-  -> Scrolling messes up the auto-gradient
 
 Some problems:
 1. Nice refactoring of pixmaps etc.

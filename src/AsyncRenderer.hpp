@@ -11,10 +11,6 @@
 
 namespace fractals {
 
-void interpolate_region(Viewport &vp, int cx, int cy, int x0, int y0, int x1,
-                        int y1);
-bool maybe_fill_region(Viewport &vp, int x0, int y0, int x1, int y1);
-
 class AsyncRenderer : public Renderer {
 
 public:

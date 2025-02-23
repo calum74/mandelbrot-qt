@@ -111,7 +111,7 @@ void fractals::AsyncRenderer::calculate_in_thread(fractals::Viewport &vp,
 
   metrics.non_black_points = coloured_pixels.size();
 
-#if 0 
+#if 1 
   std::cout << "Finished calculation\n";
   std::cout << "  We calculated " << calculated_pixels.points_calculated
   << " points\n";
@@ -235,16 +235,6 @@ bool fractals::AsyncRenderer::get_auto_zoom(int &x, int &y) {
   }
   return false;
 }
-
-constexpr fractals::RGB grey = fractals::make_rgb(100, 100, 100);
-
-namespace fractals {
-RGB blend(RGB c1, RGB c2, double w1, double w2) {
-  return make_rgb((red(c1) * w1 + red(c2) * w2) / (w1 + w2),
-                  (green(c1) * w1 + green(c2) * w2) / (w1 + w2),
-                  (blue(c1) * w1 + blue(c2) * w2) / (w1 + w2));
-}
-} // namespace fractals
 
 void fractals::AsyncRenderer::remap_viewport(Viewport &vp, double dx, double dy,
                                              double r) const {

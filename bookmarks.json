@@ -368,5 +368,15 @@
         "Name": "User/Unsorted/test",
         "Radius": "2.09e-15",
         "Re": "-1.771459228825542917"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 168,
+        "Gradient": 30.0,
+        "Im": "0.13357856821069624566",
+        "Iterations": 3421,
+        "Name": "User/Unsorted/test2",
+        "Radius": "1.107e-17",
+        "Re": "0.37412252356434362564"
     }
 ]
