@@ -64,6 +64,7 @@ public:
   virtual void stop_timer();
 
   pixmap<value_type> pixels;
+  pixmap<error_value<double>> values;
 };
 
 // Perform a pixel-by-pixel remapping and interpolation from src to dest.

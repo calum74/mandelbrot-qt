@@ -358,5 +358,15 @@
         "Name": "User/Unsorted/Snowball",
         "Radius": "1.228e-13",
         "Re": "-1.2518791092990922"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 0,
+        "Gradient": 10.0,
+        "Im": "-0.006135509899191650",
+        "Iterations": 131382,
+        "Name": "User/Unsorted/test",
+        "Radius": "2.09e-15",
+        "Re": "-1.771459228825542917"
     }
 ]

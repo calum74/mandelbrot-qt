@@ -2,20 +2,15 @@
 
 #include "Renderer.hpp"
 #include "RenderingMetrics.hpp"
+#include "calculation_pixmap.hpp"
 #include "fractal.hpp"
-#include "rendering_sequence.hpp"
-#include "view_coords.hpp"
 #include "mandelbrot_fwd.hpp"
+#include "view_coords.hpp"
 
 #include <future>
 
 namespace fractals {
 
-// This is an algorithm that fills in a region close to a point
-// with that pixel value. However, it takes into consideration if a pixel has
-// already been calculated, and decides if the interpolated value should
-// overwrite each pixel or not. Each pixel has a concept of an "error" to decide
-// when it should get updated. This leads to interesting visual effects.
 void interpolate_region(Viewport &vp, int cx, int cy, int x0, int y0, int x1,
                         int y1);
 bool maybe_fill_region(Viewport &vp, int x0, int y0, int x1, int y1);
@@ -57,42 +52,22 @@ public:
   mapped_point map_point(const Viewport &vp,
                          const view_coords &c) const override;
 
-  // An array of all non-zero depths (?? Needed)
-
-  struct depth_value {
-    double depth;
-    int x;
-    int y;
-    bool operator<(const depth_value &other) const {
-      return depth < other.depth;
-    }
-  };
-
-  class my_rendering_sequence
-      : public fractals::buffered_rendering_sequence<double> {
-
+  class my_rendering_sequence : public fractals::calculation_pixmap {
   public:
-    my_rendering_sequence(const fractal_calculation &calculation,
-                          const ColourMap &cm, Viewport &vp,
-                          std::vector<depth_value> &depths);
-
-    std::atomic<double> min_depth = 0, max_depth = 0;
-    std::vector<depth_value> &depths;
-    std::atomic<std::uint64_t> calculated_pixels = 0;
+    my_rendering_sequence(
+        fractal_calculation &calculation,
+        const ColourMap &cm, Viewport &vp);
 
     void layer_complete(int stride) override;
 
-    double get_point(int x, int y) override;
-
   private:
-    const fractal_calculation &calculation;
     const ColourMap &cm;
     Viewport &vp;
   };
 
   void stop_current_calculation();
 
-  void calculate_region_in_thread(fractals::Viewport &vp, const ColourMap &cm,
+  void calculate_in_thread(fractals::Viewport &vp, const ColourMap &cm,
                                   std::atomic<bool> &stop);
 
 private:
@@ -102,10 +77,7 @@ private:
   std::future<void> current_calculation;
   std::atomic<bool> stop;
   std::shared_ptr<fractal_calculation> calculation;
-
   std::chrono::time_point<std::chrono::high_resolution_clock> t0;
-
-  std::vector<depth_value> depths; // ?? Do we want to keep this around
 
   RenderingMetrics metrics;
 

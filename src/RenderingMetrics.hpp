@@ -11,6 +11,8 @@ struct RenderingMetrics {
   double log_radius; // The natural log of the radius
   double min_depth;
   double max_depth;
+  double p999, p9999;
+  int p9999_x, p9999_y;
   std::uint64_t points_calculated;
   std::uint64_t non_black_points;
   double seconds_per_point;

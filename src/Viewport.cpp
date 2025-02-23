@@ -4,6 +4,9 @@
 constexpr fractals::Viewport::value_type grey = {
     fractals::make_rgb(100, 100, 100), 127};
 
+constexpr fractals::error_value<double> missing_value = {
+    std::numeric_limits<double>::quiet_NaN(), 127};
+
 fractals::Viewport::iterator fractals::Viewport::begin() {
   return pixels.begin();
 }
@@ -25,9 +28,15 @@ void fractals::Viewport::invalidateAllPixels() {
   for (auto &p : pixels) {
     p.error = 127;
   }
+  for (auto &p : values) {
+    p.error = 127;
+  }
 }
 
-void fractals::Viewport::init(int w0, int h0) { pixels = {w0, h0, grey}; }
+void fractals::Viewport::init(int w0, int h0) {
+  pixels = {w0, h0, grey};
+  values = {w0, h0, missing_value};
+}
 
 void fractals::map_viewport(const Viewport &src, Viewport &dest, double dx,
                             double dy, double r) {
@@ -41,11 +50,27 @@ void fractals::map_viewport(const Viewport &src, Viewport &dest, double dx,
         if (zoom_eq)
           return p;
         if (zoom_out)
-          return {p.colour, 20};  // When zooming out, don't keep the old image as it looks wierd
+          return {p.colour, 20}; // When zooming out, don't keep the old image
+                                 // as it looks wierd
         std::uint8_t ex = p.error + 1; // Ensure result is overdrawn
         if (ex > 20)
           ex = 20;
         return {p.colour, ex};
       },
       grey);
+
+  map_pixmap(
+      src.values, dest.values, dx, dy, r,
+      [&](error_value<double> p) -> error_value<double> {
+        if (zoom_eq)
+          return p;
+        if (zoom_out)
+          return {p.value, 20}; // When zooming out, don't keep the old image
+                                // as it looks wierd
+        std::uint8_t ex = p.error + 1; // Ensure result is overdrawn
+        if (ex > 20)
+          ex = 20;
+        return {p.value, ex};
+      },
+      missing_value);
 }

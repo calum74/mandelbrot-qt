@@ -2,12 +2,13 @@
 
 #include "ColourMap.hpp"
 #include "Viewport.hpp"
+#include "convert.hpp"
+#include "fractal_calculation.hpp"
 #include "high_exponent_real.hpp"
 #include "percentile.hpp"
 #include "registry.hpp"
 #include "view_parameters.hpp"
-#include "fractal_calculation.hpp"
-#include "convert.hpp"
+#include <cassert>
 
 fractals::AsyncRenderer::AsyncRenderer(const fractal &fractal,
                                        Registry &registry)
@@ -64,9 +65,10 @@ double fractals::AsyncRenderer::get_average_skipped_iterations() const {
 
 void fractals::AsyncRenderer::discovered_depth(
     const RenderingMetrics &metrics) {
-  if (!metrics.last_action_was_a_scroll && metrics.non_black_points > 1000 &&
-      metrics.discovered_depth > 0)                       // Fudge factor
+  if (!metrics.last_action_was_a_scroll && metrics.non_black_points > 100 &&
+      metrics.discovered_depth > 250 || (metrics.discovered_depth*2 > coords.max_iterations)) {                     // Fudge factor
     coords.max_iterations = metrics.discovered_depth * 2; // Fudge factor
+  }
 }
 
 void fractals::AsyncRenderer::set_fractal(const fractals::fractal &f) {
@@ -93,24 +95,57 @@ void fractals::AsyncRenderer::stop_current_calculation() {
   stop = false;
 }
 
-void fractals::AsyncRenderer::calculate_region_in_thread(
-    fractals::Viewport &vp, const ColourMap &cm, std::atomic<bool> &stop) {
+void fractals::AsyncRenderer::calculate_in_thread(fractals::Viewport &vp,
+                                                  const ColourMap &cm,
+                                                  std::atomic<bool> &stop) {
 
-  my_rendering_sequence seq(*calculation, cm, vp, depths);
-  seq.calculate(threads, stop);
+  my_rendering_sequence calculated_pixels(*calculation, cm, vp);
+  calculated_pixels.calculate(threads, stop);
 
-  if (seq.calculated_pixels > 100) {
-    // !! I don't know when we sometimes return 1 or 0 pixels calculated
-    metrics.min_depth = seq.min_depth;
-    metrics.max_depth = seq.max_depth;
-    metrics.points_calculated = seq.calculated_pixels;
+  // Find the depths.
+  std::vector<int> coloured_pixels;
+  coloured_pixels.reserve(vp.values.size());
+  for (int i = 0; i < vp.values.size(); ++i) {
+    if (vp.values[i].error == 0 && vp.values[i].value > 0)
+      coloured_pixels.push_back(i);
   }
+
+  metrics.non_black_points = coloured_pixels.size();
+
+#if 0 
+  std::cout << "Finished calculation\n";
+  std::cout << "  We calculated " << calculated_pixels.points_calculated
+  << " points\n";
+
+  std::cout << "  We have " << coloured_pixels.size() << " coloured pixels\n";
+#endif
+
+  if (coloured_pixels.size() > 100) {
+    // ?? Why are we doing this? Can't we just take the top pixel and be done
+    // with it?
+    auto cmp = [&](int a, int b) {
+      return vp.values[a].value < vp.values[b].value;
+    };
+    auto p999 = *top_percentile(coloured_pixels.begin(), coloured_pixels.end(),
+                                0.999, cmp);
+    auto p9999 = *top_percentile(coloured_pixels.begin(), coloured_pixels.end(),
+                                 0.9999, cmp);
+    metrics.p999 = vp.values[p999].value;
+    metrics.p9999 = vp.values[p9999].value;
+    metrics.p9999_x = p9999 % vp.values.width();
+    metrics.p9999_y = p9999 / vp.values.width();
+    // std::cout << "  p99.9 = " << metrics.p999 << " p99.99 = " << metrics.p9999
+    //          << " at " << metrics.p9999_x << ", " << metrics.p9999_y << "\n";
+  }
+
+  metrics.min_depth = calculated_pixels.min_depth;
+  metrics.max_depth = calculated_pixels.max_depth;
+  metrics.points_calculated = calculated_pixels.points_calculated;
 }
 
 void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
                                               const ColourMap &cm) {
   stop_current_calculation();
-  depths.clear();
 
   stop = false;
 
@@ -123,14 +158,13 @@ void fractals::AsyncRenderer::calculate_async(fractals::Viewport &view,
     metrics.min_depth = 0;
     metrics.max_depth = 0;
     metrics.discovered_depth = 0;
-    calculate_region_in_thread(view, cm, stop);
+    metrics.p999 = 0;
+    metrics.p9999 = 0;
+    calculate_in_thread(view, cm, stop);
     auto t1 = std::chrono::high_resolution_clock::now();
 
-    metrics.non_black_points = std::distance(depths.begin(), depths.end());
-    if (depths.begin() < depths.end()) {
-      auto discovered_depth =
-          util::top_percentile(depths.begin(), depths.end(), 0.999)->depth;
-      metrics.discovered_depth = discovered_depth;
+    if (metrics.p999 > 0) {
+      metrics.discovered_depth = metrics.p999;
     } else {
       metrics.discovered_depth = metrics.max_depth;
     }
@@ -157,8 +191,9 @@ bool fractals::AsyncRenderer::zoom(double r, int cx, int cy, bool lockCenter,
                                    Viewport &vp) {
   stop_current_calculation();
 
-  auto new_coords =
-      lockCenter ? coords.zoom(r) : coords.zoom(r, vp.width(), vp.height(), cx, cy);
+  auto new_coords = lockCenter
+                        ? coords.zoom(r)
+                        : coords.zoom(r, vp.width(), vp.height(), cx, cy);
 
   if (!current_fractal->valid_for(new_coords)) {
     return false;
@@ -195,10 +230,9 @@ void fractals::AsyncRenderer::zoom_in(Viewport &vp) {
 }
 
 bool fractals::AsyncRenderer::get_auto_zoom(int &x, int &y) {
-  if (!depths.empty()) {
-    auto p = util::top_percentile(depths.begin(), depths.end(), 0.9999);
-    x = p->x;
-    y = p->y;
+  if (metrics.p9999 > 0) {
+    x = metrics.p9999_x;
+    y = metrics.p9999_y;
     return true;
   }
   return false;
@@ -216,29 +250,11 @@ RGB blend(RGB c1, RGB c2, double w1, double w2) {
 
 void fractals::AsyncRenderer::remap_viewport(Viewport &vp, double dx, double dy,
                                              double r) const {
-
-  /*
-    This is interesting so pay attention.
-    Each pixel consists of 32 bits. 24-bits of these are for RGB values,
-    leaving 8 bits unused.
-
-    We'll use this 8 bits to store an "error", whereby an error of 0 means
-    that the pixel is computed perfectly and does not need to be recalculated.
-
-    However when we're zooming and scaling, we gradually accumulate more and
-    more errors, and when we render pixels at low resolution (16x16), we'll
-    make sure to tag those pixels which are wrong so that they'll be
-    recomputed or redisplayed at the appropriate time.
-
-    When we scale or scroll the viewport, we'll copy some of the original
-    pixels over to the new view to give the viewer something to look at whilst
-    we calculate it properly.
-  */
-
   Viewport dest;
   dest.init(vp.width(), vp.height());
   map_viewport(vp, dest, dx, dy, r);
-  vp = dest;
+
+  vp = std::move(dest);
 }
 
 void fractals::AsyncRenderer::redraw(Viewport &vp) {
@@ -286,75 +302,17 @@ void fractals::AsyncRenderer::get_depth_range(double &min, double &p,
 }
 
 fractals::AsyncRenderer::my_rendering_sequence::my_rendering_sequence(
-    const fractal_calculation &calculation, const ColourMap &cm, Viewport &vp,
-    std::vector<depth_value> &depths)
-    : fractals::buffered_rendering_sequence<double>(vp.width(), vp.height(), 16),
-      calculation(calculation), cm(cm), vp(vp), depths(depths) {
-  depths.clear();
-}
+    fractal_calculation &calculation, const ColourMap &cm, Viewport &vp)
+    : cm(cm), vp(vp), calculation_pixmap(vp.values, 16, calculation) {}
 
 void fractals::AsyncRenderer::my_rendering_sequence::layer_complete(
     int stride) {
   // Transfer and interpolate to the current viewport
-  fractals::rendering_sequence seq(vp.width(), vp.height(), 16);
-  seq.start_at_stride(stride);
-  int x, y, s;
-  bool c;
-  while (seq.next(x, y, s, c) && stride == s) {
-    double depth = output[x + y * vp.width()];
-
-    if (!std::isnan(depth)) {
-      vp(x, y) = {(std::uint32_t)cm(depth), 0};
-      if (depth > 0) {
-        depths.push_back({depth, x, y});
-      }
-#if 1 // Useful to be able to disable this for debugging
-      if (stride > 1) {
-        // Interpolate the region
-        if (x > 0 && y > 0) {
-          maybe_fill_region(vp, x - stride, y - stride, x, y);
-        }
-
-        auto d = stride / 2;
-        int x0 = x - d;
-        int x1 = x + d;
-        int y0 = y - d;
-        int y1 = y + d;
-        if (x0 < 0)
-          x0 = 0;
-        if (x1 >= vp.width())
-          x1 = vp.width() - 1;
-        if (y0 < 0)
-          y0 = 0;
-        if (y1 >= vp.height())
-          y1 = vp.height() - 1;
-        interpolate_region(vp, x, y, x0, y0, x1, y1);
-      }
-#endif
-    } else {
-      // Already calculated which is good
-    }
-  }
-
+  // !! Unfortunately we recalculate the colour each time
+  map_pixmap(pixels, vp.pixels, [&](auto c) {
+    return Viewport::value_type(cm(c.value), c.error);
+  });
   vp.updated();
-}
-
-double fractals::AsyncRenderer::my_rendering_sequence::get_point(int x, int y) {
-  if (vp(x, y).error == 0)
-    return std::numeric_limits<double>::quiet_NaN();
-  ++calculated_pixels;
-  auto depth = calculation.calculate(x, y);
-  if (depth > 0) {
-    // Technically this is a race condition
-    // but we want to capture this here (and not in layer_complete())
-    // because we need this in case we abort computation before the first layer
-    // is complete.
-    if (depth < min_depth || min_depth == 0)
-      min_depth = depth;
-    if (depth > max_depth)
-      max_depth = depth;
-  }
-  return depth;
 }
 
 fractals::mapped_point

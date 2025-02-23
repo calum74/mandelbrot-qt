@@ -5,7 +5,6 @@
 #include "mandelbrot.hpp"
 #include <cassert>
 
-// !! Not used
 
 bool fractals::maybe_fill_region(Viewport &vp, int x0, int y0, int x1, int y1) {
   if (x1 - x0 > 2)

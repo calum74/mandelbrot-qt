@@ -1,55 +1,14 @@
 # Task list
 
-rendering sequence?
-threads?
-errors?
-
-buffered_rendering_sequence is nonsense.
-
-- errors and interpolation
-
-```c++
-template<typename T>
-struct error_value
-{
-  T value;
-  int error;
-};
-
-class interpolated_pixmap
-{
-  pixmap<error_value<double>> values;
-
-  void calculate_point(int x, int y, int w)
-  {
-    if(values(x,y).error)
-    {
-      values(x,y) = { calculate(x,y), 0 };
-      // Interpolate it here...
-    }
-  }
-
-  virtual T calculate(int x, int y);
-};
-
-class calculation_pixmap : public interpolated_pixmap
-{
-  std::shared_ptr<fractal_calculation> calculation;
-};
-```
-
-3. Refactor async_renderer
-  - based on calculations and array of doubles
-  - errors and not recalculating
-  - interpolation
-  - threading
-  - rendering sequence
-  - metrics 
-  - simple_renderer class
+Refactoring:
+- When zooming in, the depths are not updated correctly
+- When fast animate in, it all goes black
+- The view should not contain the pixel buffer. We can generate that afterwards.
 
 
 
-- [ ] Make a view parameterizable by bit depth, and let the templates do it all
+Calculations:
+- [ ] Make a fractal parameterizable by bit depth, and let the templates do it all
 
 ```
 template<int Bits>
