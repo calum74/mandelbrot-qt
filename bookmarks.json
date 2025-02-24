@@ -428,5 +428,15 @@
         "Name": "User/Unsorted/Purple spirals",
         "Radius": "1.451e-45",
         "Re": "-1.768865898093812331736004381921219595107361617578"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 14,
+        "Gradient": 1829.4216066833058,
+        "Im": "0.0676075849421951701260395017411122124",
+        "Iterations": 10443,
+        "Name": "User/Unsorted/Zoom in iteration bug",
+        "Radius": "5.304e-34",
+        "Re": "-0.7490993655710360857039888512915626405"
     }
 ]

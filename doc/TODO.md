@@ -1,20 +1,21 @@
 # Task list
 
-Implement interpolate_viewport and hope it's smooth enough for good shading
+Next steps:
+- When remapping a viewport, write a flag on it: Suitable for shading
+- When zooming, perform a smooth zoom so that we can still apply shading to it.
+- When interpolating, perform a smooth interpolation so we can still try to apply shading to it.
 
-Today:
-- Animation (zoom etc) should preserve shading somehow
-- Smooth interpolation should keep error = 0?
+Shading:
+- When animating, sometimes only the top half of the image is shaded.
+- When you stop animating, it'll redraw the calculation without shading.
+- Can we keep shading on even in the zooms if we intepolate correctly?
 
-- When zooming, there's flicker
-- Animation should reset the gradient
+Animation:
+- Animation should reset the colour gradient
 
+Bugs:
 - Odd segmentation fault
 
-- Fix interpolation to be smooth relative to previous points?
-- ?? Should the shading also take into consideration the stride??
-- Need to ensure that the shading algorithm gives a consistent illumination when we zoom in
-  What does the gradient actually mean?
 
 Bugs:
 1. Autonavigate stops

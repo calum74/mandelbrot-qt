@@ -67,7 +67,8 @@ void ViewerWidget::draw() {
                                            : viewport(i - delta, j);
       auto &p3 = j + delta < image.height() ? viewport(i, j + delta)
                                             : viewport(i, j - delta);
-      if (pixel.error == 0 && p2.error == 0 && p3.error == 0) {
+      constexpr bool alwaysShade = true;
+      if ((pixel.error == 0 && p2.error == 0 && p3.error == 0) || alwaysShade) {
         double dx = i + delta < image.width() ? p2.value - viewport(i, j).value
                                               : viewport(i, j).value - p2.value;
         double dy = j + delta < image.height()
@@ -75,17 +76,7 @@ void ViewerWidget::draw() {
                         : viewport(i, j).value - p3.value;
         image_data[j * image.width() + i] =
             0xff000000 | colourMap(pixel.value, dx, dy);
-      }
-#if 0
-      else if(pixel.error<=1 && p2.error<=1 && p3.error<=1)
-      {
-        delta=2;
-        double dx = i+delta<image.width() ? viewport(i+delta,j).value - viewport(i, j).value : viewport(i, j).value - viewport(i-delta, j).value;
-        double dy = j+delta<image.height() ? viewport(i,j+delta).value - viewport(i, j).value : viewport(i, j).value - viewport(i,j-delta).value;
-        image_data[j*image.width() + i] = 0xff000000 | colourMap(pixel.value, dx/2, dy/2);  
-      }
-#endif
-      else {
+      } else {
         image_data[j * image.width() + i] =
             0xff000000 | colourMap(viewport(i, j).value);
       }

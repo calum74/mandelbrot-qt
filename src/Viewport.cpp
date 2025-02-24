@@ -31,33 +31,10 @@ void fractals::Viewport::init(int w0, int h0) {
   values = {w0, h0, missing_value};
 }
 
-void fractals::map_viewport(const Viewport &src, Viewport &dest, double dx,
-                            double dy, double r) {
-
-  bool zoom_eq = r == 1.0;
-  bool zoom_out = r > 1.0;
-
-  map_pixmap(
-      src.values, dest.values, dx, dy, r,
-      [&](error_value<double> p) -> error_value<double> {
-        if (zoom_eq)
-          return p;
-        if (zoom_out)
-          return {p.value, 20}; // When zooming out, don't keep the old image
-                                // as it looks wierd
-        std::uint8_t ex = p.error + 1; // Ensure result is overdrawn
-        if (ex > 20)
-          ex = 20;
-        return {p.value, ex};
-      },
-      missing_value);
-}
-
-void fractals::interpolate_viewport(const Viewport &src, Viewport &dest,
-                                    double dx, double dy, double r) {
-
-  bool zoom_eq = r == 1.0;
-  bool zoom_out = r > 1.0;
+namespace fractals {
+template <typename ErrorFn>
+void interpolate_viewport(const Viewport &src, Viewport &dest, double dx,
+                          double dy, double r, ErrorFn fn) {
 
   for (int j = 0; j < dest.height(); ++j)
     for (int i = 0; i < dest.width(); ++i) {
@@ -81,11 +58,49 @@ void fractals::interpolate_viewport(const Viewport &src, Viewport &dest,
         auto to_error =
             std::max(std::max(from_pixel_00.error, from_pixel_10.error),
                      std::max(from_pixel_01.error, from_pixel_11.error));
-        to_pixel = {to_value, to_error};
+        to_pixel = {to_value, fn(to_error)};
       } else {
         to_pixel = missing_value;
       }
     }
+}
+} // namespace fractals
+
+void fractals::map_viewport(const Viewport &src, Viewport &dest, double dx,
+                            double dy, double r) {
+
+  bool zoom_eq = r == 1.0;
+  bool zoom_out = r > 1.0;
+
+  interpolate_viewport(src, dest, dx, dy, r, [&](int e) {
+    return zoom_eq ? e : zoom_out ? 20 : e > 20 ? e : e + 1;
+  });
+
+#if 0
+  map_pixmap(
+      src.values, dest.values, dx, dy, r,
+      [&](error_value<double> p) -> error_value<double> {
+        if (zoom_eq)
+          return p;
+        if (zoom_out)
+          return {p.value, 20}; // When zooming out, don't keep the old image
+                                // as it looks wierd
+        std::uint8_t ex = p.error + 1; // Ensure result is overdrawn
+        if (ex > 20)
+          ex = 20;
+        return {p.value, ex};
+      },
+      missing_value);
+#endif
+}
+
+void fractals::interpolate_viewport(const Viewport &src, Viewport &dest,
+                                    double dx, double dy, double r) {
+
+  bool zoom_eq = r == 1.0;
+  bool zoom_out = r > 1.0;
+
+  interpolate_viewport(src, dest, dx, dy, r, [](int e) { return e; });
 }
 
 fractals::error_value<double> fractals::Viewport::invalid_value() const {
