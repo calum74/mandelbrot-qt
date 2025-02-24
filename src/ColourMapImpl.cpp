@@ -35,6 +35,9 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
 
   if (shading) {
     // TODO: Optimize this
+    dx/=scaled_gradient;
+    dy/=scaled_gradient;
+
     // A unit shade vector
     double shade_x = 1, shade_y = 1, shade_z = 1;
     double shade_length =

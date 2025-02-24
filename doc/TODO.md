@@ -1,8 +1,11 @@
 # Task list
 
 Today:
+1. Option to enable shading & does not recompute
+2. Recolour palette does not recompute image
+
+- Odd segmentation fault
 - Animation should animate the pixels not the depths
-- Shading needs to take into consideration the reported resolution of the pixels
 - When zooming, there's flicker
 
 - When calculating a pixel, we should look at the error of the relative pixel. If either is !=0, then no shading.

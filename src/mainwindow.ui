@@ -59,6 +59,7 @@
     <addaction name="actionMultithreading"/>
     <addaction name="actionMax_threads"/>
     <addaction name="separator"/>
+    <addaction name="actionShading"/>
     <addaction name="actionAutomatic_gradient"/>
     <addaction name="actionRandomize_palette"/>
     <addaction name="actionScale_palette"/>
@@ -409,6 +410,17 @@
    </property>
    <property name="text">
     <string>Automatic gradient</string>
+   </property>
+  </action>
+  <action name="actionShading">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Shading</string>
    </property>
   </action>
  </widget>
