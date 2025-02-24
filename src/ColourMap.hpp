@@ -15,6 +15,7 @@ public:
   virtual void enableAutoGradient() = 0;
   virtual void disableAutoGradient() = 0;
   virtual RGB operator()(double depth, double dx, double dy) const = 0;
+  virtual RGB operator()(double depth) const = 0;
 
   virtual void load(const view_parameters &) = 0;
   virtual void save(view_parameters &) const = 0;

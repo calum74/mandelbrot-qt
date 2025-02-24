@@ -55,14 +55,20 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
         std::sqrt(surface_normal_x * surface_normal_x +
                   surface_normal_y * surface_normal_y +
                   surface_normal_z * surface_normal_z);
+    if (surface_normal_length == 0) {
+      surface_normal_length = 1;
+      // surface_normal_z = 1;
+    }
 
     double dot_product =
         (surface_normal_x * shade_x + surface_normal_y * shade_y +
          surface_normal_z * shade_z) /
         (surface_normal_length * shade_length);
     double ambient_brightness = 0.4;
-    brightness = ambient_brightness +
-                 (1.0 - ambient_brightness) * (1.0 + dot_product) / 2;
+    double saturation_factor = 0.7; // 0.5;
+    brightness = ambient_brightness + (1.0 - ambient_brightness) *
+                                          (1.0 + dot_product) *
+                                          saturation_factor;
     // if (brightness > 1)
     //   brightness = 1;
     // if (brightness < 0)
@@ -82,7 +88,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
   auto g = brightness * (green(c1) * f1 + green(c2) * f2);
   auto b = brightness * (blue(c1) * f1 + blue(c2) * f2);
 // Allow saturation
-#if 0
+#if 1
   if (r > 255)
     r = 255;
   if (g > 255)
@@ -90,10 +96,45 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
   if (b > 255)
     b = 255;
 
-    if(r<0) r=0;
-    if(g<0) g=0;
-    if(b<0) b=0;
+  if (r < 0)
+    r = 0;
+  if (g < 0)
+    g = 0;
+  if (b < 0)
+    b = 0;
 #endif
+
+  return make_rgb(r, g, b);
+}
+
+fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
+  if (d == 0)
+    return make_rgb(0, 0, 0);
+
+  double scaled_colour = d / gradient;
+  double scaled_gradient = gradient;
+  for (auto j = colour_stack.rbegin(); j != colour_stack.rend(); ++j) {
+    if (d > j->iteration) {
+      scaled_colour = d / j->gradient + j->offset;
+      scaled_gradient = j->gradient;
+      break;
+    }
+  }
+
+  double brightness = 1.0;
+
+  int i = scaled_colour;
+  auto f2 = scaled_colour - i;
+  auto f1 = 1.0 - f2;
+
+  i %= colours.size();
+  int j = (i + 1) % colours.size();
+  auto c1 = colours[i];
+  auto c2 = colours[j];
+
+  auto r = brightness * (red(c1) * f1 + red(c2) * f2);
+  auto g = brightness * (green(c1) * f1 + green(c2) * f2);
+  auto b = brightness * (blue(c1) * f1 + blue(c2) * f2);
 
   return make_rgb(r, g, b);
 }

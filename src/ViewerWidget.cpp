@@ -61,9 +61,20 @@ void ViewerWidget::draw() {
   std::uint32_t *image_data = (std::uint32_t *)image.bits();
   for(int j=0; j<image.height(); ++j) {
     for(int i=0; i<image.width(); ++i) {
-      double dx = i+1<image.width() ? viewport(i+1, j).value - viewport(i, j).value : viewport(i, j).value - viewport(i-1, j).value;
-      double dy = j+1<image.height() ? viewport(i, j+1).value - viewport(i, j).value : viewport(i, j).value - viewport(i, j-1).value;
-      image_data[j*image.width() + i] = 0xff000000 | colourMap(viewport(i, j).value, dx, dy);
+      int delta = 1;
+      auto &pixel = viewport(i, j); 
+      auto &p2 = i+delta<image.width() ? viewport(i+delta, j) : viewport(i-delta, j);
+      auto &p3 = j+delta<image.height() ? viewport(i, j+delta) : viewport(i, j-delta);
+      if(pixel.error==0 && p2.error==0 && p3.error==0)
+      {
+        double dx = i+delta<image.width() ? p2.value - viewport(i, j).value : viewport(i, j).value - p2.value;
+        double dy = j+delta<image.height() ? p3.value - viewport(i, j).value : viewport(i, j).value - p3.value;
+        image_data[j*image.width() + i] = 0xff000000 | colourMap(pixel.value, dx, dy);  
+      }
+      else
+      {
+        image_data[j*image.width() + i] = 0xff000000 | colourMap(viewport(i, j).value);
+      }
     }
   }
 

@@ -1,8 +1,17 @@
 # Task list
 
 Today:
-- Implement a shader??
-- Fix non-smooth lines on output
+- Animation should animate the pixels not the depths
+- Shading needs to take into consideration the reported resolution of the pixels
+- When zooming, there's flicker
+
+- When calculating a pixel, we should look at the error of the relative pixel. If either is !=0, then no shading.
+
+
+- Fix interpolation to be smooth relative to previous points?
+- ?? Should the shading also take into consideration the stride??
+- Need to ensure that the shading algorithm gives a consistent illumination when we zoom in
+  What does the gradient actually mean?
 
 Bugs:
 1. Autonavigate stops
