@@ -2,7 +2,7 @@
 
 #include "ColourMap.hpp"
 #include "Viewport.hpp"
-#include "convert.hpp"
+#include "number_cast.hpp"
 #include "fractal_calculation.hpp"
 #include "high_exponent_real.hpp"
 #include "percentile.hpp"
@@ -211,7 +211,7 @@ fractals::view_coords fractals::AsyncRenderer::get_coords() const {
 }
 
 double fractals::AsyncRenderer::log_width() const {
-  return fractals::log(convert<high_exponent_real<>>(coords.r));
+  return fractals::log(number_cast<high_exponent_real<>>(coords.r));
 }
 
 int fractals::AsyncRenderer::iterations() const {

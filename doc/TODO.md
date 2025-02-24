@@ -1,30 +1,36 @@
 # Task list
 
+Today:
+1. convert -> number_cast
+
+Bugs:
+1. Autonavigate stops
+  Probably tried to navigate before finished rendering
+2. Shows wrong background when zooming in
+
 Refactoring:
 - Can we refactor AsyncRenderer & AnimatedRenderer further?
+- Reduce need to call `convert<>` all the time.
+- Colourmap and shadermap
+- `convert` -> `number_cast<>()`
+- [ ] Split into library and fractals
+- fractal_traits in order to make parameters more clear
 
 Papercuts:
 - Navigate randomly stops prematurely
 - When we go home, reset the gradient, particularly for a zoom in
-- Recolour to not recalculate
+- Recolour to not recalculate the view
 
 Colour Dialog box:
 - Seed
 - Gradient
 - Offset
 
-
-Calculations:
-- [ ] Make a fractal parameterizable by bit depth, and let the templates do it all
-- [ ] Split into library and fractals
-
-```
-template<int Bits>
-struct mandelbrot_fractal
-{
-  using type = ...;
-};
-```
+Simple shader:
+- Imagine a light source at infinity
+- For each pixel, look at delta-x and delta-y
+- Create a normal vector of the plane
+- Look at the scalar product with the plane's normal vector
 
 Some problems:
 1. Nice refactoring of pixmaps etc.
@@ -39,23 +45,10 @@ Some problems:
 4. Make it easier to add new fractals
   a. Developer mode
 
-- MB finding
-- Find 2 points an
-
 - [ ] Refactor Async/AnimatedRenderer
-  - `fractal_calculation` that computes things
-  - `calculation_buffer` containing doubles and errors
-  - `pixmap<T>` that contains the pixels and can perform scaling and animations?
   - `animated_pixmap<T>` 
 
-  - `calculated_points`
-    An array of values. Or just `double`?
-    Supports remapping as well
-    Supports caching and interpolation
-    Supports errors.
-  - `calculated_pixels`.
   - `abstract_animator` that can zoom anything.
-
 
   - Calculated that only outputs depths
   - Interpolator (on the depths)
