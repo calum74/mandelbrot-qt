@@ -19,6 +19,9 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
   if (d == 0)
     return make_rgb(0, 0, 0);
 
+  if(!shading)
+    return (*this)(d);
+
   double scaled_colour = d / gradient;
   double scaled_gradient = gradient;
   for (auto j = colour_stack.rbegin(); j != colour_stack.rend(); ++j) {
@@ -31,12 +34,10 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
 
   double brightness = 1.0;
 
-  bool shading = true;
-
   if (shading) {
     // TODO: Optimize this
-    dx/=scaled_gradient;
-    dy/=scaled_gradient;
+    dx /= scaled_gradient;
+    dy /= scaled_gradient;
 
     // A unit shade vector
     double shade_x = 1, shade_y = 1, shade_z = 1;
@@ -217,3 +218,7 @@ void fractals::ColourMapImpl::disableAutoGradient() {
   auto_gradient = false;
   colour_stack.clear();
 }
+
+void fractals::ColourMapImpl::enableShading() { shading = true; }
+
+void fractals::ColourMapImpl::disableShading() { shading = false; }

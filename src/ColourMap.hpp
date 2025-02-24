@@ -14,6 +14,8 @@ public:
   virtual void maybeUpdateRange(double min, double max) = 0;
   virtual void enableAutoGradient() = 0;
   virtual void disableAutoGradient() = 0;
+  virtual void enableShading() = 0;
+  virtual void disableShading() = 0;
   virtual RGB operator()(double depth, double dx, double dy) const = 0;
   virtual RGB operator()(double depth) const = 0;
 

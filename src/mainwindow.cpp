@@ -52,7 +52,9 @@ MainWindow::MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks0,
           &ViewerWidget::enableOversampling);
   connect(ui->actionAutomatic_gradient, &QAction::triggered, ui->centralwidget,
     &ViewerWidget::enableAutoGradient);
-  
+    connect(ui->actionShading, &QAction::triggered, ui->centralwidget,
+      &ViewerWidget::enableShading);
+    
   connect(ui->actionAuto_iterations, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::enableAutoDepth);
   connect(ui->actionQuick_save, &QAction::triggered, ui->centralwidget,

@@ -102,6 +102,7 @@ public slots:
   void maxThreading(bool checked);
   void enableOversampling(bool checked);
   void enableAutoGradient(bool checked);
+  void enableShading(bool checked);
 
   void enableAutoDepth(bool checked);
   void quickSave();

@@ -533,3 +533,12 @@ void ViewerWidget::enableAutoGradient(bool checked) {
   else
     renderer.disable_auto_gradient();
 }
+
+void ViewerWidget::enableShading(bool checked) {
+  auto &colourMap = *renderer.colourMap;
+  if (checked)
+    colourMap.enableShading();
+  else
+    colourMap.disableShading();
+  update();
+}
