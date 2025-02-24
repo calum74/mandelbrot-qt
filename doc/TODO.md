@@ -1,7 +1,8 @@
 # Task list
 
 Today:
-1. convert -> number_cast
+- Implement a shader??
+- Fix non-smooth lines on output
 
 Bugs:
 1. Autonavigate stops
@@ -10,11 +11,13 @@ Bugs:
 
 Refactoring:
 - Can we refactor AsyncRenderer & AnimatedRenderer further?
+- Put colourmap into mandelbrot?
+  -> Only after shading done?
+
 - Reduce need to call `convert<>` all the time.
 - Colourmap and shadermap
 - `convert` -> `number_cast<>()`
 - [ ] Split into library and fractals
-- fractal_traits in order to make parameters more clear
 
 Papercuts:
 - Navigate randomly stops prematurely

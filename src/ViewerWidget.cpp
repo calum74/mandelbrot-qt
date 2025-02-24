@@ -59,8 +59,13 @@ void ViewerWidget::draw() {
   auto &colourMap = *renderer.colourMap;
 
   std::uint32_t *image_data = (std::uint32_t *)image.bits();
-  for (int i = 0; i < viewport.size(); ++i)
-    image_data[i] = 0xff000000 | colourMap(viewport[i].value);
+  for(int j=0; j<image.height(); ++j) {
+    for(int i=0; i<image.width(); ++i) {
+      double dx = i+1<image.width() ? viewport(i+1, j).value - viewport(i, j).value : viewport(i, j).value - viewport(i-1, j).value;
+      double dy = j+1<image.height() ? viewport(i, j+1).value - viewport(i, j).value : viewport(i, j).value - viewport(i, j-1).value;
+      image_data[j*image.width() + i] = 0xff000000 | colourMap(viewport(i, j).value, dx, dy);
+    }
+  }
 
   painter.drawImage(this->rect(), image);
 

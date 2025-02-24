@@ -6,7 +6,7 @@ namespace fractals {
 class ColourMapImpl : public ColourMap {
 public:
   ColourMapImpl();
-  RGB operator()(double d) const override;
+  RGB operator()(double d, double dx, double dy) const override;
   void randomize() override;
   void resetGradient() override;
   void enableAutoGradient() override;
