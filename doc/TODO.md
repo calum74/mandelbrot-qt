@@ -1,15 +1,15 @@
 # Task list
 
+Implement interpolate_viewport and hope it's smooth enough for good shading
+
 Today:
-1. Option to enable shading & does not recompute
-2. Recolour palette does not recompute image
+- Animation (zoom etc) should preserve shading somehow
+- Smooth interpolation should keep error = 0?
+
+- When zooming, there's flicker
+- Animation should reset the gradient
 
 - Odd segmentation fault
-- Animation should animate the pixels not the depths
-- When zooming, there's flicker
-
-- When calculating a pixel, we should look at the error of the relative pixel. If either is !=0, then no shading.
-
 
 - Fix interpolation to be smooth relative to previous points?
 - ?? Should the shading also take into consideration the stride??

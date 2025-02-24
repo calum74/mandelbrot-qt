@@ -62,4 +62,9 @@ public:
 void map_viewport(const Viewport &src, Viewport &dest, double dx, double dy,
                   double r);
 
+// Perform a pixel-by-pixel remapping, interpolate values and don't increase the error values
+void interpolate_viewport(const Viewport &src, Viewport &dest, double dx, double dy,
+  double r);
+
+
 } // namespace fractals

@@ -166,7 +166,7 @@ void fractals::AnimatedRenderer::timer() {
     // Project the current view into the frame
     rendered_zoom_ratio = std::pow(0.5, time_ratio);
 
-    fractals::map_viewport(
+    fractals::interpolate_viewport(
         previousVp, viewport, zoom_x * (1.0 - rendered_zoom_ratio),
         zoom_y * (1.0 - rendered_zoom_ratio), rendered_zoom_ratio);
     viewport.updated();
