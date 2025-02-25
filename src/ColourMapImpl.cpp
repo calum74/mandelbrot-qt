@@ -229,11 +229,11 @@ void fractals::ColourMapImpl::setParameters(const shader_parameters &vp) {
   params = vp;
 
   // Recalculate the source based on spherical coordinates
-  source_x = std::sin(params.source_elevation_radians) *
+  source_x = std::cos(params.source_elevation_radians) *
              std::cos(params.source_direction_radians);
-  source_y = std::sin(params.source_elevation_radians) *
+  source_y = std::cos(params.source_elevation_radians) *
              std::sin(params.source_direction_radians);
-  source_z = std::cos(params.source_elevation_radians);
+  source_z = std::sin(params.source_elevation_radians);
   source_length = std::sqrt(source_x * source_x + source_y * source_y +
                             source_z * source_z);
 }
