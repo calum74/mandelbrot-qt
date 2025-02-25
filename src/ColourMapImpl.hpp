@@ -1,4 +1,5 @@
 #include "ColourMap.hpp"
+#include "shader_parameters.hpp"
 #include <vector>
 
 namespace fractals {
@@ -21,13 +22,9 @@ public:
 private:
   void create_colours();
 
+  const unsigned int numColours = 100;
   std::vector<RGB> colours;
-  double gradient = 30;
-  double offset = 0;
-  unsigned int seed = 168;
-  unsigned int numColours = 100;
-  bool auto_gradient = true;
-  bool shading = true;
+  shader_parameters params;
 
   // The `gradient` and `offset` are used for all colours above `iteration`
   struct colour_entry {

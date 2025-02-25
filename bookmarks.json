@@ -438,5 +438,25 @@
         "Name": "User/Unsorted/Zoom in iteration bug",
         "Radius": "5.304e-34",
         "Re": "-0.7490993655710360857039888512915626405"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 168,
+        "Gradient": 30.0,
+        "Im": "0.0595588",
+        "Iterations": 618,
+        "Name": "User/Unsorted/Fire-breathing dragon",
+        "Radius": "2.512e-4",
+        "Re": "-1.2792279"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 140,
+        "Gradient": 95.77329326273195,
+        "Im": "-0.003238612298963392405638363016059599129364692008057316132156",
+        "Iterations": 12145,
+        "Name": "User/Unsorted/Dragon",
+        "Radius": "1.124e-57",
+        "Re": "-1.768534912655296681280204534009999203244960993956307240258640"
     }
 ]
