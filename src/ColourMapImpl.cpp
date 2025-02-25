@@ -231,6 +231,7 @@ void fractals::ColourMapImpl::setSeed(int new_seed) {
 int fractals::ColourMapImpl::getSeed() const { return seed; }
 void fractals::ColourMapImpl::setGradient(double new_gradient) {
   gradient = new_gradient;
+  colour_stack.clear();
 }
 double fractals::ColourMapImpl::getGradient() const { return gradient; }
 
