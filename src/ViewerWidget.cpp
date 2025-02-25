@@ -280,6 +280,7 @@ void ViewerWidget::resetCurrentFractal() {
   renderer.cancel_animations();
   renderer.renderer->set_coords(renderer.renderer->initial_coords(), viewport);
   renderer.colourMap->resetGradient();
+  updateColourControls();
   calculate();
 }
 

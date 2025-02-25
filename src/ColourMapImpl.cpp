@@ -15,7 +15,10 @@ fractals::ColourMapImpl::ColourMapImpl() {
   create_colours();
 }
 
-void fractals::ColourMapImpl::resetGradient() { params.colour_gradient = 30; }
+void fractals::ColourMapImpl::resetGradient() { 
+  params.colour_gradient = 30;
+  colour_stack.clear();
+}
 
 fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
                                                   double dy) const {

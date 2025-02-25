@@ -37,18 +37,7 @@ Refactoring:
 Papercuts:
 - Navigate randomly stops prematurely
 - When we go home, reset the gradient, particularly for a zoom in
-- Recolour to not recalculate the view
 
-Colour Dialog box:
-- Seed
-- Gradient
-- Offset
-
-Simple shader:
-- Imagine a light source at infinity
-- For each pixel, look at delta-x and delta-y
-- Create a normal vector of the plane
-- Look at the scalar product with the plane's normal vector
 
 Some problems:
 1. Nice refactoring of pixmaps etc.
@@ -80,8 +69,6 @@ Some problems:
 Zooming:
 - [ ] Animation bug - actually the frame buffer hasn't been transferred properly.
 - Bookmarks flags can appear in the wrong place when starting a zoom in
-- [ ] Bookmarks flags can appear in the wrong place when starting a zoom in
-  - Thinks it's still zooming probably
 - [ ] Finally fix the animation bug as well
 - [ ] Animate to here still carries on zooming mysteriously
   It only happens when there is still a rendering going on?
