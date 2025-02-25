@@ -1,5 +1,6 @@
 #include "Viewport.hpp"
 #include <cassert>
+#include <limits>
 
 constexpr fractals::error_value<double> missing_value = {
     std::numeric_limits<double>::quiet_NaN(), 127};
