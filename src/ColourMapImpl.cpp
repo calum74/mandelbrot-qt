@@ -6,6 +6,8 @@
 fractals::ColourMapImpl::ColourMapImpl() {
   params.colour_scheme = 168;
   params.shading = true;
+  params.ambient_brightness = 0.4;
+  params.source_brightness = 0.5;
   resetGradient();
   create_colours();
 }
@@ -66,11 +68,10 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
         (surface_normal_x * shade_x + surface_normal_y * shade_y +
          surface_normal_z * shade_z) /
         (surface_normal_length * shade_length);
-    double ambient_brightness = 0.4;
-    double saturation_factor = 0.7; // 0.5;
-    brightness = ambient_brightness + (1.0 - ambient_brightness) *
-                                          (1.0 + dot_product) *
-                                          saturation_factor;
+    // double ambient_brightness = 0.4;
+    // double saturation_factor = 0.7; // 0.5;
+    brightness = params.ambient_brightness + params.source_brightness *
+                                          (1.0 + dot_product);
     // if (brightness > 1)
     //   brightness = 1;
     // if (brightness < 0)
@@ -231,4 +232,6 @@ void fractals::ColourMapImpl::setParameters(const shader_parameters &vp) {
 
   params.auto_gradient = vp.auto_gradient;
   params.shading = vp.shading;
+  params.ambient_brightness = vp.ambient_brightness;
+  params.source_brightness = vp.source_brightness;
 }
