@@ -1,5 +1,10 @@
 # Task list
 
+Box:
+1. Shading on/off
+2. Colour scheme
+3. Colour gradient
+
 Today:
 1. Refactor the shader
 2. Shading dialog box
