@@ -7,6 +7,7 @@ ControlPanel::ControlPanel(QWidget *parent)
   changeShading(true);
   ui->colourSeedSpin->setRange(0,1000000);
   ui->colourGradientSlider->setRange(1,2500);
+  ui->colourOffsetSlider->setRange(0,1000);
 
   connect(ui->shadingCheck, &QCheckBox::toggled, this, &ControlPanel::shadingChanged);
   connect(ui->colourSeedSpin, &QSpinBox::valueChanged, this, &ControlPanel::colourSeedChanged);
@@ -16,6 +17,13 @@ ControlPanel::ControlPanel(QWidget *parent)
     if(d<2000) 
         ui->colourGradientSlider->setValue(d);
     colourGradientChanged(value.toDouble());
+  });
+  connect(ui->colourOffsetSlider, &QSlider::valueChanged, this, [&](double d) { changeColourOffset(d/10); });
+  connect(ui->colourOffsetBox, &QLineEdit::textChanged, this, [&](QString value) {
+    auto d = value.toDouble();
+    if(d<100) 
+        ui->colourOffsetSlider->setValue(d*10.0);
+    colourOffsetChanged(value.toDouble());
   });
 }
 
@@ -35,4 +43,8 @@ void ControlPanel::changeColourGradient(double d) {
     ui->colourGradientSlider->setValue(d);
 }
 
-void ControlPanel::changeColourOffset(double) {}
+void ControlPanel::changeColourOffset(double d) {
+    auto s = (std::stringstream()<<d).str();
+    ui->colourOffsetBox->setText(s.c_str());
+    ui->colourOffsetSlider->setValue(d*10.0);
+}

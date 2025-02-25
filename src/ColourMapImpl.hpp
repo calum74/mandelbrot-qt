@@ -30,6 +30,7 @@ public:
 private:
   std::vector<RGB> colours;
   double gradient = 30;
+  double offset = 0;
   unsigned int seed = 168;
   unsigned int numColours = 100;
   bool auto_gradient = true;

@@ -22,7 +22,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
   if (!shading)
     return (*this)(d);
 
-  double scaled_colour = d / gradient;
+  double scaled_colour = d / gradient + offset;
   double scaled_gradient = gradient;
   for (auto j = colour_stack.rbegin(); j != colour_stack.rend(); ++j) {
     if (d > j->iteration) {
@@ -115,7 +115,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   if (d == 0)
     return make_rgb(0, 0, 0);
 
-  double scaled_colour = d / gradient;
+  double scaled_colour = d / gradient + offset;
   double scaled_gradient = gradient;
   for (auto j = colour_stack.rbegin(); j != colour_stack.rend(); ++j) {
     if (d > j->iteration) {
@@ -235,6 +235,9 @@ void fractals::ColourMapImpl::setGradient(double new_gradient) {
 }
 double fractals::ColourMapImpl::getGradient() const { return gradient; }
 
-void fractals::ColourMapImpl::setOffset(double offset) {}
+void fractals::ColourMapImpl::setOffset(double new_offset) {
+  offset = new_offset;
+  colour_stack.clear();
+}
 
 double fractals::ColourMapImpl::getOffset() const { return 0; }
