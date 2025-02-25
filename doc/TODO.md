@@ -1,8 +1,5 @@
 # Task list
 
-Some bug in bookmarks means that the colour isn't set properly.
-Cannot enter a high gradient in the text box
-
 Today:
 1. Fix Actions build
 2. Fix CodeQL build
