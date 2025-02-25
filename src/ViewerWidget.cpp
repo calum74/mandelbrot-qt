@@ -36,14 +36,8 @@ ViewerWidget::ViewerWidget(QWidget *parent)
   connect(this, &ViewerWidget::renderingFinishedSignal, this,
           &ViewerWidget::renderingFinishedSlot);
 
-  connect(&controlPanel, &ControlPanel::shadingChanged, this,
-          &ViewerWidget::enableShading);
-  connect(&controlPanel, &ControlPanel::colourSeedChanged, this,
-          &ViewerWidget::colourSeedChanged);
-  connect(&controlPanel, &ControlPanel::colourGradientChanged, this,
-          &ViewerWidget::colourGradientChanged);
-  connect(&controlPanel, &ControlPanel::colourOffsetChanged, this,
-          &ViewerWidget::colourOffsetChanged);
+  connect(&controlPanel, &ControlPanel::updateParameters, this,
+          &ViewerWidget::shadingParametersChanged);
   connect(&controlPanel, &ControlPanel::rescalePalette, this,
       &ViewerWidget::scalePalette);
 }
@@ -540,11 +534,11 @@ void ViewerWidget::enableAutoGradient(bool checked) {
 
 void ViewerWidget::enableShading(bool checked) {
   auto &colourMap = *renderer.colourMap;
-  if (checked)
-    colourMap.enableShading();
-  else
-    colourMap.disableShading();
-  controlPanel.changeShading(checked);
+  fractals::shader_parameters params;
+  colourMap.getParameters(params);
+  params.shading = checked;
+  colourMap.setParameters(params);
+  controlPanel.valuesChanged(&params);
   shadingChanged(checked);
   update();
 }
@@ -554,23 +548,15 @@ void ViewerWidget::showOptions() {
   controlPanel.show();
 }
 
-void ViewerWidget::colourSeedChanged(int seed) {
-  renderer.colourMap->setSeed(seed);
-  update();
-}
-
-void ViewerWidget::colourGradientChanged(double gradient) {
-  renderer.colourMap->setGradient(gradient);
-  update();
-}
-
-void ViewerWidget::colourOffsetChanged(double offset) {
-  renderer.colourMap->setOffset(offset);
+void ViewerWidget::shadingParametersChanged(const fractals::shader_parameters *params) {
+  renderer.colourMap->setParameters(*params);
+  shadingChanged(params->shading);
   update();
 }
 
 void ViewerWidget::updateColourControls() {
-  controlPanel.changeColourSeed(renderer.colourMap->getSeed());
-  controlPanel.changeColourGradient(renderer.colourMap->getGradient());
-  controlPanel.changeColourOffset(renderer.colourMap->getOffset());
+  auto &colourMap = *renderer.colourMap;
+  fractals::shader_parameters params;
+  colourMap.getParameters(params);
+  controlPanel.valuesChanged(&params);
 }

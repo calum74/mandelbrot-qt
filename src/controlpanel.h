@@ -2,6 +2,7 @@
 #define CONTROLPANEL_H
 
 #include <QDialog>
+#include "shader_parameters.hpp"
 
 namespace Ui {
 class ControlPanel;
@@ -17,20 +18,14 @@ public:
 
 private:
     Ui::ControlPanel *ui;
+    fractals::shader_parameters params;
 
 signals:
-    void shadingChanged(bool);
-    void autoGradientChanged(bool);
-    void colourSeedChanged(int);
-    void colourGradientChanged(double);
-    void colourOffsetChanged(double);
     void rescalePalette();
+    void updateParameters(const fractals::shader_parameters*params);
 
 public slots:
-    void changeShading(bool);
-    void changeColourSeed(int);
-    void changeColourGradient(double);
-    void changeColourOffset(double);
+    void valuesChanged(const fractals::shader_parameters*params);
 };
 
 #endif // CONTROLPANEL_H

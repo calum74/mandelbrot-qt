@@ -6,6 +6,8 @@ Box:
 3. Colour gradient
 
 Today:
+1. Fix Actions build
+2. Fix CodeQL build
 1. Refactor the shader
 2. Shading dialog box
 3. Remove shown bookmarks

@@ -15,9 +15,9 @@ fractals::view_parameters read_json(const nlohmann::json &js) {
   if (js.contains("Iterations"))
     params.max_iterations = js["Iterations"].get<int>();
   if (js.contains("Gradient"))
-    params.colour_gradient = js["Gradient"].get<double>();
+    params.shader.colour_gradient = js["Gradient"].get<double>();
   if (js.contains("Colour"))
-    params.colour_seed = js["Colour"].get<int>();
+    params.shader.colour_scheme = js["Colour"].get<int>();
   if (js.contains("Algorithm"))
     params.algorithm = js["Algorithm"].get<std::string>();
   return params;
@@ -26,8 +26,8 @@ fractals::view_parameters read_json(const nlohmann::json &js) {
 nlohmann::json write_json(const fractals::view_parameters &params) {
   nlohmann::json js = {};
   js["Name"] = params.title;
-  js["Colour"] = params.colour_seed;
-  js["Gradient"] = params.colour_gradient;
+  js["Colour"] = params.shader.colour_scheme;
+  js["Gradient"] = params.shader.colour_gradient;
   js["Iterations"] = params.max_iterations;
   js["Algorithm"] = params.algorithm;
   js["Re"] = params.x;

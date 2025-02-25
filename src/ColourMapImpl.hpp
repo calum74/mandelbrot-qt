@@ -10,24 +10,17 @@ public:
   RGB operator()(double d) const override;
   void randomize() override;
   void resetGradient() override;
-  void enableAutoGradient() override;
-  void disableAutoGradient() override;
-  void enableShading() override;
-  void disableShading() override;
   void setRange(double min, double max) override;
   void maybeUpdateRange(double min, double max) override;
   void load(const view_parameters &) override;
   void save(view_parameters &) const override;
-  void create_colours();
 
-  void setSeed(int seed) override;
-  int getSeed() const override;
-  void setGradient(double gradient) override;
-  double getGradient() const override;
-  void setOffset(double offset) override;
-  double getOffset() const override;
+  void setParameters(const shader_parameters &) override;
+  void getParameters(shader_parameters &params) override;
 
 private:
+  void create_colours();
+
   std::vector<RGB> colours;
   double gradient = 30;
   double offset = 0;

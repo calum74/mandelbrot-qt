@@ -132,9 +132,7 @@ public slots:
   void openBookmark(const fractals::view_parameters *params);
   void showOptions();
 
-  void colourGradientChanged(double);
-  void colourOffsetChanged(double);
-  void colourSeedChanged(int);
+  void shadingParametersChanged(const fractals::shader_parameters *params);
 
 signals:
   void startCalculating(double width, int maxIterations);

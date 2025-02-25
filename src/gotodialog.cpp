@@ -28,8 +28,8 @@ void GoToDialog::getCoords(fractals::view_parameters &params) const {
   read(ui->yCoord->toPlainText(), params.y);
   read(ui->sizeCoord->toPlainText(), params.r);
   read(ui->maxIterations->toPlainText(), params.max_iterations);
-  read(ui->colour->toPlainText(), params.colour_seed);
-  read(ui->gradient->toPlainText(), params.colour_gradient);
+  read(ui->colour->toPlainText(), params.shader.colour_scheme);
+  read(ui->gradient->toPlainText(), params.shader.colour_gradient);
 }
 
 void GoToDialog::setCoords(const fractals::view_parameters &params) {
@@ -38,6 +38,6 @@ void GoToDialog::setCoords(const fractals::view_parameters &params) {
   ui->sizeCoord->setPlainText(params.r.c_str());
 
   ui->maxIterations->setPlainText(to_qstring(params.max_iterations));
-  ui->colour->setPlainText(to_qstring(params.colour_seed));
-  ui->gradient->setPlainText(to_qstring(params.colour_gradient));
+  ui->colour->setPlainText(to_qstring(params.shader.colour_scheme));
+  ui->gradient->setPlainText(to_qstring(params.shader.colour_gradient));
 }

@@ -195,8 +195,8 @@ void fractals::ColourMapImpl::create_colours() {
 }
 
 void fractals::ColourMapImpl::load(const view_parameters &params) {
-  seed = params.colour_seed;
-  gradient = params.colour_gradient;
+  seed = params.shader.colour_scheme;
+  gradient = params.shader.colour_gradient;
   if (gradient < 1.0)
     gradient = 1.0 / gradient;
   colour_stack.clear();
@@ -204,40 +204,38 @@ void fractals::ColourMapImpl::load(const view_parameters &params) {
 }
 
 void fractals::ColourMapImpl::save(view_parameters &params) const {
-  params.colour_seed = seed;
+  params.shader.colour_scheme = seed;
+  params.shader.colour_gradient = gradient;
+}
+
+void fractals::ColourMapImpl::getParameters(shader_parameters &params) {
+  params.colour_scheme = seed;
   params.colour_gradient = gradient;
+  params.colour_offset = offset;
+  params.auto_gradient = auto_gradient;
+  params.shading = shading;
 }
 
 std::unique_ptr<fractals::ColourMap> fractals::make_colourmap() {
   return std::make_unique<ColourMapImpl>();
 }
 
-void fractals::ColourMapImpl::enableAutoGradient() { auto_gradient = true; }
+void fractals::ColourMapImpl::setParameters(const shader_parameters &params) {
+  if (seed != params.colour_scheme) {
+    seed = params.colour_scheme;
+    create_colours();
+  }
 
-void fractals::ColourMapImpl::disableAutoGradient() {
-  auto_gradient = false;
-  colour_stack.clear();
+  if (gradient != params.colour_gradient || offset != params.colour_offset) {
+    colour_stack.clear();
+    gradient = params.colour_gradient;
+    offset = params.colour_offset;
+  }
+
+  if (auto_gradient && !params.auto_gradient) {
+    colour_stack.clear();
+  }
+
+  auto_gradient = params.auto_gradient;
+  shading = params.shading;
 }
-
-void fractals::ColourMapImpl::enableShading() { shading = true; }
-
-void fractals::ColourMapImpl::disableShading() { shading = false; }
-
-void fractals::ColourMapImpl::setSeed(int new_seed) {
-  seed = new_seed;
-  create_colours();
-}
-
-int fractals::ColourMapImpl::getSeed() const { return seed; }
-void fractals::ColourMapImpl::setGradient(double new_gradient) {
-  gradient = new_gradient;
-  colour_stack.clear();
-}
-double fractals::ColourMapImpl::getGradient() const { return gradient; }
-
-void fractals::ColourMapImpl::setOffset(double new_offset) {
-  offset = new_offset;
-  colour_stack.clear();
-}
-
-double fractals::ColourMapImpl::getOffset() const { return offset; }

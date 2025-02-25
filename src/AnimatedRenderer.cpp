@@ -3,6 +3,7 @@
 #include "RenderingMetrics.hpp"
 #include "registry.hpp"
 #include "view_coords.hpp"
+#include "shader_parameters.hpp"
 #include <cassert>
 
 using namespace std::literals::chrono_literals;
@@ -310,11 +311,17 @@ void fractals::AnimatedRenderer::discovered_depth(
 }
 
 void fractals::AnimatedRenderer::enable_auto_gradient() {
-  colourMap->enableAutoGradient();
+  fractals::shader_parameters params;
+  colourMap->getParameters(params);
+  params.auto_gradient = true;
+  colourMap->setParameters(params);
 }
 
 void fractals::AnimatedRenderer::disable_auto_gradient() {
-  colourMap->disableAutoGradient();
+  fractals::shader_parameters params;
+  colourMap->getParameters(params);
+  params.auto_gradient = false;
+  colourMap->setParameters(params);
 
   if(is_animating())
     renderer->redraw(viewport);
