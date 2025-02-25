@@ -5,8 +5,6 @@
 #include <QTimer>
 #include <QWidget>
 
-#include <mutex>
-
 #include "AnimatedRenderer.hpp"
 #include "ColourMap.hpp"
 #include "Renderer.hpp"
@@ -46,22 +44,9 @@ class ViewerWidget : public QWidget {
   void calculate();
   void draw();
 
-  std::mutex bookmarksMutex;
   std::atomic<int> pending_redraw;
 
   void setSpeedEstimate(double secondsPerPixel);
-
-  struct flag_location {
-    int x, y, size;
-  };
-
-  struct BookmarkToDraw {
-    std::string algorithm;
-    fractals::view_coords coords;
-  };
-
-  std::vector<BookmarkToDraw> bookmarksToDraw;
-  std::vector<flag_location> flagsToDraw;
 
   ControlPanel controlPanel;
   void doUpdate();
@@ -88,10 +73,6 @@ public:
 
   void saveToFile(const QString &image_filename);
 
-  void showBookmarks(const fractals::view_parameters *params, int size);
-  void hideBookmarks();
-
-  void calculateFlagLocations();
   void doResize(int w, int h);
   void updateColourControls();
 

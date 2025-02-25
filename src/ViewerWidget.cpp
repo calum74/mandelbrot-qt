@@ -89,21 +89,6 @@ void ViewerWidget::draw() {
   }
 
   painter.drawImage(this->rect(), image);
-
-  std::lock_guard<std::mutex> lock(bookmarksMutex);
-  if (!flagsToDraw.empty()) {
-    // QIcon::ThemeIcon::EditUndo
-    // QIcon::ThemeIcon::NetworkWireless
-    // QIcon::ThemeIcon::ZoomIn
-    // QIcon::ThemeIcon::GoUp
-    // QIcon::ThemeIcon::GoDown
-
-    QIcon icon = QIcon::fromTheme(QIcon::ThemeIcon::CameraPhoto);
-
-    for (auto &p : flagsToDraw) {
-      icon.paint(&painter, p.x, p.y, p.size, p.size);
-    }
-  }
 }
 
 void ViewerWidget::doResize(int w, int h) {
@@ -185,7 +170,6 @@ void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void ViewerWidget::doUpdate() {
-  calculateFlagLocations();
   update();
 }
 
@@ -483,48 +467,6 @@ void ViewerWidget::enableOversampling(bool checked) {
   QResizeEvent s(size(), size());
   imageScale = checked ? 2.0 : 1.0;
   resizeEvent(&s);
-}
-
-void ViewerWidget::showBookmarks(const fractals::view_parameters *params,
-                                 int size) {
-  std::vector<BookmarkToDraw> newBookmarks;
-  for (int i = 0; i < size; ++i) {
-    newBookmarks.push_back({params[i].algorithm, params[i]});
-  }
-  bookmarksToDraw = std::move(newBookmarks);
-  doUpdate();
-}
-
-void ViewerWidget::hideBookmarks() {
-  bookmarksToDraw.clear();
-  doUpdate();
-}
-
-void ViewerWidget::calculateFlagLocations() {
-  std::vector<flag_location> newFlags;
-  auto name = renderer.renderer->get_fractal_name();
-
-  // !! This might not be threadsafe
-  for (auto &bm : bookmarksToDraw) {
-    if (bm.algorithm == name) {
-      auto p = renderer.map_point(bm.coords);
-      if (p.x >= 0 && p.x < viewport.width() &&
-          p.y >= 0 & p.y < viewport.height()) {
-        int size = p.log_distance;
-        if (size > 0) {
-          size = 40 - size;
-          if (size < 15)
-            size = 15;
-          if (size > 40)
-            size = 40;
-          newFlags.push_back({int(p.x), int(p.y), size});
-        }
-      }
-    }
-  }
-
-  std::lock_guard<std::mutex> lock(bookmarksMutex);
-  flagsToDraw = std::move(newFlags);
 }
 
 void ViewerWidget::enableAutoGradient(bool checked) {

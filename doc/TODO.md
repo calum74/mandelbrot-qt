@@ -1,8 +1,7 @@
 # Task list
 
 Today:
-1. Fix Actions build
-2. Fix CodeQL build
+2. CodeQL fix
 3. Refactor the shader
 
 

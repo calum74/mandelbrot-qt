@@ -297,19 +297,6 @@ void MainWindow::closeEvent(QCloseEvent *) {
   ui->centralwidget = 0;
 }
 
-void MainWindow::showBookmarks(bool checked) {
-  if (checked) {
-    std::vector<fractals::view_parameters> bookmarksToShow =
-        bookmarks->builtinBookmarks;
-    bookmarksToShow.insert(bookmarksToShow.end(), bookmarks->bookmarks.begin(),
-                           bookmarks->bookmarks.end());
-    ui->centralwidget->showBookmarks(bookmarksToShow.data(),
-                                     bookmarksToShow.size());
-  } else {
-    ui->centralwidget->hideBookmarks();
-  }
-}
-
 void MainWindow::shadingChanged(bool checked) {
   ui->actionShading->setChecked(checked);
 }

@@ -8,16 +8,69 @@ fractals::ColourMapImpl::ColourMapImpl() {
   params.shading = true;
   params.ambient_brightness = 0.4;
   params.source_brightness = 0.5;
-  params.source_direction_radians = 3.14/4;
-  params.source_elevation_radians = 3.14/4;
+  params.source_direction_radians = 3.14 / 4;
+  params.source_elevation_radians = 3.14 / 4;
 
   resetGradient();
   create_colours();
 }
 
-void fractals::ColourMapImpl::resetGradient() { 
+void fractals::ColourMapImpl::resetGradient() {
   params.colour_gradient = 30;
   colour_stack.clear();
+}
+
+double shading_algorithm_0(double dx, double dy, double scaled_gradient,
+                           double ambient_brightness, double source_brightness,
+                           double source_x, double source_y, double source_z,
+                           double source_length) {
+  dx /= scaled_gradient;
+  dy /= scaled_gradient;
+
+  double surface_normal_x = dy;
+  double surface_normal_y = -dx;
+  double surface_normal_z = dx * dy;
+  double surface_normal_length = std::sqrt(surface_normal_x * surface_normal_x +
+                                           surface_normal_y * surface_normal_y +
+                                           surface_normal_z * surface_normal_z);
+
+  if (surface_normal_length == 0)
+    surface_normal_length = 1;
+
+  double dot_product =
+      (surface_normal_x * source_x + surface_normal_y * source_y +
+       surface_normal_z * source_z) /
+      (surface_normal_length * source_length);
+
+  return ambient_brightness + source_brightness * (1.0 + dot_product);
+}
+
+double shading_algorithm_1(double dx, double dy, double scaled_gradient,
+                           double ambient_brightness, double source_brightness,
+                           double source_x, double source_y, double source_z,
+                           double source_length) {
+  dx /= scaled_gradient;
+  dy /= scaled_gradient;
+
+  dx *= 100;
+  dy *= 100;
+
+  double surface_normal_x = dx;
+  double surface_normal_y = -dy;
+  double surface_normal_z = 1;
+  double surface_normal_length = std::sqrt(surface_normal_x * surface_normal_x +
+                                           surface_normal_y * surface_normal_y +
+                                           surface_normal_z * surface_normal_z);
+
+  double dot_product =
+      (surface_normal_x * source_x + surface_normal_y * source_y +
+       surface_normal_z * source_z) /
+      (surface_normal_length * source_length);
+
+  if (dot_product < 0)
+    dot_product = 0;
+
+  return ambient_brightness + source_brightness * (1.0 + dot_product);
 }
 
 fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
@@ -41,42 +94,9 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
   double brightness = 1.0;
 
   if (params.shading) {
-    // TODO: Optimize this
-    dx /= scaled_gradient;
-    dy /= scaled_gradient;
-
-    /*
-      v1 = (dx, 0, 1
-      v2 = (0, dy, 1)
-      v3 = v1 X v2 = (dy, -dx, dx*dy)
-      v3 = (v3.x, v3.y, v3.z) / |v3|
-      brightness = ambient + (1-ambient)(v3 . shade)
-    */
-
-    double surface_normal_x = dy;
-    double surface_normal_y = -dx;
-    double surface_normal_z = dx * dy;
-    double surface_normal_length =
-        std::sqrt(surface_normal_x * surface_normal_x +
-                  surface_normal_y * surface_normal_y +
-                  surface_normal_z * surface_normal_z);
-    if (surface_normal_length == 0) {
-      surface_normal_length = 1;
-      // surface_normal_z = 1;
-    }
-
-    double dot_product =
-        (surface_normal_x * source_x + surface_normal_y * source_y +
-         surface_normal_z * source_z) /
-        (surface_normal_length * source_length);
-    // double ambient_brightness = 0.4;
-    // double saturation_factor = 0.7; // 0.5;
-    brightness = params.ambient_brightness + params.source_brightness *
-                                          (1.0 + dot_product);
-    // if (brightness > 1)
-    //   brightness = 1;
-    // if (brightness < 0)
-    //   brightness = 0;
+    brightness = shading_algorithm_0(
+        dx, dy, scaled_gradient, params.ambient_brightness,
+        params.source_brightness, source_x, source_y, source_z, source_length);
   }
 
   int i = scaled_colour;
@@ -161,8 +181,8 @@ void fractals::ColourMapImpl::maybeUpdateRange(double min, double max) {
   // Apply the new gradient to colours above the current max,
   // so the new colours only apply to zooming in
   auto new_gradient = (max - min) / 5.0;
-  auto last_gradient =
-      colour_stack.empty() ? params.colour_gradient : colour_stack.back().gradient;
+  auto last_gradient = colour_stack.empty() ? params.colour_gradient
+                                            : colour_stack.back().gradient;
   auto last_offset = colour_stack.empty() ? 0 : colour_stack.back().offset;
 
   /*
@@ -198,7 +218,7 @@ void fractals::ColourMapImpl::load(const view_parameters &vp) {
   params.colour_scheme = vp.shader.colour_scheme;
   params.colour_gradient = vp.shader.colour_gradient;
   if (params.colour_gradient < 1.0)
-  params.colour_gradient = 1.0 / params.colour_gradient;
+    params.colour_gradient = 1.0 / params.colour_gradient;
   colour_stack.clear();
   create_colours();
 }
@@ -221,7 +241,8 @@ void fractals::ColourMapImpl::setParameters(const shader_parameters &vp) {
     create_colours();
   }
 
-  if (params.colour_gradient != vp.colour_gradient || params.colour_offset != vp.colour_offset) {
+  if (params.colour_gradient != vp.colour_gradient ||
+      params.colour_offset != vp.colour_offset) {
     colour_stack.clear();
   }
 
