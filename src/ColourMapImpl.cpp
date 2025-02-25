@@ -19,7 +19,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
   if (d == 0)
     return make_rgb(0, 0, 0);
 
-  if(!shading)
+  if (!shading)
     return (*this)(d);
 
   double scaled_colour = d / gradient;
@@ -222,3 +222,18 @@ void fractals::ColourMapImpl::disableAutoGradient() {
 void fractals::ColourMapImpl::enableShading() { shading = true; }
 
 void fractals::ColourMapImpl::disableShading() { shading = false; }
+
+void fractals::ColourMapImpl::setSeed(int new_seed) {
+  seed = new_seed;
+  create_colours();
+}
+
+int fractals::ColourMapImpl::getSeed() const { return seed; }
+void fractals::ColourMapImpl::setGradient(double new_gradient) {
+  gradient = new_gradient;
+}
+double fractals::ColourMapImpl::getGradient() const { return gradient; }
+
+void fractals::ColourMapImpl::setOffset(double offset) {}
+
+double fractals::ColourMapImpl::getOffset() const { return 0; }

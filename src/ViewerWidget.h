@@ -93,6 +93,7 @@ public:
 
   void calculateFlagLocations();
   void doResize(int w, int h);
+  void updateColourControls();
 
 public slots:
   void copyCoords();
@@ -130,6 +131,10 @@ public slots:
 
   void openBookmark(const fractals::view_parameters *params);
   void showOptions();
+
+  void colourGradientChanged(double);
+  void colourOffsetChanged(double);
+  void colourSeedChanged(int);
 
 signals:
   void startCalculating(double width, int maxIterations);

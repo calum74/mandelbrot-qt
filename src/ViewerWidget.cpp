@@ -38,6 +38,12 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 
   connect(&controlPanel, &ControlPanel::shadingChanged, this,
           &ViewerWidget::enableShading);
+  connect(&controlPanel, &ControlPanel::colourSeedChanged, this,
+          &ViewerWidget::colourSeedChanged);
+  connect(&controlPanel, &ControlPanel::colourGradientChanged, this,
+          &ViewerWidget::colourGradientChanged);
+  connect(&controlPanel, &ControlPanel::colourOffsetChanged, this,
+          &ViewerWidget::colourOffsetChanged);
 }
 
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
@@ -270,6 +276,7 @@ bool ViewerWidget::setCoords(const fractals::view_parameters &params) {
 
 void ViewerWidget::recolourPalette() {
   renderer.colourMap->randomize();
+  updateColourControls();
   update();
 }
 
@@ -356,6 +363,7 @@ void ViewerWidget::scalePalette() {
     renderer.colourMap->setRange(min, p);
   else if (max > 0)
     renderer.colourMap->setRange(min, max);
+  updateColourControls();
   update();
 }
 
@@ -539,4 +547,28 @@ void ViewerWidget::enableShading(bool checked) {
   update();
 }
 
-void ViewerWidget::showOptions() { controlPanel.show(); }
+void ViewerWidget::showOptions() {
+  updateColourControls();
+  controlPanel.show();
+}
+
+void ViewerWidget::colourSeedChanged(int seed) {
+  renderer.colourMap->setSeed(seed);
+  update();
+}
+
+void ViewerWidget::colourGradientChanged(double gradient) {
+  renderer.colourMap->setGradient(gradient);
+  update();
+}
+
+void ViewerWidget::colourOffsetChanged(double offset) {
+  renderer.colourMap->setOffset(offset);
+  update();
+}
+
+void ViewerWidget::updateColourControls() {
+  controlPanel.changeColourSeed(renderer.colourMap->getSeed());
+  controlPanel.changeColourGradient(renderer.colourMap->getGradient());
+  controlPanel.changeColourOffset(renderer.colourMap->getOffset());
+}

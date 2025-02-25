@@ -21,6 +21,13 @@ public:
 
   virtual void load(const view_parameters &) = 0;
   virtual void save(view_parameters &) const = 0;
+
+  virtual void setSeed(int seed) = 0;
+  virtual int getSeed() const = 0;
+  virtual void setGradient(double gradient) = 0;
+  virtual double getGradient() const = 0;
+  virtual void setOffset(double offset) = 0;
+  virtual double getOffset() const = 0;
 };
 
 std::unique_ptr<ColourMap> make_colourmap();

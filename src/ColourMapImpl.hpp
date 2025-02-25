@@ -20,6 +20,13 @@ public:
   void save(view_parameters &) const override;
   void create_colours();
 
+  void setSeed(int seed) override;
+  int getSeed() const override;
+  void setGradient(double gradient) override;
+  double getGradient() const override;
+  void setOffset(double offset) override;
+  double getOffset() const override;
+
 private:
   std::vector<RGB> colours;
   double gradient = 30;

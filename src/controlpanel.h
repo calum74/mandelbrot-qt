@@ -21,9 +21,15 @@ private:
 signals:
     void shadingChanged(bool);
     void autoGradientChanged(bool);
+    void colourSeedChanged(int);
+    void colourGradientChanged(double);
+    void colourOffsetChanged(double);
 
 public slots:
     void changeShading(bool);
+    void changeColourSeed(int);
+    void changeColourGradient(double);
+    void changeColourOffset(double);
 };
 
 #endif // CONTROLPANEL_H

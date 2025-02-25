@@ -193,7 +193,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Iterations per colour</string>
+    <string>iterations per colour</string>
    </property>
   </widget>
  </widget>
