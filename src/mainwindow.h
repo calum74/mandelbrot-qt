@@ -45,6 +45,7 @@ public slots:
   void newWindow();
 
   void showBookmarks(bool checked);
+  void shadingChanged(bool checked);
 
 private:
   Ui::MainWindow *ui;

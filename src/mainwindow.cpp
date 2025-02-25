@@ -92,6 +92,8 @@ MainWindow::MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks0,
           &MainWindow::addBookmark);
   connect(ui->actionShow_bookmark_locations, &QAction::triggered, this,
           &MainWindow::showBookmarks);
+  connect(ui->centralwidget, &ViewerWidget::shadingChanged, this,
+          &MainWindow::shadingChanged);
 
   zoomSpeedActionGroup.setExclusionPolicy(
       QActionGroup::ExclusionPolicy::Exclusive);
@@ -308,4 +310,8 @@ void MainWindow::showBookmarks(bool checked) {
   } else {
     ui->centralwidget->hideBookmarks();
   }
+}
+
+void MainWindow::shadingChanged(bool checked) {
+  ui->actionShading->setChecked(checked);
 }

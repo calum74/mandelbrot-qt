@@ -17,6 +17,13 @@ public:
 
 private:
     Ui::ControlPanel *ui;
+
+signals:
+    void shadingChanged(bool);
+    void autoGradientChanged(bool);
+
+public slots:
+    void changeShading(bool);
 };
 
 #endif // CONTROLPANEL_H

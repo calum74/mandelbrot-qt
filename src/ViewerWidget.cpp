@@ -35,6 +35,9 @@ ViewerWidget::ViewerWidget(QWidget *parent)
   // Called on a separate thread so we can't just start new work
   connect(this, &ViewerWidget::renderingFinishedSignal, this,
           &ViewerWidget::renderingFinishedSlot);
+
+  connect(&controlPanel, &ControlPanel::shadingChanged, this,
+          &ViewerWidget::enableShading);
 }
 
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
@@ -531,10 +534,9 @@ void ViewerWidget::enableShading(bool checked) {
     colourMap.enableShading();
   else
     colourMap.disableShading();
+  controlPanel.changeShading(checked);
+  shadingChanged(checked);
   update();
 }
 
-void ViewerWidget::showOptions()
-{
-  controlPanel.show();
-}
+void ViewerWidget::showOptions() { controlPanel.show(); }

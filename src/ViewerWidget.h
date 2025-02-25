@@ -137,6 +137,7 @@ signals:
                      metrics); // References silently fail with Qt signals/slots
   void renderingFinishedSignal();
   void fractalChanged(const char *name);
+  void shadingChanged(bool);
 };
 
 #endif // VIEWERWIDGET_H
