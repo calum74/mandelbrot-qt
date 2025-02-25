@@ -24,6 +24,7 @@ signals:
     void colourSeedChanged(int);
     void colourGradientChanged(double);
     void colourOffsetChanged(double);
+    void rescalePalette();
 
 public slots:
     void changeShading(bool);

@@ -9,6 +9,7 @@ ControlPanel::ControlPanel(QWidget *parent)
   ui->colourGradientSlider->setRange(1,2500);
   ui->colourOffsetSlider->setRange(0,1000);
 
+  connect(ui->resetGradientButton, &QPushButton::clicked, this, &ControlPanel::rescalePalette);
   connect(ui->shadingCheck, &QCheckBox::toggled, this, &ControlPanel::shadingChanged);
   connect(ui->colourSeedSpin, &QSpinBox::valueChanged, this, &ControlPanel::colourSeedChanged);
   connect(ui->colourGradientSlider, &QSlider::valueChanged, this, &ControlPanel::changeColourGradient);

@@ -240,4 +240,4 @@ void fractals::ColourMapImpl::setOffset(double new_offset) {
   colour_stack.clear();
 }
 
-double fractals::ColourMapImpl::getOffset() const { return 0; }
+double fractals::ColourMapImpl::getOffset() const { return offset; }

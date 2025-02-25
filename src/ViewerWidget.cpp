@@ -44,6 +44,8 @@ ViewerWidget::ViewerWidget(QWidget *parent)
           &ViewerWidget::colourGradientChanged);
   connect(&controlPanel, &ControlPanel::colourOffsetChanged, this,
           &ViewerWidget::colourOffsetChanged);
+  connect(&controlPanel, &ControlPanel::rescalePalette, this,
+      &ViewerWidget::scalePalette);
 }
 
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
