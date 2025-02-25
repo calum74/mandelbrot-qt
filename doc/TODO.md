@@ -1,16 +1,13 @@
 # Task list
 
-Box:
-1. Shading on/off
-2. Colour scheme
-3. Colour gradient
+Some bug in bookmarks means that the colour isn't set properly.
+Cannot enter a high gradient in the text box
 
 Today:
 1. Fix Actions build
 2. Fix CodeQL build
-1. Refactor the shader
-2. Shading dialog box
-3. Remove shown bookmarks
+3. Refactor the shader
+
 
 ```
 class shader
@@ -28,13 +25,6 @@ Bugs:
   Probably tried to navigate before finished rendering
 2. Shows wrong background when zooming in
 
-Control panel:
-
-Colouring:
-
-Animation:
-Slow/medium/fast
-
 Animation:
 - Animation should reset the colour gradient
 
@@ -45,6 +35,7 @@ Refactoring:
 - Reduce need to call `convert<>` all the time.
 - Colourmap and shadermap
 - [ ] Split into library and fractals
+- Remove shown bookmarks
 
 Papercuts:
 - Navigate randomly stops prematurely

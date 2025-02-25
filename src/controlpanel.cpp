@@ -32,10 +32,10 @@ ControlPanel::ControlPanel(QWidget *parent)
   connect(ui->colourGradientBox, &QLineEdit::textChanged, this,
           [&](QString value) {
             auto d = value.toDouble();
+            params.colour_gradient = d;
             if (d < 2000)
               ui->colourGradientSlider->setValue(d);
             updateParameters(&params);
-            valuesChanged(&params);
           });
   connect(ui->colourOffsetSlider, &QSlider::valueChanged, this, [&](double d) {
     params.colour_offset = d / 10;

@@ -18,7 +18,7 @@ public:
 
   virtual void load(const view_parameters &) = 0;
   virtual void save(view_parameters &) const = 0;
-  virtual void setParameters(const shader_parameters &)=0;
+  virtual void setParameters(const shader_parameters &) = 0;
   virtual void getParameters(shader_parameters &params) = 0;
 };
 

@@ -400,6 +400,7 @@ void ViewerWidget::openBookmark(const fractals::view_parameters *params) {
   renderer.colourMap->load(*params);
   fractalChanged(
       renderer.renderer->get_fractal_name().c_str()); // Update menus if needed
+  controlPanel.valuesChanged(&params->shader);
   calculate();
 }
 
