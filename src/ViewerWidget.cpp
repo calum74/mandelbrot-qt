@@ -27,7 +27,7 @@
 using namespace std::literals::chrono_literals;
 
 ViewerWidget::ViewerWidget(QWidget *parent)
-    : QWidget{parent}, viewport(*this), renderer(viewport) {
+    : QWidget{parent}, viewport(*this), renderer(viewport), controlPanel(this) {
   setFastAnimation();
 
   renderingTimer.setSingleShot(true);

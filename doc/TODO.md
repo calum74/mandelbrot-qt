@@ -3,6 +3,7 @@
 Today:
 1. Refactor the shader
 2. Shading dialog box
+3. Remove shown bookmarks
 
 
 Bugs:

@@ -6,35 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>478</width>
-    <height>353</height>
+    <width>291</width>
+    <height>344</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Colour controls</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
+  <widget class="QSpinBox" name="colourSeedSpin">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>290</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Orientation::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::StandardButton::Ok</set>
-   </property>
-  </widget>
-  <widget class="QSpinBox" name="spinBox">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
+     <x>160</x>
      <y>20</y>
-     <width>42</width>
+     <width>81</width>
      <height>22</height>
     </rect>
    </property>
@@ -52,12 +36,12 @@
     <string>Colour scheme</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="colourGradientBox">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>50</y>
-     <width>113</width>
+     <x>160</x>
+     <y>60</y>
+     <width>81</width>
      <height>21</height>
     </rect>
    </property>
@@ -66,7 +50,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>50</y>
+     <y>60</y>
      <width>111</width>
      <height>16</height>
     </rect>
@@ -88,47 +72,47 @@
     <string>Colour offset</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
+  <widget class="QLineEdit" name="colourOffsetBox">
    <property name="geometry">
     <rect>
      <x>160</x>
      <y>120</y>
-     <width>113</width>
+     <width>81</width>
      <height>21</height>
     </rect>
    </property>
   </widget>
-  <widget class="QSlider" name="horizontalSlider">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>50</y>
-     <width>171</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Orientation::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QSlider" name="horizontalSlider_2">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>120</y>
-     <width>160</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Orientation::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="checkBox">
+  <widget class="QSlider" name="colourGradientSlider">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>180</y>
+     <y>90</y>
+     <width>211</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Orientation::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QSlider" name="colourOffsetSlider">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>150</y>
+     <width>211</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Orientation::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="shadingCheck">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>220</y>
      <width>111</width>
      <height>20</height>
     </rect>
@@ -137,11 +121,11 @@
     <string>Shading</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_2">
+  <widget class="QCheckBox" name="autoGradientCheck">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>80</y>
+     <x>30</x>
+     <y>260</y>
      <width>281</width>
      <height>20</height>
     </rect>
@@ -150,12 +134,12 @@
     <string>Automatically adjust colour gradient</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_3">
+  <widget class="QLineEdit" name="iterationsBox">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>250</y>
-     <width>113</width>
+     <x>160</x>
+     <y>180</y>
+     <width>81</width>
      <height>21</height>
     </rect>
    </property>
@@ -163,8 +147,8 @@
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>250</y>
+     <x>30</x>
+     <y>180</y>
      <width>71</width>
      <height>16</height>
     </rect>
@@ -173,11 +157,11 @@
     <string>Iterations</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_3">
+  <widget class="QCheckBox" name="autoIterationsCheck">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>210</y>
+     <y>240</y>
      <width>231</width>
      <height>20</height>
     </rect>
@@ -186,11 +170,11 @@
     <string>Automatically adjust iterations</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="resetGradientButton">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>70</y>
+     <x>30</x>
+     <y>290</y>
      <width>100</width>
      <height>32</height>
     </rect>
@@ -201,38 +185,5 @@
   </widget>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>ControlPanel</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>ControlPanel</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
