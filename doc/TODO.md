@@ -10,19 +10,7 @@ Today:
 2. Shading dialog box
 3. Remove shown bookmarks
 
-```c++
-struct shader_parameters
-{
-  int colour_scheme;
-  bool auto_gradient;
-  double gradient;
-
-  bool shading;
-  double ambient_brightness;
-  double source_brightness;
-  double source_x, source_y, source_x;
-};
-
+```
 class shader
 {
 

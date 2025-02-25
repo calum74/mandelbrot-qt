@@ -94,7 +94,6 @@
      <string>Bookmarks</string>
     </property>
     <addaction name="actionAdd_bookmark"/>
-    <addaction name="actionShow_bookmark_locations"/>
     <addaction name="separator"/>
    </widget>
    <addaction name="menuExample"/>
@@ -384,14 +383,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
-   </property>
-  </action>
-  <action name="actionShow_bookmark_locations">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Flag locations</string>
    </property>
   </action>
   <action name="actionDeveloper_mode">
