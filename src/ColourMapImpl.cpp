@@ -8,6 +8,9 @@ fractals::ColourMapImpl::ColourMapImpl() {
   params.shading = true;
   params.ambient_brightness = 0.4;
   params.source_brightness = 0.5;
+  params.source_direction_radians = 3.14/4;
+  params.source_elevation_radians = 3.14/4;
+
   resetGradient();
   create_colours();
 }
@@ -222,16 +225,15 @@ void fractals::ColourMapImpl::setParameters(const shader_parameters &vp) {
 
   if (params.colour_gradient != vp.colour_gradient || params.colour_offset != vp.colour_offset) {
     colour_stack.clear();
-    params.colour_gradient = vp.colour_gradient;
-    params.colour_offset = vp.colour_offset;
   }
 
   if (params.auto_gradient && !vp.auto_gradient) {
     colour_stack.clear();
   }
 
-  params.auto_gradient = vp.auto_gradient;
-  params.shading = vp.shading;
-  params.ambient_brightness = vp.ambient_brightness;
-  params.source_brightness = vp.source_brightness;
+  params = vp;
+
+  std::cout << "Source direction = " << params.source_direction_radians << std::endl;
+  std::cout << "Source incline = " << params.source_elevation_radians << std::endl;
+
 }

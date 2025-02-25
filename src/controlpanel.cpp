@@ -9,6 +9,8 @@ ControlPanel::ControlPanel(QWidget *parent)
   ui->colourOffsetSlider->setRange(0, 1000);
   ui->ambientBrightnessSlider->setRange(0, 100);
   ui->sourceBrightnessSlider->setRange(0, 100);
+  ui->sourceInclineSlider->setRange(0, 100);
+  ui->sourceDirectionSlider->setRange(0, 100);
 
   connect(ui->resetGradientButton, &QPushButton::clicked, this,
           &ControlPanel::rescalePalette);
@@ -60,6 +62,18 @@ ControlPanel::ControlPanel(QWidget *parent)
             params.source_brightness = value / 100.0;
             updateParameters(&params);
           });
+
+  connect(ui->sourceDirectionSlider, &QSlider::valueChanged, this,
+          [&](double value) {
+            params.source_direction_radians = value * 2 * M_PI / 100;
+            updateParameters(&params);
+          });
+
+  connect(ui->sourceInclineSlider, &QSlider::valueChanged, this,
+          [&](double value) {
+            params.source_elevation_radians = value * M_PI / (2 * 100);
+            updateParameters(&params);
+          });
 }
 
 ControlPanel::~ControlPanel() { delete ui; }
@@ -79,4 +93,9 @@ void ControlPanel::valuesChanged(const fractals::shader_parameters *params) {
 
   ui->ambientBrightnessSlider->setValue(params->ambient_brightness * 100);
   ui->sourceBrightnessSlider->setValue(params->source_brightness * 100);
+
+  ui->sourceDirectionSlider->setValue(params->source_direction_radians * 100 /
+                                      (2 * M_PI));
+  ui->sourceInclineSlider->setValue(params->source_elevation_radians * 100 /
+                                    (M_PI / 2));
 }
