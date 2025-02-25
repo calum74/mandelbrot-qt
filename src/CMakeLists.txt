@@ -55,6 +55,7 @@ qt_add_executable(mandelbrot-qt
         ViewerWidget.h ViewerWidget.cpp
         gotodialog.h gotodialog.cpp gotodialog.ui
         resources.qrc
+        controlpanel.h controlpanel.cpp controlpanel.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET mandelbrot-qt APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

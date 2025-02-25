@@ -1,35 +1,33 @@
 # Task list
 
-Next steps:
-- When remapping a viewport, write a flag on it: Suitable for shading
-- When zooming, perform a smooth zoom so that we can still apply shading to it.
-- When interpolating, perform a smooth interpolation so we can still try to apply shading to it.
+Today:
+1. Refactor the shader
+2. Shading dialog box
 
-Shading:
-- When animating, sometimes only the top half of the image is shaded.
-- When you stop animating, it'll redraw the calculation without shading.
-- Can we keep shading on even in the zooms if we intepolate correctly?
-
-Animation:
-- Animation should reset the colour gradient
 
 Bugs:
+- Black regions when dragging. Can we fill it in better?
 - Odd segmentation fault
-
-
-Bugs:
 1. Autonavigate stops
   Probably tried to navigate before finished rendering
 2. Shows wrong background when zooming in
+
+Control panel:
+
+Colouring:
+
+Animation:
+Slow/medium/fast
+
+Animation:
+- Animation should reset the colour gradient
 
 Refactoring:
 - Can we refactor AsyncRenderer & AnimatedRenderer further?
 - Put colourmap into mandelbrot?
   -> Only after shading done?
-
 - Reduce need to call `convert<>` all the time.
 - Colourmap and shadermap
-- `convert` -> `number_cast<>()`
 - [ ] Split into library and fractals
 
 Papercuts:

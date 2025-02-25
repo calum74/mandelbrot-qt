@@ -65,6 +65,7 @@
     <addaction name="actionScale_palette"/>
     <addaction name="separator"/>
     <addaction name="actionOversampling"/>
+    <addaction name="actionOptions"/>
    </widget>
    <widget class="QMenu" name="menuFractal">
     <property name="title">
@@ -421,6 +422,11 @@
    </property>
    <property name="text">
     <string>Shading</string>
+   </property>
+  </action>
+  <action name="actionOptions">
+   <property name="text">
+    <string>Options...</string>
    </property>
   </action>
  </widget>
