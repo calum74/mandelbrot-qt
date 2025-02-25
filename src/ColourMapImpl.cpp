@@ -42,11 +42,6 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
     dx /= scaled_gradient;
     dy /= scaled_gradient;
 
-    // A unit shade vector
-    double shade_x = 1, shade_y = 1, shade_z = 1;
-    double shade_length =
-        std::sqrt(shade_x * shade_x + shade_y * shade_y + shade_z * shade_z);
-
     /*
       v1 = (dx, 0, 1
       v2 = (0, dy, 1)
@@ -68,9 +63,9 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
     }
 
     double dot_product =
-        (surface_normal_x * shade_x + surface_normal_y * shade_y +
-         surface_normal_z * shade_z) /
-        (surface_normal_length * shade_length);
+        (surface_normal_x * source_x + surface_normal_y * source_y +
+         surface_normal_z * source_z) /
+        (surface_normal_length * source_length);
     // double ambient_brightness = 0.4;
     // double saturation_factor = 0.7; // 0.5;
     brightness = params.ambient_brightness + params.source_brightness *
@@ -233,7 +228,12 @@ void fractals::ColourMapImpl::setParameters(const shader_parameters &vp) {
 
   params = vp;
 
-  std::cout << "Source direction = " << params.source_direction_radians << std::endl;
-  std::cout << "Source incline = " << params.source_elevation_radians << std::endl;
-
+  // Recalculate the source based on spherical coordinates
+  source_x = std::sin(params.source_elevation_radians) *
+             std::cos(params.source_direction_radians);
+  source_y = std::sin(params.source_elevation_radians) *
+             std::sin(params.source_direction_radians);
+  source_z = std::cos(params.source_elevation_radians);
+  source_length = std::sqrt(source_x * source_x + source_y * source_y +
+                            source_z * source_z);
 }

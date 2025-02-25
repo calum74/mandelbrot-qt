@@ -32,5 +32,9 @@ private:
   };
 
   std::vector<colour_entry> colour_stack;
+
+  // A unit shade vector
+  double source_x = 1, source_y = 1, source_z = 1;
+  double source_length = 1.732; // sqrt(3)
 };
 } // namespace fractals
