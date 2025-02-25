@@ -65,7 +65,7 @@
     <addaction name="actionScale_palette"/>
     <addaction name="separator"/>
     <addaction name="actionOversampling"/>
-    <addaction name="actionOptions"/>
+    <addaction name="actionControl_panel"/>
    </widget>
    <widget class="QMenu" name="menuFractal">
     <property name="title">
@@ -359,7 +359,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Oversampling</string>
+    <string>High resolution</string>
    </property>
   </action>
   <action name="actionPaste_coords">
@@ -424,9 +424,9 @@
     <string>Shading</string>
    </property>
   </action>
-  <action name="actionOptions">
+  <action name="actionControl_panel">
    <property name="text">
-    <string>Options...</string>
+    <string>Colour controls...</string>
    </property>
   </action>
  </widget>

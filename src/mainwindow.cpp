@@ -27,6 +27,8 @@ MainWindow::MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks0,
           &ViewerWidget::pasteCoords);
   connect(ui->actionGoTo, &QAction::triggered, this,
           &MainWindow::openGoToDialog);
+  connect(ui->actionControl_panel, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::showOptions);
 
   connect(ui->actionIncrease_iterations, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::increaseIterations);
@@ -51,10 +53,10 @@ MainWindow::MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks0,
   connect(ui->actionOversampling, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::enableOversampling);
   connect(ui->actionAutomatic_gradient, &QAction::triggered, ui->centralwidget,
-    &ViewerWidget::enableAutoGradient);
-    connect(ui->actionShading, &QAction::triggered, ui->centralwidget,
-      &ViewerWidget::enableShading);
-    
+          &ViewerWidget::enableAutoGradient);
+  connect(ui->actionShading, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::enableShading);
+
   connect(ui->actionAuto_iterations, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::enableAutoDepth);
   connect(ui->actionQuick_save, &QAction::triggered, ui->centralwidget,
@@ -154,12 +156,16 @@ void MainWindow::completed(const fractals::RenderingMetrics *metrics) {
 #endif
   ss << "Radius " << std::setprecision(2);
   fractals::log_radius(ss, metrics->log_radius);
-  ss << " completed in " << std::fixed << metrics->render_time_seconds << " seconds, depth "
-     << (int)metrics->min_depth << "-" << (int)metrics->max_depth;
+  ss << " completed in " << std::fixed << metrics->render_time_seconds
+     << " seconds, depth " << (int)metrics->min_depth << "-"
+     << (int)metrics->max_depth;
 
   // Extra metrics
-  if(ui->actionDeveloper_mode->isChecked()) {
-    ss << " (skipped " << (100.0 * metrics->average_skipped_iterations / metrics->average_iterations) << "%)";
+  if (ui->actionDeveloper_mode->isChecked()) {
+    ss << " (skipped "
+       << (100.0 * metrics->average_skipped_iterations /
+           metrics->average_iterations)
+       << "%)";
   }
 
   ui->statusbar->showMessage(ss.str().c_str());
@@ -176,8 +182,9 @@ void MainWindow::openGoToDialog() {
   }
 }
 
-ChangeFractalAction::ChangeFractalAction(
-    const char *name, const fractals::fractal &fractal, bool checked)
+ChangeFractalAction::ChangeFractalAction(const char *name,
+                                         const fractals::fractal &fractal,
+                                         bool checked)
     : QAction{name}, fractal{fractal} {
   setCheckable(true);
   setChecked(checked);

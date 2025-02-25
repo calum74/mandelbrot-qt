@@ -533,3 +533,8 @@ void ViewerWidget::enableShading(bool checked) {
     colourMap.disableShading();
   update();
 }
+
+void ViewerWidget::showOptions()
+{
+  controlPanel.show();
+}

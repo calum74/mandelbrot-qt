@@ -14,6 +14,7 @@
 #include "fractal.hpp"
 #include "view_coords.hpp"
 #include "registry.hpp"
+#include "controlpanel.h"
 
 class ViewerWidget : public QWidget {
   Q_OBJECT
@@ -61,6 +62,8 @@ class ViewerWidget : public QWidget {
 
   std::vector<BookmarkToDraw> bookmarksToDraw;
   std::vector<flag_location> flagsToDraw;
+
+  ControlPanel controlPanel;
   void doUpdate();
 
 public:
@@ -126,6 +129,7 @@ public slots:
   void setFastestAnimation();
 
   void openBookmark(const fractals::view_parameters *params);
+  void showOptions();
 
 signals:
   void startCalculating(double width, int maxIterations);
