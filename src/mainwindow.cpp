@@ -149,7 +149,7 @@ void MainWindow::startCalculating(double d, int iterations) {
   ui->statusbar->showMessage(ss.str().c_str());
 }
 
-void MainWindow::completed(const fractals::RenderingMetrics *metrics) {
+void MainWindow::completed(const fractals::calculation_metrics *metrics) {
   std::stringstream ss;
 #ifndef NDEBUG
   ss << "DEBUG BUILD ";

@@ -27,7 +27,7 @@ class ViewerWidget : public QWidget {
     ViewerWidget &widget;
     MyViewport(ViewerWidget &);
     void updated() override;
-    void finished(const fractals::RenderingMetrics &) override;
+    void finished(const fractals::calculation_metrics &) override;
     void calculation_started(double log_radius, int iterations) override;
     void schedule_next_calculation() override;
     void start_timer() override;
@@ -117,7 +117,7 @@ public slots:
 
 signals:
   void startCalculating(double width, int maxIterations);
-  void completed(const fractals::RenderingMetrics *
+  void completed(const fractals::calculation_metrics *
                      metrics); // References silently fail with Qt signals/slots
   void renderingFinishedSignal();
   void fractalChanged(const char *name);

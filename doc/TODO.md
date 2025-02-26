@@ -2,23 +2,6 @@
 
 Today:
 - Quality zoom in sometimes does not update the final image on zoom
-- Refactor the shaders and put into mandelbrot
-New colour schemes, e.g. 173
-- Click shading checkbox to disable the controls
-
-Today:
-2. CodeQL fix
-3. Refactor the shader
-
-
-```
-class shader
-{
-
-};
-
-shader make_shader(shader_parameters);
-```
 
 Bugs:
 - Black regions when dragging. Can we fill it in better?

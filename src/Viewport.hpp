@@ -2,7 +2,7 @@
 #include "pixmap.hpp"
 
 namespace fractals {
-struct RenderingMetrics;
+struct calculation_metrics;
 
 /*
 A region to render. It is essentially a buffer of pixels
@@ -40,7 +40,7 @@ public:
   virtual void updated();
 
   // Callback when calculation has completed
-  virtual void finished(const RenderingMetrics &metrics);
+  virtual void finished(const calculation_metrics &metrics);
 
   // Signal that a new calculation has started
   virtual void calculation_started(double log_radius, int iterations);

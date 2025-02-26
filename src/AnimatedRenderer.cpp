@@ -1,6 +1,6 @@
 #include "AnimatedRenderer.hpp"
 #include "Renderer.hpp"
-#include "RenderingMetrics.hpp"
+#include "calculation_metrics.hpp"
 #include "registry.hpp"
 #include "view_coords.hpp"
 #include "shader_parameters.hpp"
@@ -90,7 +90,7 @@ void fractals::AnimatedRenderer::BackgroundViewport::updated() {
 }
 
 void fractals::AnimatedRenderer::BackgroundViewport::finished(
-    const RenderingMetrics &metrics) {
+    const calculation_metrics &metrics) {
   renderer.calculated_points = metrics.points_calculated;
   renderer.view_min = metrics.min_depth;
   renderer.view_max = metrics.max_depth;
@@ -302,7 +302,7 @@ fractals::AnimatedRenderer::map_point(const view_coords &c) const {
 }
 
 void fractals::AnimatedRenderer::discovered_depth(
-    const RenderingMetrics &metrics) {
+    const calculation_metrics &metrics) {
   renderer->discovered_depth(metrics);
 
   if (!metrics.last_action_was_a_scroll && metrics.points_calculated > 1000 && metrics.min_depth>0) {

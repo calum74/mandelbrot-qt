@@ -40,7 +40,7 @@ public:
   void zoom_at_cursor();
   void smooth_zoom_in();
   void set_speed_estimate(double seconds_per_pixel);
-  void discovered_depth(const RenderingMetrics &metrics);
+  void discovered_depth(const calculation_metrics &metrics);
 
   // fixedSpeed means that we don't wait for rendering to complete
   void set_animation_speed(std::chrono::duration<double> speed,
@@ -90,7 +90,7 @@ private:
     BackgroundViewport(AnimatedRenderer &);
     AnimatedRenderer &renderer;
     void updated() override;
-    void finished(const RenderingMetrics &metrics) override;
+    void finished(const calculation_metrics &metrics) override;
   } background_viewport;
 
   void render_update_background_image();

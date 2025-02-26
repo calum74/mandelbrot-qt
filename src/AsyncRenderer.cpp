@@ -64,7 +64,7 @@ double fractals::AsyncRenderer::get_average_skipped_iterations() const {
 }
 
 void fractals::AsyncRenderer::discovered_depth(
-    const RenderingMetrics &metrics) {
+    const calculation_metrics &metrics) {
   if (!metrics.last_action_was_a_scroll && metrics.non_black_points > 100 &&
       metrics.discovered_depth > 250 || (metrics.discovered_depth*2 > coords.max_iterations)) {                     // Fudge factor
     coords.max_iterations = metrics.discovered_depth * 2; // Fudge factor

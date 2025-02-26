@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "RenderingMetrics.hpp"
+#include "calculation_metrics.hpp"
 #include "mandelbrot_fwd.hpp"
 #include "view_parameters.hpp"
 #include <QAction>
@@ -35,7 +35,7 @@ public:
 
 public slots:
   void startCalculating(double d, int i);
-  void completed(const fractals::RenderingMetrics *metrics);
+  void completed(const fractals::calculation_metrics *metrics);
   void openGoToDialog();
   void changeFractal(class ChangeFractalAction *src,
                      const fractals::fractal &fractal);

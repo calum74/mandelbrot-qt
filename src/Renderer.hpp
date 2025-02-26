@@ -7,7 +7,7 @@ namespace fractals {
 class Viewport;
 class view_coords;
 class fractal;
-struct RenderingMetrics;
+struct calculation_metrics;
 class Registry;
 struct view_parameters;
 struct mapped_point;
@@ -45,7 +45,7 @@ public:
 
   virtual view_coords get_coords() const = 0;
 
-  virtual void discovered_depth(const RenderingMetrics &metrics);
+  virtual void discovered_depth(const calculation_metrics &metrics);
 
   // Returns true on success (and value changed)
   // False on failure (coords not changed).

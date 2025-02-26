@@ -12,7 +12,7 @@
 #include <QStandardPaths>
 #include <QWheelEvent>
 
-#include "RenderingMetrics.hpp"
+#include "calculation_metrics.hpp"
 #include "fractal_calculation.hpp"
 #include "json.hpp"
 #include "mandelbrot.hpp"
@@ -191,7 +191,7 @@ void ViewerWidget::MyViewport::schedule_next_calculation() {
 }
 
 void ViewerWidget::MyViewport::finished(
-    const fractals::RenderingMetrics &metrics) {
+    const fractals::calculation_metrics &metrics) {
 
   if (widget.renderer.renderer)
     widget.renderer.discovered_depth(metrics);

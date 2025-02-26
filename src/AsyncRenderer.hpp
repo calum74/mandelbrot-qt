@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Renderer.hpp"
-#include "RenderingMetrics.hpp"
+#include "calculation_metrics.hpp"
 #include "calculation_pixmap.hpp"
 #include "fractal.hpp"
 #include "mandelbrot_fwd.hpp"
@@ -23,7 +23,7 @@ public:
   void decrease_iterations(Viewport &vp) override;
   double get_average_iterations() const override;
   double get_average_skipped_iterations() const override;
-  void discovered_depth(const RenderingMetrics &metrics) override;
+  void discovered_depth(const calculation_metrics &metrics) override;
   void set_fractal(const fractals::fractal &f) override;
   std::string get_fractal_name() const override;
   std::string get_fractal_family() const override;
@@ -71,7 +71,7 @@ private:
   std::shared_ptr<fractal_calculation> calculation;
   std::chrono::time_point<std::chrono::high_resolution_clock> t0;
 
-  RenderingMetrics metrics;
+  calculation_metrics metrics;
 
   int threads = 4;
   int max_x = 0, max_y = 0;
