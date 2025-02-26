@@ -1,34 +1,9 @@
 #include "ColourMap.hpp"
 #include "shader.hpp"
 #include "shader_parameters.hpp"
-#include <vector>
+#include "gradient_stack.hpp"
 
 namespace fractals {
-
-class gradient_stack {
-public:
-  struct result {
-    double value;
-    double gradient;
-  };
-
-  result map_iteration(double iteration, double default_gradient, double default_offset) const;
-  void push(double iteration, double new_gradient, double default_gradient, double default_offset);
-  void clear();
-
-private:
-  struct entry {
-    double iteration;
-    double gradient;
-    double offset;
-  };
-  entry default_entry;
-  std::vector<entry> stack;
-};
-
-
-RGB get_colour(const std::vector<RGB> &colours, double iteration,
-               double gradient, double offset, double brightness);
 
 class ColourMapImpl : public ColourMap {
 public:
