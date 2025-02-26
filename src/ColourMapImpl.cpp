@@ -29,34 +29,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
       dx, dy, colour_index.gradient, params.ambient_brightness,
       params.source_brightness, light_source);
 
-  int i = colour_index.value;
-  auto f2 = colour_index.value - i;
-  auto f1 = 1.0 - f2;
-
-  i %= colours.size();
-  int j = (i + 1) % colours.size();
-  auto c1 = colours[i];
-  auto c2 = colours[j];
-
-  auto r = brightness * (red(c1) * f1 + red(c2) * f2);
-  auto g = brightness * (green(c1) * f1 + green(c2) * f2);
-  auto b = brightness * (blue(c1) * f1 + blue(c2) * f2);
-
-  if (r > 255)
-    r = 255;
-  if (g > 255)
-    g = 255;
-  if (b > 255)
-    b = 255;
-
-  if (r < 0)
-    r = 0;
-  if (g < 0)
-    g = 0;
-  if (b < 0)
-    b = 0;
-
-  return make_rgb(r, g, b);
+  return get_colour_from_index(colours, colour_index.value, brightness);
 }
 
 fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
@@ -66,20 +39,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   auto colour_index =
       gradients.map_iteration(d, params.colour_gradient, params.colour_offset);
 
-  int i = colour_index.value;
-  auto f2 = colour_index.value - i;
-  auto f1 = 1.0 - f2;
-
-  i %= colours.size();
-  int j = (i + 1) % colours.size();
-  auto c1 = colours[i];
-  auto c2 = colours[j];
-
-  auto r = red(c1) * f1 + red(c2) * f2;
-  auto g = green(c1) * f1 + green(c2) * f2;
-  auto b = blue(c1) * f1 + blue(c2) * f2;
-
-  return make_rgb(r, g, b);
+  return get_colour_from_index(colours, colour_index.value, 1.0);
 }
 
 void fractals::ColourMapImpl::setRange(double min, double max) {
