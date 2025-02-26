@@ -72,16 +72,6 @@
     <string>Colour offset</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="colourOffsetBox">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>170</y>
-     <width>81</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QSlider" name="colourGradientSlider">
    <property name="geometry">
     <rect>
@@ -252,6 +242,16 @@
    </property>
    <property name="orientation">
     <enum>Qt::Orientation::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="colourOffsetSpinBox">
+   <property name="geometry">
+    <rect>
+     <x>171</x>
+     <y>170</y>
+     <width>71</width>
+     <height>22</height>
+    </rect>
    </property>
   </widget>
  </widget>

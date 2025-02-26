@@ -17,6 +17,7 @@ public:
     ~ControlPanel();
 
 private:
+    void updateSliders();
     Ui::ControlPanel *ui;
     fractals::shader_parameters params;
 

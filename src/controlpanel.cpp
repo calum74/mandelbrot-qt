@@ -11,11 +11,14 @@ ControlPanel::ControlPanel(QWidget *parent)
   ui->sourceBrightnessSlider->setRange(0, 100);
   ui->sourceInclineSlider->setRange(0, 100);
   ui->sourceDirectionSlider->setRange(0, 100);
+  ui->colourOffsetSpinBox->setRange(0,100);
+  ui->colourOffsetSpinBox->setSingleStep(0.05);
 
   connect(ui->resetGradientButton, &QPushButton::clicked, this,
           &ControlPanel::rescalePalette);
   connect(ui->shadingCheck, &QCheckBox::toggled, this, [&](bool checked) {
     params.shading = checked;
+    updateSliders();
     updateParameters(&params);
   });
 
@@ -42,24 +45,21 @@ ControlPanel::ControlPanel(QWidget *parent)
     updateParameters(&params);
     valuesChanged(&params);
   });
-  connect(ui->colourOffsetBox, &QLineEdit::textChanged, this,
-          [&](QString value) {
-            auto d = value.toDouble();
-            params.colour_offset = d;
-            if (d < 100)
-              ui->colourOffsetSlider->setValue(d * 10.0);
-            updateParameters(&params);
-          });
+  connect(ui->colourOffsetSpinBox, &QDoubleSpinBox::valueChanged, this, [&](double d) {
+    params.colour_offset = d;
+    updateParameters(&params);
+    valuesChanged(&params);
+  });
 
   connect(ui->ambientBrightnessSlider, &QSlider::valueChanged, this,
           [&](int value) {
-            params.ambient_brightness = value *2.0 / 100.0;
+            params.ambient_brightness = value * 2.0 / 100.0;
             updateParameters(&params);
           });
 
   connect(ui->sourceBrightnessSlider, &QSlider::valueChanged, this,
           [&](int value) {
-            params.source_brightness = value *2.0 / 100.0;
+            params.source_brightness = value * 2.0 / 100.0;
             updateParameters(&params);
           });
 
@@ -88,14 +88,21 @@ void ControlPanel::valuesChanged(const fractals::shader_parameters *params) {
   auto s = (std::stringstream() << params->colour_gradient).str();
   ui->colourGradientBox->setText(s.c_str());
 
-  s = (std::stringstream() << params->colour_offset).str();
-  ui->colourOffsetBox->setText(s.c_str());
+  ui->colourOffsetSpinBox->setValue(params->colour_offset);
 
-  ui->ambientBrightnessSlider->setValue(params->ambient_brightness * 100/2);
-  ui->sourceBrightnessSlider->setValue(params->source_brightness * 100/2);
+  ui->ambientBrightnessSlider->setValue(params->ambient_brightness * 100 / 2);
+  ui->sourceBrightnessSlider->setValue(params->source_brightness * 100 / 2);
 
   ui->sourceDirectionSlider->setValue(params->source_direction_radians * 100 /
                                       (2 * M_PI));
   ui->sourceInclineSlider->setValue(params->source_elevation_radians * 100 /
                                     (M_PI / 2));
+  updateSliders();
+}
+
+void ControlPanel::updateSliders() {
+  ui->ambientBrightnessSlider->setEnabled(params.shading);
+  ui->sourceBrightnessSlider->setEnabled(params.shading);
+  ui->sourceDirectionSlider->setEnabled(params.shading);
+  ui->sourceInclineSlider->setEnabled(params.shading);
 }
