@@ -5,7 +5,30 @@
 
 namespace fractals {
 
-class shader {};
+class gradient_stack {
+public:
+  struct result {
+    double value;
+    double gradient;
+  };
+
+  result map_iteration(double iteration, double default_gradient, double default_offset) const;
+  void push(double iteration, double new_gradient, double default_gradient, double default_offset);
+  void clear();
+
+private:
+  struct entry {
+    double iteration;
+    double gradient;
+    double offset;
+  };
+  entry default_entry;
+  std::vector<entry> stack;
+};
+
+
+RGB get_colour(const std::vector<RGB> &colours, double iteration,
+               double gradient, double offset, double brightness);
 
 class ColourMapImpl : public ColourMap {
 public:
@@ -26,19 +49,10 @@ private:
   void create_colours();
   void update_light_source();
 
+  shader_parameters params;
   const unsigned int numColours = 100;
   std::vector<RGB> colours;
-  shader_parameters params;
-
-  // The `gradient` and `offset` are used for all colours above `iteration`
-  struct colour_entry {
-    double iteration, gradient, offset;
-  };
-
-  std::vector<colour_entry> colour_stack;
-
-  // A unit shade vector
-  double source_x = 1, source_y = 1, source_z = 1;
-  double source_length = 1.732; // sqrt(3)
+  gradient_stack gradients;
+  unit_vector light_source;
 };
 } // namespace fractals

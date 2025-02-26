@@ -11,9 +11,20 @@ fractals::ColourMapImpl::ColourMapImpl() {
 void fractals::ColourMapImpl::resetGradient() {
   params.colour_gradient = 30;
   params.colour_offset = 0;
-  colour_stack.clear();
+  gradients.clear();
 }
 
+fractals::gradient_stack::result
+fractals::gradient_stack::map_iteration(double d, double default_gradient,
+                                        double default_offset) const {
+  for (auto j = stack.rbegin(); j != stack.rend(); ++j) {
+    if (d > j->iteration) {
+      return {d / j->gradient + j->offset, j->gradient};
+    }
+  }
+
+  return {d / default_gradient + default_offset, default_gradient};
+}
 
 fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
                                                   double dy) const {
@@ -23,26 +34,15 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
   if (!params.shading)
     return (*this)(d);
 
-  double scaled_colour = d / params.colour_gradient + params.colour_offset;
-  double scaled_gradient = params.colour_gradient;
-  for (auto j = colour_stack.rbegin(); j != colour_stack.rend(); ++j) {
-    if (d > j->iteration) {
-      scaled_colour = d / j->gradient + j->offset;
-      scaled_gradient = j->gradient;
-      break;
-    }
-  }
+  auto colour_index =
+      gradients.map_iteration(d, params.colour_gradient, params.colour_offset);
 
-  double brightness = 1.0;
+  double brightness = calculate_brightness(
+      dx, dy, colour_index.gradient, params.ambient_brightness,
+      params.source_brightness, light_source);
 
-  if (params.shading) {
-    brightness = calculate_brightness(
-        dx, dy, scaled_gradient, params.ambient_brightness,
-        params.source_brightness, source_x, source_y, source_z, source_length);
-  }
-
-  int i = scaled_colour;
-  auto f2 = scaled_colour - i;
+  int i = colour_index.value;
+  auto f2 = colour_index.value - i;
   auto f1 = 1.0 - f2;
 
   i %= colours.size();
@@ -75,20 +75,11 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   if (d == 0)
     return make_rgb(0, 0, 0);
 
-  double scaled_colour = d / params.colour_gradient + params.colour_offset;
-  double scaled_gradient = params.colour_gradient;
-  for (auto j = colour_stack.rbegin(); j != colour_stack.rend(); ++j) {
-    if (d > j->iteration) {
-      scaled_colour = d / j->gradient + j->offset;
-      scaled_gradient = j->gradient;
-      break;
-    }
-  }
+  auto colour_index =
+      gradients.map_iteration(d, params.colour_gradient, params.colour_offset);
 
-  double brightness = 1.0;
-
-  int i = scaled_colour;
-  auto f2 = scaled_colour - i;
+  int i = colour_index.value;
+  auto f2 = colour_index.value - i;
   auto f1 = 1.0 - f2;
 
   i %= colours.size();
@@ -96,16 +87,16 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   auto c1 = colours[i];
   auto c2 = colours[j];
 
-  auto r = brightness * (red(c1) * f1 + red(c2) * f2);
-  auto g = brightness * (green(c1) * f1 + green(c2) * f2);
-  auto b = brightness * (blue(c1) * f1 + blue(c2) * f2);
+  auto r = red(c1) * f1 + red(c2) * f2;
+  auto g = green(c1) * f1 + green(c2) * f2;
+  auto b = blue(c1) * f1 + blue(c2) * f2;
 
   return make_rgb(r, g, b);
 }
 
 void fractals::ColourMapImpl::setRange(double min, double max) {
   params.colour_gradient = (max - min) / 5.0;
-  colour_stack.clear();
+  gradients.clear();
 }
 
 void fractals::ColourMapImpl::maybeUpdateRange(double min, double max) {
@@ -113,26 +104,31 @@ void fractals::ColourMapImpl::maybeUpdateRange(double min, double max) {
   if (!params.auto_gradient)
     return;
 
+  gradients.push(max, (max - min) / 5, params.colour_gradient,
+                 params.colour_offset);
+}
+
+void fractals::gradient_stack::push(double iteration, double new_gradient,
+                                    double default_gradient,
+                                    double default_offset) {
   // Remove any colours that are above the current max
-  while (!colour_stack.empty() && colour_stack.back().iteration > max) {
-    colour_stack.pop_back();
+  while (!stack.empty() && stack.back().iteration > iteration) {
+    stack.pop_back();
   }
 
-  // Apply the new gradient to colours above the current max,
-  // so the new colours only apply to zooming in
-  auto new_gradient = (max - min) / 5.0;
-  auto last_gradient = colour_stack.empty() ? params.colour_gradient
-                                            : colour_stack.back().gradient;
-  auto last_offset = colour_stack.empty() ? 0 : colour_stack.back().offset;
+  auto last_gradient = stack.empty() ? default_gradient : stack.back().gradient;
+  auto last_offset = stack.empty() ? default_offset : stack.back().offset;
 
   /*
     To align the colours, we need to ensure that
-    max/last_gradient + last_offset = max/new_gradient + new_offset
-    -> new_offset = last_offset + max/last_gradient - max/new_gradient
+    iteration/last_gradient + last_offset = iteration/new_gradient + new_offset
+    -> new_offset = last_offset + iteration/last_gradient -
+    iteration/new_gradient
   */
 
-  auto new_offset = last_offset + max / last_gradient - max / new_gradient;
-  colour_stack.push_back({max, new_gradient, new_offset});
+  auto new_offset =
+      last_offset + iteration / last_gradient - iteration / new_gradient;
+  stack.push_back({iteration, new_gradient, new_offset});
 }
 
 void fractals::ColourMapImpl::randomize() {
@@ -149,7 +145,7 @@ void fractals::ColourMapImpl::load(const view_parameters &vp) {
   params.colour_gradient = vp.shader.colour_gradient;
   if (params.colour_gradient < 1.0)
     params.colour_gradient = 1.0 / params.colour_gradient;
-  colour_stack.clear();
+  gradients.clear();
   create_colours();
 }
 
@@ -173,11 +169,11 @@ void fractals::ColourMapImpl::setParameters(const shader_parameters &vp) {
 
   if (params.colour_gradient != vp.colour_gradient ||
       params.colour_offset != vp.colour_offset) {
-    colour_stack.clear();
+    gradients.clear();
   }
 
   if (params.auto_gradient && !vp.auto_gradient) {
-    colour_stack.clear();
+    gradients.clear();
   }
 
   params = vp;
@@ -186,11 +182,19 @@ void fractals::ColourMapImpl::setParameters(const shader_parameters &vp) {
 
 void fractals::ColourMapImpl::update_light_source() {
   // Recalculate the source based on spherical coordinates
-  source_x = std::cos(params.source_elevation_radians) *
-             std::cos(params.source_direction_radians);
-  source_y = std::cos(params.source_elevation_radians) *
-             std::sin(params.source_direction_radians);
-  source_z = std::sin(params.source_elevation_radians);
-  source_length = std::sqrt(source_x * source_x + source_y * source_y +
-                            source_z * source_z);
+  light_source = spherical_to_cartesian(params.source_direction_radians,
+                                        params.source_elevation_radians);
+}
+
+fractals::unit_vector fractals::spherical_to_cartesian(double direction,
+                                                       double elevation) {
+  return {std::cos(elevation) * std::cos(direction),
+          std::cos(elevation) *
+              std::sin(direction),
+          std::sin(elevation)};
+}
+
+void fractals::gradient_stack::clear()
+{
+  stack.clear();
 }

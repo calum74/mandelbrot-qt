@@ -474,6 +474,7 @@ void ViewerWidget::enableAutoGradient(bool checked) {
     renderer.enable_auto_gradient();
   else
     renderer.disable_auto_gradient();
+  update();
 }
 
 void ViewerWidget::enableShading(bool checked) {
