@@ -1,16 +1,10 @@
 # Task list
 
 Today:
-- Tweak default parameters for shading
-  Angle
-  High light source brightness
-  Want it to be 0.8
-  Ambient 0.4
-  Save the shading as part of the bookmark
-  Fine-grained offset control
+- Quality zoom in sometimes does not update the final image on zoom
+- Refactor the shaders and put into mandelbrot
 New colour schemes, e.g. 173
 - Click shading checkbox to disable the controls
-- Refactor the shaders and put into mandelbrot
 
 Today:
 2. CodeQL fix

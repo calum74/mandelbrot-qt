@@ -1,8 +1,11 @@
 #include "ColourMap.hpp"
+#include "shader.hpp"
 #include "shader_parameters.hpp"
 #include <vector>
 
 namespace fractals {
+
+class shader {};
 
 class ColourMapImpl : public ColourMap {
 public:

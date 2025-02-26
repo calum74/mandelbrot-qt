@@ -1,6 +1,6 @@
 #pragma once
 #include "ColourMap.hpp"
-#include "RGB.hpp"
+#include "rgb.hpp"
 #include "Renderer.hpp"
 #include "Viewport.hpp"
 #include "registry.hpp"

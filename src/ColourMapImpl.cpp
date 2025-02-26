@@ -1,7 +1,6 @@
 #include "ColourMapImpl.hpp"
 #include "shader.hpp"
 #include "view_parameters.hpp"
-#include <random>
 
 fractals::ColourMapImpl::ColourMapImpl() {
   resetGradient();
@@ -15,58 +14,6 @@ void fractals::ColourMapImpl::resetGradient() {
   colour_stack.clear();
 }
 
-double shading_algorithm_deleteme(double dx, double dy, double scaled_gradient,
-                           double ambient_brightness, double source_brightness,
-                           double source_x, double source_y, double source_z,
-                           double source_length) {
-  dx /= scaled_gradient;
-  dy /= scaled_gradient;
-
-  double surface_normal_x = dy;
-  double surface_normal_y = -dx;
-  double surface_normal_z = dx * dy;
-  double surface_normal_length = std::sqrt(surface_normal_x * surface_normal_x +
-                                           surface_normal_y * surface_normal_y +
-                                           surface_normal_z * surface_normal_z);
-
-  if (surface_normal_length == 0)
-    surface_normal_length = 1;
-
-  double dot_product =
-      (surface_normal_x * source_x + surface_normal_y * source_y +
-       surface_normal_z * source_z) /
-      (surface_normal_length * source_length);
-
-  return ambient_brightness + source_brightness * (1.0 + dot_product);
-}
-
-double shading_algorithm_1(double dx, double dy, double scaled_gradient,
-                           double ambient_brightness, double source_brightness,
-                           double source_x, double source_y, double source_z,
-                           double source_length) {
-  dx /= scaled_gradient;
-  dy /= scaled_gradient;
-
-  dx *= 3000;
-  dy *= 3000;
-
-  double surface_normal_x = -dx;
-  double surface_normal_y = -dy;
-  double surface_normal_z = 1;
-  double surface_normal_length = std::sqrt(surface_normal_x * surface_normal_x +
-                                           surface_normal_y * surface_normal_y +
-                                           surface_normal_z * surface_normal_z);
-
-  double dot_product =
-      (surface_normal_x * source_x + surface_normal_y * source_y +
-       surface_normal_z * source_z) /
-      (surface_normal_length * source_length);
-
-  if (dot_product < 0)
-    dot_product = 0;
-
-  return (ambient_brightness + source_brightness * dot_product);
-}
 
 fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
                                                   double dy) const {
@@ -89,7 +36,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
   double brightness = 1.0;
 
   if (params.shading) {
-    brightness = shading_algorithm_1(
+    brightness = calculate_brightness(
         dx, dy, scaled_gradient, params.ambient_brightness,
         params.source_brightness, source_x, source_y, source_z, source_length);
   }
@@ -106,8 +53,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
   auto r = brightness * (red(c1) * f1 + red(c2) * f2);
   auto g = brightness * (green(c1) * f1 + green(c2) * f2);
   auto b = brightness * (blue(c1) * f1 + blue(c2) * f2);
-// Allow saturation
-#if 1
+
   if (r > 255)
     r = 255;
   if (g > 255)
@@ -121,7 +67,6 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
     g = 0;
   if (b < 0)
     b = 0;
-#endif
 
   return make_rgb(r, g, b);
 }
@@ -196,17 +141,7 @@ void fractals::ColourMapImpl::randomize() {
 }
 
 void fractals::ColourMapImpl::create_colours() {
-  // If we want to find a new seed, log it here
-  // std::cout << "Colour is " << seed << std::endl;
-  std::mt19937 e(params.colour_scheme);
-
-  // Create 20 random colours
-  std::vector<RGB> newColours(numColours);
-  for (auto &c : newColours) {
-    c = e() & 0xffffff;
-  }
-
-  colours = std::move(newColours);
+  colours = generate_colours(numColours, params.colour_scheme);
 }
 
 void fractals::ColourMapImpl::load(const view_parameters &vp) {
@@ -249,8 +184,7 @@ void fractals::ColourMapImpl::setParameters(const shader_parameters &vp) {
   update_light_source();
 }
 
-void fractals::ColourMapImpl::update_light_source()
-{
+void fractals::ColourMapImpl::update_light_source() {
   // Recalculate the source based on spherical coordinates
   source_x = std::cos(params.source_elevation_radians) *
              std::cos(params.source_direction_radians);

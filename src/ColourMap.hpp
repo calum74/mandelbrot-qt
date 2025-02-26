@@ -1,5 +1,5 @@
 #pragma once
-#include "RGB.hpp"
+#include "rgb.hpp"
 #include <memory>
 
 namespace fractals {
