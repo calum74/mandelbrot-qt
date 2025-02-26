@@ -53,13 +53,13 @@ ControlPanel::ControlPanel(QWidget *parent)
 
   connect(ui->ambientBrightnessSlider, &QSlider::valueChanged, this,
           [&](int value) {
-            params.ambient_brightness = value / 100.0;
+            params.ambient_brightness = value *2.0 / 100.0;
             updateParameters(&params);
           });
 
   connect(ui->sourceBrightnessSlider, &QSlider::valueChanged, this,
           [&](int value) {
-            params.source_brightness = value / 100.0;
+            params.source_brightness = value *2.0 / 100.0;
             updateParameters(&params);
           });
 
@@ -91,8 +91,8 @@ void ControlPanel::valuesChanged(const fractals::shader_parameters *params) {
   s = (std::stringstream() << params->colour_offset).str();
   ui->colourOffsetBox->setText(s.c_str());
 
-  ui->ambientBrightnessSlider->setValue(params->ambient_brightness * 100);
-  ui->sourceBrightnessSlider->setValue(params->source_brightness * 100);
+  ui->ambientBrightnessSlider->setValue(params->ambient_brightness * 100/2);
+  ui->sourceBrightnessSlider->setValue(params->source_brightness * 100/2);
 
   ui->sourceDirectionSlider->setValue(params->source_direction_radians * 100 /
                                       (2 * M_PI));

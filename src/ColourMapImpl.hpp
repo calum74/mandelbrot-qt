@@ -21,6 +21,7 @@ public:
 
 private:
   void create_colours();
+  void update_light_source();
 
   const unsigned int numColours = 100;
   std::vector<RGB> colours;

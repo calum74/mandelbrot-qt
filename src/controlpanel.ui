@@ -173,7 +173,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Ambient brightness</string>
+    <string>Ambient brightness (%)</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_6">
@@ -186,7 +186,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Light source brightness</string>
+    <string>Light source brightness (%)</string>
    </property>
   </widget>
   <widget class="QSlider" name="sourceBrightnessSlider">
@@ -212,7 +212,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Light source direction</string>
+    <string>Light source direction (degrees)</string>
    </property>
   </widget>
   <widget class="QSlider" name="sourceDirectionSlider">
@@ -238,7 +238,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Light source inclination</string>
+    <string>Light source incline (degrees)</string>
    </property>
   </widget>
   <widget class="QSlider" name="sourceInclineSlider">
