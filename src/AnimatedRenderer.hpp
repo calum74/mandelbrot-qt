@@ -4,6 +4,7 @@
 #include "Renderer.hpp"
 #include "Viewport.hpp"
 #include "registry.hpp"
+#include "view.hpp"
 
 #include <atomic>
 #include <chrono>
@@ -51,9 +52,28 @@ public:
   void enable_auto_gradient();
   void disable_auto_gradient();
 
+  double ln_r() const;
+  int iterations() const;
+  void scroll(int x, int y, Viewport &vp);
+  void resize(int w, int h);
+  void zoom(double f, int x, int y, bool fix_center, Viewport &vp);
+  void update_iterations(const calculation_metrics &);
+  void increase_iterations(Viewport &vp);
+  void decrease_iterations(Viewport &vp);
+  void load(const view_parameters &params, Viewport &vp);
+  void save(view_parameters &params) const;
+  void set_coords(const view_coords&, Viewport &vp);
+  std::string fractal_family() const;
+  std::string fractal_name() const;
+  view_coords initial_coords() const;
+  void set_fractal(const fractal&);
+  void redraw(Viewport &vp);
+  void enable_auto_depth(bool enabled);
+  void set_threading(int);
+  void get_depth_range(double&, double&, double&) const;
+
 public: // !! Ideally private
   std::unique_ptr<fractals::Registry> registry;
-  std::unique_ptr<fractals::Renderer> renderer;
   std::unique_ptr<fractals::ColourMap> colourMap;
 
   enum class AnimationType {
@@ -67,6 +87,7 @@ public: // !! Ideally private
   mapped_point map_point(const view_coords &c) const;
 
 private:
+  std::unique_ptr<fractals::Renderer> renderer;
   bool zooming = false;
   std::atomic<bool> calculationFinished = false;
   std::atomic<bool> zoomTimeout = false;
@@ -100,5 +121,7 @@ private:
 
   fractals::Viewport &viewport;
   int move_x = 0, move_y = 0;
+
+  fractals::view view;
 };
 } // namespace fractals

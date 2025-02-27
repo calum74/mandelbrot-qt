@@ -2,8 +2,8 @@
 #include "Renderer.hpp"
 #include "calculation_metrics.hpp"
 #include "registry.hpp"
-#include "view_coords.hpp"
 #include "shader_parameters.hpp"
+#include "view_coords.hpp"
 #include <cassert>
 
 using namespace std::literals::chrono_literals;
@@ -47,7 +47,9 @@ void fractals::AnimatedRenderer::render_overwrite_background_image() {
   viewport.updated();
 }
 
-void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter, std::optional<std::chrono::duration<double>> requested_duration) {
+void fractals::AnimatedRenderer::smooth_zoom_to(
+    int x, int y, bool lockCenter,
+    std::optional<std::chrono::duration<double>> requested_duration) {
   zooming = true;
   calculationFinished = false;
   zoomTimeout = false;
@@ -70,7 +72,7 @@ void fractals::AnimatedRenderer::smooth_zoom_to(int x, int y, bool lockCenter, s
   if (fixZoomSpeed)
     zoom_duration = fixZoomDuration; // Override for speed
 
-  if(requested_duration && fixZoomSpeed) {
+  if (requested_duration && fixZoomSpeed) {
     zoom_duration = *requested_duration;
   }
 
@@ -305,7 +307,8 @@ void fractals::AnimatedRenderer::discovered_depth(
     const calculation_metrics &metrics) {
   renderer->discovered_depth(metrics);
 
-  if (!metrics.last_action_was_a_scroll && metrics.points_calculated > 1000 && metrics.min_depth>0) {
+  if (!metrics.last_action_was_a_scroll && metrics.points_calculated > 1000 &&
+      metrics.min_depth > 0) {
     colourMap->maybeUpdateRange(metrics.min_depth, metrics.max_depth);
   }
 }
@@ -323,6 +326,86 @@ void fractals::AnimatedRenderer::disable_auto_gradient() {
   params.auto_gradient = false;
   colourMap->setParameters(params);
 
-  if(is_animating())
+  if (is_animating())
     renderer->redraw(viewport);
+}
+
+void fractals::AnimatedRenderer::update_iterations(
+    const calculation_metrics &metrics) {
+  if (renderer)
+    renderer->discovered_depth(metrics);
+}
+
+double fractals::AnimatedRenderer::ln_r() const {
+  return renderer->log_width();
+}
+
+int fractals::AnimatedRenderer::iterations() const {
+  return renderer->iterations();
+}
+
+void fractals::AnimatedRenderer::scroll(int x, int y, Viewport &vp) {
+  renderer->scroll(x, y, vp);
+}
+
+void fractals::AnimatedRenderer::resize(int w, int h) {
+  renderer->set_aspect_ratio(w, h);
+}
+
+void fractals::AnimatedRenderer::zoom(double f, int x, int y, bool fix_center,
+                                      Viewport &vp) {
+  renderer->zoom(f, x, y, fix_center, vp);
+}
+
+void fractals::AnimatedRenderer::increase_iterations(Viewport &vp) {
+  renderer->increase_iterations(vp);
+}
+
+void fractals::AnimatedRenderer::decrease_iterations(Viewport &vp) {
+  renderer->decrease_iterations(vp);
+}
+
+void fractals::AnimatedRenderer::load(const view_parameters &params,
+                                      Viewport &vp) {
+  renderer->load(params, vp);
+}
+
+void fractals::AnimatedRenderer::save(view_parameters &params) const {
+  renderer->save(params);
+}
+
+void fractals::AnimatedRenderer::set_coords(const view_coords &coords,
+                                            Viewport &vp) {
+  renderer->set_coords(coords, vp);
+}
+
+std::string fractals::AnimatedRenderer::fractal_family() const {
+  return renderer->get_fractal_family();
+}
+
+std::string fractals::AnimatedRenderer::fractal_name() const {
+  return renderer->get_fractal_name();
+}
+
+fractals::view_coords fractals::AnimatedRenderer::initial_coords() const {
+  return renderer->initial_coords();
+}
+
+void fractals::AnimatedRenderer::set_fractal(const fractal &f) {
+  renderer->set_fractal(f);
+}
+
+void fractals::AnimatedRenderer::redraw(Viewport &vp) { renderer->redraw(vp); }
+
+void fractals::AnimatedRenderer::enable_auto_depth(bool enabled) {
+  renderer->enable_auto_depth(enabled);
+}
+
+void fractals::AnimatedRenderer::set_threading(int n) {
+  renderer->set_threading(n);
+}
+
+void fractals::AnimatedRenderer::get_depth_range(double &a, double &b,
+                                                 double &c) const {
+  renderer->get_depth_range(a, b, c);
 }

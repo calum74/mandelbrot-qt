@@ -1,6 +1,7 @@
 # Task list
 
 Today:
+- Display stars instead of blackness for the minibrots?
 - Quality zoom in sometimes does not update the final image on zoom
 
 Bugs:

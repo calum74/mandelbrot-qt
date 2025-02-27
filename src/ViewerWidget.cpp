@@ -45,16 +45,11 @@ ViewerWidget::ViewerWidget(QWidget *parent)
 void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
 
 void ViewerWidget::calculate() {
-  startCalculating(renderer.renderer->log_width(),
-                   renderer.renderer->iterations());
+  startCalculating(renderer.ln_r(),
+                   renderer.iterations());
 
   assert(image.width() > 0);
-
-  // viewport.init(image.width(), image.height(), (fractals::RGB
-  // *)image.bits());
-
   renderer.calculate_async();
-  // calculateFlagLocations();
 }
 
 void ViewerWidget::draw() {
@@ -96,7 +91,7 @@ void ViewerWidget::doResize(int w, int h) {
   h *= imageScale;
 
   // Should stop the current calculation
-  renderer.renderer->set_aspect_ratio(w, h);
+  renderer.resize(w, h);
 
   viewport.init(w, h);
   image = QImage(w, h, QImage::Format_RGB32);
@@ -125,7 +120,7 @@ void ViewerWidget::wheelEvent(QWheelEvent *event) {
     r = 0.5;
   if (r != 1.0) {
     renderer.cancel_animations();
-    renderer.renderer->zoom(r, imageScale * event->position().x(),
+    renderer.zoom(r, imageScale * event->position().x(),
                             imageScale * event->position().y(), false,
                             viewport);
     calculate();
@@ -137,7 +132,7 @@ void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
   int y = event->pos().y() * imageScale;
   if (event->buttons() & Qt::LeftButton) {
     renderer.cancel_animations();
-    renderer.renderer->scroll(press_x - x, press_y - y, viewport);
+    renderer.scroll(press_x - x, press_y - y, viewport);
     calculate();
     press_x = x;
     press_y = y;
@@ -193,8 +188,7 @@ void ViewerWidget::MyViewport::schedule_next_calculation() {
 void ViewerWidget::MyViewport::finished(
     const fractals::calculation_metrics &metrics) {
 
-  if (widget.renderer.renderer)
-    widget.renderer.discovered_depth(metrics);
+  widget.renderer.update_iterations(metrics);
   widget.setSpeedEstimate(metrics.seconds_per_point);
 
   if (metrics.fully_evaluated)
@@ -210,13 +204,13 @@ void ViewerWidget::MyViewport::finished(
 
 void ViewerWidget::increaseIterations() {
   renderer.cancel_animations();
-  renderer.renderer->increase_iterations(viewport);
+  renderer.increase_iterations(viewport);
   calculate();
 }
 
 void ViewerWidget::decreaseIterations() {
   renderer.cancel_animations();
-  renderer.renderer->decrease_iterations(viewport);
+  renderer.decrease_iterations(viewport);
   calculate();
 }
 
@@ -242,14 +236,14 @@ void ViewerWidget::copyCoords() {
 }
 
 void ViewerWidget::getCoords(fractals::view_parameters &params) const {
-  renderer.renderer->save(params);
+  renderer.save(params);
   renderer.colourMap->save(params);
 }
 
 bool ViewerWidget::setCoords(const fractals::view_parameters &params) {
   renderer.cancel_animations();
   renderer.colourMap->load(params);
-  renderer.renderer->load(params, viewport);
+  renderer.load(params, viewport);
   calculate();
   return true;
 }
@@ -262,7 +256,7 @@ void ViewerWidget::recolourPalette() {
 
 void ViewerWidget::resetCurrentFractal() {
   renderer.cancel_animations();
-  renderer.renderer->set_coords(renderer.renderer->initial_coords(), viewport);
+  renderer.set_coords(renderer.initial_coords(), viewport);
   renderer.colourMap->resetGradient();
   updateColourControls();
   calculate();
@@ -271,13 +265,13 @@ void ViewerWidget::resetCurrentFractal() {
 void ViewerWidget::changeFractal(const fractals::fractal &fractal) {
   renderer.cancel_animations();
 
-  std::string old_family = renderer.renderer->get_fractal_family();
-  renderer.renderer->set_fractal(fractal);
+  std::string old_family = renderer.fractal_family();
+  renderer.set_fractal(fractal);
 
   if (old_family != fractal.family())
-    renderer.renderer->set_coords(renderer.renderer->initial_coords(),
+    renderer.set_coords(renderer.initial_coords(),
                                   viewport);
-  renderer.renderer->redraw(viewport);
+  renderer.redraw(viewport);
   calculate();
 }
 
@@ -287,22 +281,22 @@ ViewerWidget::listFractals() {
 }
 
 void ViewerWidget::enableAutoDepth(bool value) {
-  renderer.renderer->enable_auto_depth(value);
+  renderer.enable_auto_depth(value);
 }
 
 void ViewerWidget::enableThreading(bool value) {
   if (value)
-    renderer.renderer->set_threading(4);
+    renderer.set_threading(4);
 }
 
 void ViewerWidget::singleThreaded(bool value) {
   if (value)
-    renderer.renderer->set_threading(1);
+    renderer.set_threading(1);
 }
 
 void ViewerWidget::maxThreading(bool value) {
   if (value)
-    renderer.renderer->set_threading(std::thread::hardware_concurrency());
+    renderer.set_threading(std::thread::hardware_concurrency());
 }
 
 void ViewerWidget::quickSave() {
@@ -330,7 +324,7 @@ void ViewerWidget::quickSave() {
 
 void ViewerWidget::saveToFile(const QString &image_filename) {
   fractals::view_parameters params;
-  renderer.renderer->save(params);
+  renderer.save(params);
   renderer.colourMap->save(params);
 
   image.setText("MandelbrotQtjson", write_json(params).dump().c_str());
@@ -339,7 +333,7 @@ void ViewerWidget::saveToFile(const QString &image_filename) {
 
 void ViewerWidget::scalePalette() {
   double min, p, max;
-  renderer.renderer->get_depth_range(min, p, max);
+  renderer.get_depth_range(min, p, max);
   if (p > 0)
     renderer.colourMap->setRange(min, p);
   else if (max > 0)
@@ -370,9 +364,9 @@ void ViewerWidget::open() {
 
     renderer.cancel_animations();
 
-    renderer.renderer->load(params, viewport);
+    renderer.load(params, viewport);
     renderer.colourMap->load(params);
-    fractalChanged(renderer.renderer->get_fractal_name()
+    fractalChanged(renderer.fractal_name()
                        .c_str()); // Update menus if needed
     calculate();
   }
@@ -381,10 +375,10 @@ void ViewerWidget::open() {
 void ViewerWidget::openBookmark(const fractals::view_parameters *params) {
   renderer.cancel_animations();
 
-  renderer.renderer->load(*params, viewport);
+  renderer.load(*params, viewport);
   renderer.colourMap->load(*params);
   fractalChanged(
-      renderer.renderer->get_fractal_name().c_str()); // Update menus if needed
+      renderer.fractal_name().c_str()); // Update menus if needed
   controlPanel.valuesChanged(&params->shader);
   calculate();
 }
@@ -399,7 +393,7 @@ void ViewerWidget::save() {
 
 void ViewerWidget::zoomIn() {
   renderer.cancel_animations();
-  renderer.renderer->zoom(0.5, move_x, move_y, false, viewport);
+  renderer.zoom(0.5, move_x, move_y, false, viewport);
   calculate();
 }
 
@@ -416,7 +410,7 @@ void ViewerWidget::MyViewport::start_timer() {
 
 void ViewerWidget::zoomOut() {
   renderer.cancel_animations();
-  renderer.renderer->zoom(2.0, move_x, move_y, false, viewport);
+  renderer.zoom(2.0, move_x, move_y, false, viewport);
   calculate();
 }
 
