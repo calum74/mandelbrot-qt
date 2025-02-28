@@ -4,6 +4,7 @@
 #include "registry.hpp"
 #include "shader_parameters.hpp"
 #include "view_coords.hpp"
+#include "mandelbrot.hpp"
 #include <cassert>
 
 using namespace std::literals::chrono_literals;
@@ -18,11 +19,16 @@ fractals::AnimatedRenderer::AnimatedRenderer(fractals::Viewport &viewport)
   register_fractals(*registry);
   single_zoom_duration = 50ms;
   continuous_zoom_duration = 750ms;
+
+  view.set_threading(4);
+  view.set_size(viewport.width(), viewport.height());
+  view.set_fractal(mandelbrot_fractal);
 }
 
 fractals::AnimatedRenderer::~AnimatedRenderer() { renderer.reset(); }
 
 void fractals::AnimatedRenderer::calculate_async() {
+  view.start_calculating();
   renderer->calculate_async(viewport);
 }
 
