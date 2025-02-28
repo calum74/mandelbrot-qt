@@ -118,8 +118,9 @@ private:
   void render_overwrite_background_image();
   void background_render_finished();
   void begin_next_animation();
-  void update(const calculation_metrics &);
-  void animation_timeout(const calculation_metrics &);
+  void update(const calculation_metrics &) override;
+  void animation_complete(const calculation_metrics &) override;
+  void redraw() override;
 
   fractals::Viewport &viewport;
   int move_x = 0, move_y = 0;

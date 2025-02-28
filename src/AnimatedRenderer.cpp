@@ -36,10 +36,13 @@ void fractals::AnimatedRenderer::calculate_async() {
 void fractals::AnimatedRenderer::update(const calculation_metrics &) {
   std::cout << "Updated\n";
 }
-void fractals::AnimatedRenderer::animation_timeout(
+
+void fractals::AnimatedRenderer::animation_complete(
     const calculation_metrics &) {
-  std::cout << "Animation done\n";
+  std::cout << "Animation completed\n";
 }
+
+void fractals::AnimatedRenderer::redraw() {}
 
 void fractals::AnimatedRenderer::render_update_background_image() {
   // if (!zooming)
@@ -100,10 +103,10 @@ void fractals::AnimatedRenderer::smooth_zoom_to(
   renderer->calculate_async(background_viewport);
   viewport.start_timer();
 
-  if(lockCenter)
-    view.animate_to_center(zoom_duration);
+  if (lockCenter)
+    view.animate_to_center(zoom_duration, !fixZoomSpeed);
   else
-    view.animate_to(x,y,zoom_duration);
+    view.animate_to(x, y, zoom_duration, !fixZoomSpeed);
 }
 
 void fractals::AnimatedRenderer::BackgroundViewport::updated() {
@@ -365,7 +368,7 @@ int fractals::AnimatedRenderer::iterations() const {
 }
 
 void fractals::AnimatedRenderer::scroll(int x, int y, Viewport &vp) {
-  view.scroll(x,y);
+  view.scroll(x, y);
   renderer->scroll(x, y, vp);
 }
 
@@ -376,7 +379,7 @@ void fractals::AnimatedRenderer::resize(int w, int h) {
 
 void fractals::AnimatedRenderer::zoom(double f, int x, int y, bool fix_center,
                                       Viewport &vp) {
-  view.zoom(x,y,f);
+  view.zoom(x, y, f);
   renderer->zoom(f, x, y, fix_center, vp);
 }
 

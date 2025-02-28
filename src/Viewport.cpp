@@ -43,7 +43,6 @@ void fractals::map_viewport(const Viewport &src, Viewport &dest,
   map_values(src.values, dest.values, dx, dy, r);
 }
 
-
 fractals::error_value<double> fractals::Viewport::invalid_value() const {
   return missing_value;
 }
