@@ -1,10 +1,10 @@
 #include "AnimatedRenderer.hpp"
 #include "Renderer.hpp"
 #include "calculation_metrics.hpp"
+#include "mandelbrot.hpp"
 #include "registry.hpp"
 #include "shader_parameters.hpp"
 #include "view_coords.hpp"
-#include "mandelbrot.hpp"
 #include <cassert>
 
 using namespace std::literals::chrono_literals;
@@ -21,8 +21,9 @@ fractals::AnimatedRenderer::AnimatedRenderer(fractals::Viewport &viewport)
   continuous_zoom_duration = 750ms;
 
   view.set_threading(4);
-  view.set_size(viewport.width(), viewport.height());
+
   view.set_fractal(mandelbrot_fractal);
+  view.set_listener(this);
 }
 
 fractals::AnimatedRenderer::~AnimatedRenderer() { renderer.reset(); }
@@ -30,6 +31,14 @@ fractals::AnimatedRenderer::~AnimatedRenderer() { renderer.reset(); }
 void fractals::AnimatedRenderer::calculate_async() {
   view.start_calculating();
   renderer->calculate_async(viewport);
+}
+
+void fractals::AnimatedRenderer::update(const calculation_metrics &) {
+  std::cout << "Updated\n";
+}
+void fractals::AnimatedRenderer::animation_timeout(
+    const calculation_metrics &) {
+  std::cout << "Animation done\n";
 }
 
 void fractals::AnimatedRenderer::render_update_background_image() {
@@ -90,6 +99,11 @@ void fractals::AnimatedRenderer::smooth_zoom_to(
   renderer->zoom(0.5, zoom_x, zoom_y, lockCenter, background_viewport);
   renderer->calculate_async(background_viewport);
   viewport.start_timer();
+
+  if(lockCenter)
+    view.animate_to_center(zoom_duration);
+  else
+    view.animate_to(x,y,zoom_duration);
 }
 
 void fractals::AnimatedRenderer::BackgroundViewport::updated() {
@@ -351,15 +365,18 @@ int fractals::AnimatedRenderer::iterations() const {
 }
 
 void fractals::AnimatedRenderer::scroll(int x, int y, Viewport &vp) {
+  view.scroll(x,y);
   renderer->scroll(x, y, vp);
 }
 
 void fractals::AnimatedRenderer::resize(int w, int h) {
+  view.set_size(w, h);
   renderer->set_aspect_ratio(w, h);
 }
 
 void fractals::AnimatedRenderer::zoom(double f, int x, int y, bool fix_center,
                                       Viewport &vp) {
+  view.zoom(x,y,f);
   renderer->zoom(f, x, y, fix_center, vp);
 }
 

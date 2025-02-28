@@ -1,5 +1,7 @@
 # Task list
 
+Idea: Most images have rotational symmetry, so if we can figure out the rotational symmetry, then we can render multiple points at the same time.
+
 Today:
 - Display stars instead of blackness for the minibrots?
 - Quality zoom in sometimes does not update the final image on zoom

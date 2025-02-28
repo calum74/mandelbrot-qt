@@ -19,7 +19,7 @@ Manages two additional pixel buffers for the previous image and the current
 image being calculated.
 
 */
-class AnimatedRenderer {
+class AnimatedRenderer : view::listener {
 public:
   AnimatedRenderer(fractals::Viewport &viewport);
   ~AnimatedRenderer();
@@ -118,6 +118,8 @@ private:
   void render_overwrite_background_image();
   void background_render_finished();
   void begin_next_animation();
+  void update(const calculation_metrics &);
+  void animation_timeout(const calculation_metrics &);
 
   fractals::Viewport &viewport;
   int move_x = 0, move_y = 0;
