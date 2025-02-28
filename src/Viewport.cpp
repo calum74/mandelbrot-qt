@@ -40,7 +40,7 @@ void fractals::interpolate_viewport(const Viewport &src, Viewport &dest,
 
 void fractals::map_viewport(const Viewport &src, Viewport &dest,
   double dx, double dy, double r) {
-  interpolate_values(src.values, dest.values, dx, dy, r);
+  map_values(src.values, dest.values, dx, dy, r);
 }
 
 
