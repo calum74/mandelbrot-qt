@@ -11,10 +11,9 @@ using namespace std::literals::chrono_literals;
 
 void register_fractals(fractals::Registry &r);
 
-fractals::AnimatedRenderer::AnimatedRenderer(fractals::Viewport &viewport)
-    : viewport(viewport), colourMap{fractals::make_colourmap()},
-      registry{fractals::make_registry()},
-      renderer{fractals::make_renderer(*registry)}, background_viewport(*this) {
+fractals::AnimatedRenderer::AnimatedRenderer(fractals::view_listener &listener)
+    : listener(listener), colourMap{fractals::make_colourmap()},
+      registry{fractals::make_registry()} {
 
   register_fractals(*registry);
   single_zoom_duration = 50ms;
@@ -26,43 +25,31 @@ fractals::AnimatedRenderer::AnimatedRenderer(fractals::Viewport &viewport)
   view.set_listener(this);
 }
 
-fractals::AnimatedRenderer::~AnimatedRenderer() { renderer.reset(); }
+fractals::AnimatedRenderer::~AnimatedRenderer() {}
 
-void fractals::AnimatedRenderer::calculate_async() {
-  view.start_calculating();
-  renderer->calculate_async(viewport);
+void fractals::AnimatedRenderer::calculate_async() { view.start_calculating(); }
+
+void fractals::AnimatedRenderer::calculation_finished(const calculation_metrics &metrics) {
+
+  // Update the iterations etc.
+  std::cout << "  Finished - setting new range to " << metrics.discovered_depth << std::endl;
+
+  if(metrics.discovered_depth>0 && metrics.discovered_depth > 250)
+  {
+    view.set_max_iterations(metrics.discovered_depth * 2);
+    colourMap->maybeUpdateRange(metrics.min_depth, metrics.discovered_depth);
+  }
+
+  listener.calculation_finished(metrics);
 }
 
-void fractals::AnimatedRenderer::update(const calculation_metrics &) {
-  std::cout << "Updated\n";
-}
-
-void fractals::AnimatedRenderer::animation_complete(
+void fractals::AnimatedRenderer::animation_finished(
     const calculation_metrics &) {
   std::cout << "Animation completed\n";
 }
 
-void fractals::AnimatedRenderer::redraw() {}
-
-void fractals::AnimatedRenderer::render_update_background_image() {
-  // if (!zooming)
-  //    return;
-  assert(viewport.size() == background_viewport.size());
-  for (int j = 0; j < viewport.height(); ++j)
-    for (int i = 0; i < viewport.width(); ++i) {
-      auto &from_pixel = background_viewport(i, j);
-      auto &to_pixel = viewport(i, j);
-      if (from_pixel.error < to_pixel.error) {
-        to_pixel = from_pixel;
-      }
-    }
-  viewport.updated();
-}
-
-void fractals::AnimatedRenderer::render_overwrite_background_image() {
-  std::copy(background_viewport.begin(), background_viewport.end(),
-            viewport.begin());
-  viewport.updated();
+void fractals::AnimatedRenderer::values_changed() {
+  listener.values_changed();
 }
 
 void fractals::AnimatedRenderer::smooth_zoom_to(
@@ -75,13 +62,11 @@ void fractals::AnimatedRenderer::smooth_zoom_to(
   zoom_x = x;
   zoom_y = y;
 
-  previousVp = viewport; // Copy everything by value
-
   zoom_start = std::chrono::system_clock::now();
   // Add a 10% buffer to reduce stuttering
   zoom_duration = std::chrono::milliseconds(
-      int(estimatedSecondsPerPixel * 1000 * viewport.width() *
-          viewport.height() * 1.10)); // Stupid stupid std::chrono
+      int(estimatedSecondsPerPixel * 1000 * view.width() *
+          view.height() * 1.10)); // Stupid stupid std::chrono
 
   // Stop the zoom duration getting too out of hand
   if (zoom_duration < fixZoomDuration)
@@ -94,14 +79,9 @@ void fractals::AnimatedRenderer::smooth_zoom_to(
     zoom_duration = *requested_duration;
   }
 
-  (fractals::Viewport &)background_viewport = viewport; // Copy everything over
   rendered_zoom_ratio = 1.0;
   calculated_points = 0;
   view_min = view_max = 0;
-
-  renderer->zoom(0.5, zoom_x, zoom_y, lockCenter, background_viewport);
-  renderer->calculate_async(background_viewport);
-  viewport.start_timer();
 
   if (lockCenter)
     view.animate_to_center(zoom_duration, !fixZoomSpeed);
@@ -109,40 +89,11 @@ void fractals::AnimatedRenderer::smooth_zoom_to(
     view.animate_to(x, y, zoom_duration, !fixZoomSpeed);
 }
 
-void fractals::AnimatedRenderer::BackgroundViewport::updated() {
-  if (renderer.zoomTimeout)
-    renderer.render_update_background_image();
-}
-
-void fractals::AnimatedRenderer::BackgroundViewport::finished(
-    const calculation_metrics &metrics) {
-  renderer.calculated_points = metrics.points_calculated;
-  renderer.view_min = metrics.min_depth;
-  renderer.view_max = metrics.max_depth;
-  if (renderer.renderer)
-    renderer.renderer->discovered_depth(metrics);
-  renderer.estimatedSecondsPerPixel = metrics.seconds_per_point;
-
-  if (metrics.fully_evaluated) {
-    renderer.background_render_finished();
-    renderer.viewport.finished(metrics);
-  }
-}
-
-void fractals::AnimatedRenderer::background_render_finished() {
-  calculationFinished = true;
-
-  if (zoomTimeout) {
-    render_update_background_image();
-    zooming = false;
-    begin_next_animation();
-  }
-}
-
 void fractals::AnimatedRenderer::begin_next_animation() {
   if (!calculationFinished) {
     // Report on current calculation
-    viewport.calculation_started(renderer->log_width(), renderer->iterations());
+    listener.calculation_started(view.get_coords().ln_r(),
+                                 view.get_coords().max_iterations);
   }
 
   // If calculation is too slow, abort any animations that are in flight.
@@ -154,74 +105,11 @@ void fractals::AnimatedRenderer::begin_next_animation() {
     return;
   }
 
-  // We can't start a new calculation yet because we are within
-  // the thread function of an existing calculation. So we signal that we need
-  // to be called back
-  viewport.schedule_next_calculation();
-}
-
-void fractals::AnimatedRenderer::timer() {
-  if (!zooming)
-    return;
-
-  auto now = std::chrono::system_clock::now();
-  double time_ratio =
-      std::chrono::duration<double>(now - zoom_start) / zoom_duration;
-  if (time_ratio >= 1) {
-    zoomTimeout = true;
-    // Maybe carry on zooming to the next frame
-    if (calculationFinished || fixZoomSpeed) {
-      // Copy the zoomed image exactly,
-      // then superimpose whatever we calculated
-      rendered_zoom_ratio = 0.5;
-
-      fractals::map_viewport(
-          previousVp, viewport, zoom_x * (1.0 - rendered_zoom_ratio),
-          zoom_y * (1.0 - rendered_zoom_ratio), rendered_zoom_ratio);
-
-      render_update_background_image();
-      begin_next_animation();
-    } else {
-      // It's taking some time, so update the status bar
-      viewport.calculation_started(renderer->log_width(),
-                                   renderer->iterations());
-    }
-  } else {
-    // Update the current view using the
-    // The scaling ratio is exponential, not linear !!
-    // Project the current view into the frame
-    rendered_zoom_ratio = std::pow(0.5, time_ratio);
-
-    fractals::interpolate_viewport(
-        previousVp, viewport, zoom_x * (1.0 - rendered_zoom_ratio),
-        zoom_y * (1.0 - rendered_zoom_ratio), rendered_zoom_ratio);
-    viewport.updated();
-
-    viewport.start_timer();
-  }
+  // TODO
 }
 
 void fractals::AnimatedRenderer::cancel_animations() {
-  viewport.stop_timer();
-  current_animation = AnimatedRenderer::AnimationType::none;
-  if (zooming) {
-    if (zoomTimeout) {
-      render_update_background_image();
-    } else // Reset the coordinates back to what's shown
-    {
-      renderer->zoom(2.0 * rendered_zoom_ratio, zoom_x, zoom_y, false,
-                     viewport);
-      // Overwrite the viewport with the background image again
-      // since this is more accurate than what's in the renderer
-      // !! Refactor if this works
-
-      fractals::map_viewport(
-          previousVp, viewport, zoom_x * (1.0 - rendered_zoom_ratio),
-          zoom_y * (1.0 - rendered_zoom_ratio), rendered_zoom_ratio);
-    }
-    zooming = false;
-    // current_animation = AnimatedRenderer::AnimationType::none;
-  }
+  view.stop_current_animation_and_set_as_current();
 }
 
 void fractals::AnimatedRenderer::start_next_calculation() {
@@ -230,8 +118,8 @@ void fractals::AnimatedRenderer::start_next_calculation() {
     auto_navigate();
     break;
   case AnimationType::zoomtopoint:
-    if (renderer->log_width() > zoomtopoint_limit)
-      smooth_zoom_to(viewport.width() / 2, viewport.height() / 2, true, {});
+    if (view.get_coords().ln_r() > zoomtopoint_limit)
+      smooth_zoom_to(view.width() / 2, view.height() / 2, true, {});
     break;
   case AnimationType::zoomatcursor:
     smooth_zoom_to(move_x, move_y, false, continuous_zoom_duration);
@@ -244,7 +132,7 @@ void fractals::AnimatedRenderer::start_next_calculation() {
 void fractals::AnimatedRenderer::auto_navigate() {
   cancel_animations();
   int x, y;
-  if (renderer->get_auto_zoom(x, y)) {
+  if (view.get_auto_zoom(x, y)) {
     current_animation = AnimationType::autozoom;
     smooth_zoom_to(x, y, false, {});
   } else {
@@ -260,11 +148,11 @@ void fractals::AnimatedRenderer::set_cursor(int x, int y) {
 void fractals::AnimatedRenderer::animate_to_here() {
   cancel_animations();
   current_animation = AnimationType::startzoomtopoint;
-  auto c = renderer->get_coords();
+  auto c = view.get_coords();
   c.r = 2.0;
   c.max_iterations = 500;
-  zoomtopoint_limit = renderer->log_width();
-  renderer->set_coords(c, viewport);
+  zoomtopoint_limit = view.get_coords().ln_r();
+  view.set_coords(c);
 }
 
 void fractals::AnimatedRenderer::zoom_at_cursor() {
@@ -302,33 +190,29 @@ void fractals::AnimatedRenderer::set_animation_speed(
 
 bool fractals::AnimatedRenderer::is_animating() const { return zooming; }
 
-fractals::AnimatedRenderer::BackgroundViewport::BackgroundViewport(
-    AnimatedRenderer &renderer)
-    : renderer(renderer) {}
-
 fractals::mapped_point
 fractals::AnimatedRenderer::map_point(const view_coords &c) const {
 
   // Look at the zoom ratio
   // Use zoom_x, zoom_y and rendered_zoom_ratio
 
-  auto original_coords = renderer->get_coords();
+  auto original_coords = view.get_coords();
 
   if (zooming) {
 
     auto zoomed_coords =
-        original_coords.zoom(2.0 * rendered_zoom_ratio, viewport.width(),
-                             viewport.height(), zoom_x, zoom_y);
+        original_coords.zoom(2.0 * rendered_zoom_ratio, view.width(),
+                             view.height(), zoom_x, zoom_y);
 
-    return zoomed_coords.map_point(viewport.width(), viewport.height(), c);
+    return zoomed_coords.map_point(view.width(), view.height(), c);
   } else {
-    return original_coords.map_point(viewport.width(), viewport.height(), c);
+    return original_coords.map_point(view.width(), view.height(), c);
   }
 }
 
 void fractals::AnimatedRenderer::discovered_depth(
     const calculation_metrics &metrics) {
-  renderer->discovered_depth(metrics);
+  view.update_iterations(metrics);
 
   if (!metrics.last_action_was_a_scroll && metrics.points_calculated > 1000 &&
       metrics.min_depth > 0) {
@@ -348,90 +232,83 @@ void fractals::AnimatedRenderer::disable_auto_gradient() {
   colourMap->getParameters(params);
   params.auto_gradient = false;
   colourMap->setParameters(params);
-
-  if (is_animating())
-    renderer->redraw(viewport);
 }
 
 void fractals::AnimatedRenderer::update_iterations(
     const calculation_metrics &metrics) {
-  if (renderer)
-    renderer->discovered_depth(metrics);
+  view.update_iterations(metrics);
 }
 
 double fractals::AnimatedRenderer::ln_r() const {
-  return renderer->log_width();
+  return view.get_coords().ln_r();
 }
 
 int fractals::AnimatedRenderer::iterations() const {
-  return renderer->iterations();
+  return view.get_coords().max_iterations;
 }
 
-void fractals::AnimatedRenderer::scroll(int x, int y, Viewport &vp) {
+void fractals::AnimatedRenderer::scroll(int x, int y) {
   view.scroll(x, y);
-  renderer->scroll(x, y, vp);
 }
 
-void fractals::AnimatedRenderer::resize(int w, int h) {
-  view.set_size(w, h);
-  renderer->set_aspect_ratio(w, h);
-}
+void fractals::AnimatedRenderer::resize(int w, int h) { view.set_size(w, h); }
 
-void fractals::AnimatedRenderer::zoom(double f, int x, int y, bool fix_center,
-                                      Viewport &vp) {
+void fractals::AnimatedRenderer::zoom(double f, int x, int y, bool fix_center) {
   view.zoom(x, y, f);
-  renderer->zoom(f, x, y, fix_center, vp);
 }
 
-void fractals::AnimatedRenderer::increase_iterations(Viewport &vp) {
-  renderer->increase_iterations(vp);
+void fractals::AnimatedRenderer::increase_iterations() {
+  view.increase_iterations();
 }
 
-void fractals::AnimatedRenderer::decrease_iterations(Viewport &vp) {
-  renderer->decrease_iterations(vp);
+void fractals::AnimatedRenderer::decrease_iterations() {
+  view.decrease_iterations();
 }
 
-void fractals::AnimatedRenderer::load(const view_parameters &params,
-                                      Viewport &vp) {
-  renderer->load(params, vp);
+void fractals::AnimatedRenderer::load(const view_parameters &params) {
+  // renderer->load(params, vp);
 }
 
 void fractals::AnimatedRenderer::save(view_parameters &params) const {
-  renderer->save(params);
+  // renderer->save(params);
 }
 
-void fractals::AnimatedRenderer::set_coords(const view_coords &coords,
-                                            Viewport &vp) {
-  renderer->set_coords(coords, vp);
+void fractals::AnimatedRenderer::set_coords(const view_coords &coords) {
+  view.set_coords(coords);
 }
 
 std::string fractals::AnimatedRenderer::fractal_family() const {
-  return renderer->get_fractal_family();
+  return view.get_fractal_family();
 }
 
 std::string fractals::AnimatedRenderer::fractal_name() const {
-  return renderer->get_fractal_name();
+  return view.get_fractal_name();
 }
 
 fractals::view_coords fractals::AnimatedRenderer::initial_coords() const {
-  return renderer->initial_coords();
+  return view.initial_coords();
 }
 
 void fractals::AnimatedRenderer::set_fractal(const fractal &f) {
-  renderer->set_fractal(f);
+  view.set_fractal(f);
 }
-
-void fractals::AnimatedRenderer::redraw(Viewport &vp) { renderer->redraw(vp); }
 
 void fractals::AnimatedRenderer::enable_auto_depth(bool enabled) {
-  renderer->enable_auto_depth(enabled);
+
+  // renderer->enable_auto_depth(enabled);
 }
 
-void fractals::AnimatedRenderer::set_threading(int n) {
-  renderer->set_threading(n);
-}
+void fractals::AnimatedRenderer::set_threading(int n) { view.set_threading(n); }
 
 void fractals::AnimatedRenderer::get_depth_range(double &a, double &b,
                                                  double &c) const {
-  renderer->get_depth_range(a, b, c);
+  auto &metrics = view.get_metrics();
+  a = metrics.min_depth;
+  b = metrics.discovered_depth;
+  c = metrics.max_depth;
+}
+
+void fractals::AnimatedRenderer::calculation_started(radius r, int max_iterations)
+{
+  listener.calculation_started(r, max_iterations);
 }

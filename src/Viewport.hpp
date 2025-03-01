@@ -1,5 +1,5 @@
 #pragma once
-#include "pixmap.hpp"
+#include "view_pixmap.hpp"
 
 namespace fractals {
 struct calculation_metrics;

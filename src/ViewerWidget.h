@@ -9,12 +9,12 @@
 #include "ColourMap.hpp"
 #include "Renderer.hpp"
 #include "Viewport.hpp"
-#include "fractal.hpp"
-#include "view_coords.hpp"
-#include "registry.hpp"
 #include "controlpanel.h"
+#include "fractal.hpp"
+#include "registry.hpp"
+#include "view_coords.hpp"
 
-class ViewerWidget : public QWidget {
+class ViewerWidget : public QWidget, fractals::view_listener {
   Q_OBJECT
   QImage image;
   QTimer renderingTimer;
@@ -22,17 +22,6 @@ class ViewerWidget : public QWidget {
   // We can increase the resolution, perhaps to native screen resolution, but
   // it's slower.
   double imageScale = 1.0; // Oversample
-
-  struct MyViewport : public fractals::Viewport {
-    ViewerWidget &widget;
-    MyViewport(ViewerWidget &);
-    void updated() override;
-    void finished(const fractals::calculation_metrics &) override;
-    void calculation_started(double log_radius, int iterations) override;
-    void schedule_next_calculation() override;
-    void start_timer() override;
-    void stop_timer() override;
-  } viewport;
 
   fractals::AnimatedRenderer renderer;
 
@@ -68,13 +57,17 @@ public:
   void getCoords(fractals::view_parameters &params) const;
   bool setCoords(const fractals::view_parameters &params);
 
-  std::vector<std::pair<std::string, const fractals::fractal &>>
-  listFractals();
+  std::vector<std::pair<std::string, const fractals::fractal &>> listFractals();
 
   void saveToFile(const QString &image_filename);
 
   void doResize(int w, int h);
   void updateColourControls();
+
+  void calculation_started(double ln_r, int max_iterations) override;
+  void values_changed() override;
+  void calculation_finished(const fractals::calculation_metrics &) override;
+  void animation_finished(const fractals::calculation_metrics &) override;
 
 public slots:
   void copyCoords();

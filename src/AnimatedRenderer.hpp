@@ -4,6 +4,7 @@
 #include "Renderer.hpp"
 #include "Viewport.hpp"
 #include "registry.hpp"
+#include "view_listener.hpp"
 #include "view.hpp"
 
 #include <atomic>
@@ -12,6 +13,7 @@
 
 namespace fractals {
 class mapped_point;
+
 /*
 Logic for creating animations.
 
@@ -19,9 +21,9 @@ Manages two additional pixel buffers for the previous image and the current
 image being calculated.
 
 */
-class AnimatedRenderer : view::listener {
+class AnimatedRenderer : view_listener {
 public:
-  AnimatedRenderer(fractals::Viewport &viewport);
+  AnimatedRenderer(fractals::view_listener &listener2);
   ~AnimatedRenderer();
 
   void smooth_zoom_to(int x, int y, bool lockCenter, std::optional<std::chrono::duration<double>> duration);
@@ -29,9 +31,6 @@ public:
   void calculate_async();
 
   void start_next_calculation();
-
-  // Called when the timer has timed out
-  void timer();
 
   void cancel_animations();
 
@@ -54,20 +53,20 @@ public:
 
   double ln_r() const;
   int iterations() const;
-  void scroll(int x, int y, Viewport &vp);
+  void scroll(int x, int y);
   void resize(int w, int h);
-  void zoom(double f, int x, int y, bool fix_center, Viewport &vp);
+  void zoom(double f, int x, int y, bool fix_center);
   void update_iterations(const calculation_metrics &);
-  void increase_iterations(Viewport &vp);
-  void decrease_iterations(Viewport &vp);
-  void load(const view_parameters &params, Viewport &vp);
+  void increase_iterations();
+  void decrease_iterations();
+  void load(const view_parameters &params);
   void save(view_parameters &params) const;
-  void set_coords(const view_coords&, Viewport &vp);
+  void set_coords(const view_coords&);
   std::string fractal_family() const;
   std::string fractal_name() const;
   view_coords initial_coords() const;
   void set_fractal(const fractal&);
-  void redraw(Viewport &vp);
+  void values_changed() override;
   void enable_auto_depth(bool enabled);
   void set_threading(int);
   void get_depth_range(double&, double&, double&) const;
@@ -87,7 +86,6 @@ public: // !! Ideally private
   mapped_point map_point(const view_coords &c) const;
 
 private:
-  std::unique_ptr<fractals::Renderer> renderer;
   bool zooming = false;
   std::atomic<bool> calculationFinished = false;
   std::atomic<bool> zoomTimeout = false;
@@ -105,26 +103,17 @@ private:
   bool fixZoomSpeed = false;
   std::chrono::duration<double> fixZoomDuration;
 
-  fractals::Viewport previousVp;
-
-  struct BackgroundViewport : public fractals::Viewport {
-    BackgroundViewport(AnimatedRenderer &);
-    AnimatedRenderer &renderer;
-    void updated() override;
-    void finished(const calculation_metrics &metrics) override;
-  } background_viewport;
-
-  void render_update_background_image();
-  void render_overwrite_background_image();
   void background_render_finished();
   void begin_next_animation();
-  void update(const calculation_metrics &) override;
-  void animation_complete(const calculation_metrics &) override;
-  void redraw() override;
 
-  fractals::Viewport &viewport;
+  void calculation_started(radius r, int max_iterations) override;
+  void calculation_finished(const calculation_metrics &) override;
+  void animation_finished(const calculation_metrics &) override;
+
+  fractals::view_listener &listener;
   int move_x = 0, move_y = 0;
 
+  public:
   fractals::view view;
 };
 } // namespace fractals

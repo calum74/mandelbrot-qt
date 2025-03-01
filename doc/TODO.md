@@ -4,6 +4,23 @@ Idea: Most images have rotational symmetry, so if we can figure out the rotation
 
 As we zoom, the shadows change. This seems very unrealistic. How can we change this??
 
+Implement "discovered depth" again.
+
+Go home -> reset the iterations as well. Why is this not just reset?
+
+Implement a "radius" type which is just ln_r;
+
+- Implement a "shaded_view" which just combines the colourmap with a view
+- Implement an "animated_view" which orchestrates the animation events.
+- Implement a "simple view" which just performs the calculations
+
+```
+class radius
+{
+  double ln_r;
+};
+```
+
 
 Today:
 - Display stars instead of blackness for the minibrots?
