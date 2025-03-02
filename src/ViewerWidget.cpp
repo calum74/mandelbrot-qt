@@ -364,9 +364,7 @@ void ViewerWidget::save() {
 }
 
 void ViewerWidget::zoomIn() {
-  //renderer.cancel_animations();
   renderer.zoom(0.5, move_x, move_y, false);
-  //calculate();
 }
 
 void ViewerWidget::smoothZoomIn() { renderer.smooth_zoom_in(); }
@@ -374,9 +372,7 @@ void ViewerWidget::smoothZoomIn() { renderer.smooth_zoom_in(); }
 void ViewerWidget::updateFrame() {}
 
 void ViewerWidget::zoomOut() {
-  // renderer.cancel_animations();
   renderer.zoom(2.0, move_x, move_y, false);
-  // calculate();
 }
 
 void ViewerWidget::animateToHere() {

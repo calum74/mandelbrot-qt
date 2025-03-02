@@ -157,15 +157,7 @@ void fractals::AnimatedRenderer::animate_to_here() {
 }
 
 void fractals::AnimatedRenderer::zoom_at_cursor() {
-  if (zooming && !zoomTimeout) {
-    cancel_animations();
-    calculate_async();
-    zooming = false;
-  } else {
-    cancel_animations();
-    current_animation = AnimationType::zoomatcursor;
-    smooth_zoom_to(move_x, move_y, false, continuous_zoom_duration);
-  }
+  smooth_zoom_to(move_x, move_y, false, continuous_zoom_duration);
 }
 
 void fractals::AnimatedRenderer::smooth_zoom_in() {
@@ -182,7 +174,7 @@ void fractals::AnimatedRenderer::set_animation_speed(
   fixZoomDuration = speed;
 }
 
-bool fractals::AnimatedRenderer::is_animating() const { return zooming; }
+bool fractals::AnimatedRenderer::is_animating() const { return view.is_animating(); }
 
 fractals::mapped_point
 fractals::AnimatedRenderer::map_point(const view_coords &c) const {
