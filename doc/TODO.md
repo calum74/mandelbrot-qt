@@ -2,8 +2,8 @@
 
 Bugs:
 1. Zoom in
-  a. We don't seem to update the iteration counts
-  b. quality zoom not implemented
+  b. Quality zoom not implemented
+2. Bookmarks aren't working
 2. Animations
 
 
