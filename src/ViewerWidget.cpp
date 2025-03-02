@@ -262,7 +262,7 @@ void ViewerWidget::changeFractal(const fractals::fractal &fractal) {
 
   if (old_family != fractal.family())
     renderer.set_coords(renderer.initial_coords());
-  calculate();
+  // calculate();
 }
 
 std::vector<std::pair<std::string, const fractals::fractal &>>

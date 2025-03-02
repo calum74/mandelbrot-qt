@@ -1,5 +1,12 @@
 # Task list
 
+Bugs:
+1. Zoom in
+  a. We don't seem to update the iteration counts
+  b. quality zoom not implemented
+2. Animations
+
+
 Idea: Most images have rotational symmetry, so if we can figure out the rotational symmetry, then we can render multiple points at the same time.
 
 As we zoom, the shadows change. This seems very unrealistic. How can we change this??

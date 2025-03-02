@@ -16,7 +16,7 @@ fractals::AnimatedRenderer::AnimatedRenderer(fractals::view_listener &listener)
       registry{fractals::make_registry()} {
 
   register_fractals(*registry);
-  single_zoom_duration = 50ms;
+  single_zoom_duration = 250ms; // 50ms;
   continuous_zoom_duration = 750ms;
 
   view.set_threading(4);
@@ -168,14 +168,7 @@ void fractals::AnimatedRenderer::zoom_at_cursor() {
 }
 
 void fractals::AnimatedRenderer::smooth_zoom_in() {
-  if (zooming && !zoomTimeout) {
-    cancel_animations();
-    calculate_async();
-    zooming = false;
-  } else {
-    cancel_animations();
-    smooth_zoom_to(move_x, move_y, false, single_zoom_duration);
-  }
+  smooth_zoom_to(move_x, move_y, false, single_zoom_duration);
 }
 
 void fractals::AnimatedRenderer::set_speed_estimate(double secondsPerPixel) {
