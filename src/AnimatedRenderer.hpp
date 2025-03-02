@@ -5,7 +5,7 @@
 #include "Viewport.hpp"
 #include "registry.hpp"
 #include "view_listener.hpp"
-#include "view.hpp"
+#include "view_animation.hpp"
 
 #include <atomic>
 #include <chrono>
@@ -29,8 +29,6 @@ public:
   void smooth_zoom_to(int x, int y, bool lockCenter, std::optional<std::chrono::duration<double>> duration);
 
   void calculate_async();
-
-  void start_next_calculation();
 
   void cancel_animations();
 
@@ -74,14 +72,6 @@ public:
 public: // !! Ideally private
   std::unique_ptr<fractals::Registry> registry;
   std::unique_ptr<fractals::ColourMap> colourMap;
-
-  enum class AnimationType {
-    none,
-    autozoom,
-    startzoomtopoint,
-    zoomtopoint,
-    zoomatcursor
-  } current_animation = AnimationType::none;
 
   mapped_point map_point(const view_coords &c) const;
 

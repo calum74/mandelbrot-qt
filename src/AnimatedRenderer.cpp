@@ -113,34 +113,6 @@ void fractals::AnimatedRenderer::cancel_animations() {
   view.stop_current_animation_and_set_as_current();
 }
 
-void fractals::AnimatedRenderer::start_next_calculation() {
-  switch (current_animation) {
-  case AnimationType::autozoom:
-    auto_navigate();
-    break;
-  case AnimationType::zoomtopoint:
-    if (view.get_coords().ln_r() > zoomtopoint_limit)
-      smooth_zoom_to(view.width() / 2, view.height() / 2, true, {});
-    break;
-  case AnimationType::zoomatcursor:
-    smooth_zoom_to(move_x, move_y, false, continuous_zoom_duration);
-    break;
-  default:
-    break;
-  }
-}
-
-void fractals::AnimatedRenderer::auto_navigate() {
-  cancel_animations();
-  int x, y;
-  if (view.get_auto_zoom(x, y)) {
-    current_animation = AnimationType::autozoom;
-    smooth_zoom_to(x, y, false, {});
-  } else {
-    std::cout << "Autozoom continue failed\n";
-  }
-}
-
 void fractals::AnimatedRenderer::set_cursor(int x, int y) {
   move_x = x;
   move_y = y;
@@ -148,7 +120,6 @@ void fractals::AnimatedRenderer::set_cursor(int x, int y) {
 
 void fractals::AnimatedRenderer::animate_to_here() {
   cancel_animations();
-  current_animation = AnimationType::startzoomtopoint;
   auto c = view.get_coords();
   c.r = 2.0;
   c.max_iterations = 500;
@@ -311,4 +282,9 @@ void fractals::AnimatedRenderer::get_depth_range(double &a, double &b,
 void fractals::AnimatedRenderer::calculation_started(radius r, int max_iterations)
 {
   listener.calculation_started(r, max_iterations);
+}
+
+void fractals::AnimatedRenderer::auto_navigate()
+{
+  // TODO
 }

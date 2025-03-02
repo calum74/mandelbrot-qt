@@ -188,12 +188,6 @@ void ViewerWidget::calculation_finished(
 
   if (metrics.fully_evaluated)
     completed(&metrics);
-
-  if (renderer.current_animation ==
-      fractals::AnimatedRenderer::AnimationType::startzoomtopoint) {
-    renderer.current_animation =
-        fractals::AnimatedRenderer::AnimationType::zoomtopoint;
-  }
 }
 
 void ViewerWidget::increaseIterations() {
@@ -393,8 +387,6 @@ void ViewerWidget::renderingFinishedSlot() {
     // in between animation frames
     doResize(width(), height());
   }
-
-  renderer.start_next_calculation();
 }
 
 void ViewerWidget::stopAnimations() {
