@@ -235,10 +235,7 @@ void ViewerWidget::getCoords(fractals::view_parameters &params) const {
 }
 
 bool ViewerWidget::setCoords(const fractals::view_parameters &params) {
-  renderer.cancel_animations();
-  renderer.colourMap->load(params);
   renderer.load(params);
-  calculate();
   return true;
 }
 
@@ -255,14 +252,9 @@ void ViewerWidget::resetCurrentFractal() {
 }
 
 void ViewerWidget::changeFractal(const fractals::fractal &fractal) {
-  renderer.cancel_animations();
 
   std::string old_family = renderer.fractal_family();
-  renderer.set_fractal(fractal);
-
-  if (old_family != fractal.family())
-    renderer.set_coords(renderer.initial_coords());
-  // calculate();
+  renderer.set_fractal(fractal, old_family != fractal.family());
 }
 
 std::vector<std::pair<std::string, const fractals::fractal &>>
@@ -352,23 +344,15 @@ void ViewerWidget::open() {
         return;
     }
 
-    renderer.cancel_animations();
-
     renderer.load(params);
-    renderer.colourMap->load(params);
     fractalChanged(renderer.fractal_name().c_str()); // Update menus if needed
-    calculate();
   }
 }
 
 void ViewerWidget::openBookmark(const fractals::view_parameters *params) {
-  renderer.cancel_animations();
-
   renderer.load(*params);
-  renderer.colourMap->load(*params);
   fractalChanged(renderer.fractal_name().c_str()); // Update menus if needed
   controlPanel.valuesChanged(&params->shader);
-  calculate();
 }
 
 void ViewerWidget::save() {

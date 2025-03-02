@@ -5,6 +5,7 @@
 #include "registry.hpp"
 #include "shader_parameters.hpp"
 #include "view_coords.hpp"
+#include "view_parameters.hpp"
 #include <cassert>
 
 using namespace std::literals::chrono_literals;
@@ -21,7 +22,7 @@ fractals::AnimatedRenderer::AnimatedRenderer(fractals::view_listener &listener)
 
   view.set_threading(4);
 
-  view.set_fractal(mandelbrot_fractal);
+  view.set_fractal(mandelbrot_fractal, true, false);
   view.set_listener(this);
 }
 
@@ -152,7 +153,7 @@ void fractals::AnimatedRenderer::animate_to_here() {
   c.r = 2.0;
   c.max_iterations = 500;
   zoomtopoint_limit = view.get_coords().ln_r();
-  view.set_coords(c);
+  view.set_coords(c, true);
 }
 
 void fractals::AnimatedRenderer::zoom_at_cursor() {
@@ -259,15 +260,29 @@ void fractals::AnimatedRenderer::decrease_iterations() {
 }
 
 void fractals::AnimatedRenderer::load(const view_parameters &params) {
-  // renderer->load(params, vp);
+  colourMap->load(params);
+  // Set the fractal
+
+  auto new_fractal = registry->lookup(params.algorithm);
+
+  if (new_fractal) {
+    view.set_fractal(*new_fractal, false, false);
+  }
+
+  view_coords new_coords = params;
+  std::cout << "1: Setting the new coords to " << new_coords.ln_r() << std::endl;
+  view.set_coords(new_coords, true);
+  std::cout << "2: Setting the new coords to " << new_coords.ln_r() << std::endl;
 }
 
 void fractals::AnimatedRenderer::save(view_parameters &params) const {
-  // renderer->save(params);
+  view.get_coords().write(params);
+  params.algorithm = view.get_fractal_name();
+  colourMap->save(params);
 }
 
 void fractals::AnimatedRenderer::set_coords(const view_coords &coords) {
-  view.set_coords(coords);
+  view.set_coords(coords, true);
 }
 
 std::string fractals::AnimatedRenderer::fractal_family() const {
@@ -282,8 +297,8 @@ fractals::view_coords fractals::AnimatedRenderer::initial_coords() const {
   return view.initial_coords();
 }
 
-void fractals::AnimatedRenderer::set_fractal(const fractal &f) {
-  view.set_fractal(f);
+void fractals::AnimatedRenderer::set_fractal(const fractal &f, bool init_coords) {
+  view.set_fractal(f, init_coords, true);
 }
 
 void fractals::AnimatedRenderer::enable_auto_depth(bool enabled) {

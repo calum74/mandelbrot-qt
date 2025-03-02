@@ -4,7 +4,10 @@ Bugs:
 1. Zoom in
   b. Quality zoom not implemented
 2. Bookmarks aren't working
-2. Animations
+  Not setting location correctly - why?
+  Iterations get reset by spurious fractal change
+3. Animations
+4. Go to dialog does not work
 
 
 Idea: Most images have rotational symmetry, so if we can figure out the rotational symmetry, then we can render multiple points at the same time.

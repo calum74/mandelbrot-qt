@@ -65,7 +65,7 @@ public:
   std::string fractal_family() const;
   std::string fractal_name() const;
   view_coords initial_coords() const;
-  void set_fractal(const fractal&);
+  void set_fractal(const fractal&, bool reset_coords);
   void values_changed() override;
   void enable_auto_depth(bool enabled);
   void set_threading(int);

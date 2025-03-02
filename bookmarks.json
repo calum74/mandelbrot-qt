@@ -488,5 +488,15 @@
         "Name": "User/Unsorted/Three",
         "Radius": "5.122e-13",
         "Re": "0.2777960639336336"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 141,
+        "Gradient": 30.0,
+        "Im": "-0.64104",
+        "Iterations": 13883,
+        "Name": "User/Unsorted/test",
+        "Radius": "4.034e-2",
+        "Re": "-0.55944"
     }
 ]
