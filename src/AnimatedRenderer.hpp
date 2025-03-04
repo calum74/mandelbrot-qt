@@ -104,6 +104,6 @@ private:
   int move_x = 0, move_y = 0;
 
   public:
-  fractals::view view;
+  fractals::view_animation view;
 };
 } // namespace fractals

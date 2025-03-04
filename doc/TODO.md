@@ -7,7 +7,18 @@ Bugs:
   Not setting location correctly - why?
   Iterations get reset by spurious fractal change
 3. Animations
-4. Go to dialog does not work
+
+? What happens if we differentiate the MB set function?
+
+dx/di = 2z 
+
+Could we have a programming language where all variables are types?
+
+type duration: int
+E.g. fn wait = duration -> sleep(duration)
+
+  duration = 123;  // A local variable
+  my_duration = 123  //
 
 
 Idea: Most images have rotational symmetry, so if we can figure out the rotational symmetry, then we can render multiple points at the same time.

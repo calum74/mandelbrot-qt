@@ -59,28 +59,30 @@ void ViewerWidget::draw() {
   auto &colourMap = *renderer.colourMap;
 
   std::uint32_t *image_data = (std::uint32_t *)image.bits();
+  auto &values = renderer.view.values();
+
   for (int j = 0; j < image.height(); ++j) {
     for (int i = 0; i < image.width(); ++i) {
       int delta = 1;
-      auto &pixel = renderer.view.values(i, j);
-      auto &p2 = i + delta < image.width() ? renderer.view.values(i + delta, j)
-                                           : renderer.view.values(i - delta, j);
+      auto &pixel = values(i, j);
+      auto &p2 = i + delta < image.width() ? values(i + delta, j)
+                                           : values(i - delta, j);
       auto &p3 = j + delta < image.height()
-                     ? renderer.view.values(i, j + delta)
-                     : renderer.view.values(i, j - delta);
+                     ? values(i, j + delta)
+                     : values(i, j - delta);
       constexpr bool alwaysShade = true;
       if ((pixel.error == 0 && p2.error == 0 && p3.error == 0) || alwaysShade) {
         double dx = i + delta < image.width()
-                        ? p2.value - renderer.view.values(i, j).value
-                        : renderer.view.values(i, j).value - p2.value;
+                        ? p2.value - values(i, j).value
+                        : values(i, j).value - p2.value;
         double dy = j + delta < image.height()
-                        ? p3.value - renderer.view.values(i, j).value
-                        : renderer.view.values(i, j).value - p3.value;
+                        ? p3.value - values(i, j).value
+                        : values(i, j).value - p3.value;
         image_data[j * image.width() + i] =
             0xff000000 | colourMap(pixel.value, dx, dy);
       } else {
         image_data[j * image.width() + i] =
-            0xff000000 | colourMap(renderer.view.values(i, j).value);
+            0xff000000 | colourMap(values(i, j).value);
       }
     }
   }

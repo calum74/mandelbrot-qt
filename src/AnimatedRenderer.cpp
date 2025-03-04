@@ -14,7 +14,7 @@ void register_fractals(fractals::Registry &r);
 
 fractals::AnimatedRenderer::AnimatedRenderer(fractals::view_listener &listener)
     : listener(listener), colourMap{fractals::make_colourmap()},
-      registry{fractals::make_registry()} {
+      registry{fractals::make_registry()}, view(*this) {
 
   register_fractals(*registry);
   single_zoom_duration = 250ms; // 50ms;
@@ -23,7 +23,6 @@ fractals::AnimatedRenderer::AnimatedRenderer(fractals::view_listener &listener)
   view.set_threading(4);
 
   view.set_fractal(mandelbrot_fractal, true, false);
-  view.set_listener(this);
 }
 
 fractals::AnimatedRenderer::~AnimatedRenderer() {}
