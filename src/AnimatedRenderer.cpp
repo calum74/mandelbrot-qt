@@ -115,6 +115,7 @@ void fractals::AnimatedRenderer::cancel_animations() {
 void fractals::AnimatedRenderer::set_cursor(int x, int y) {
   move_x = x;
   move_y = y;
+  view.mouse_at(x,y);
 }
 
 void fractals::AnimatedRenderer::animate_to_here() {
@@ -127,7 +128,7 @@ void fractals::AnimatedRenderer::animate_to_here() {
 }
 
 void fractals::AnimatedRenderer::zoom_at_cursor() {
-  smooth_zoom_to(move_x, move_y, false, continuous_zoom_duration);
+  view.navigate_at_cursor(move_x, move_y);
 }
 
 void fractals::AnimatedRenderer::smooth_zoom_in() {

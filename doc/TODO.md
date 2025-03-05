@@ -1,12 +1,8 @@
 # Task list
 
-Bugs:
-1. Zoom in
-  b. Quality zoom not implemented
-2. Bookmarks aren't working
-  Not setting location correctly - why?
-  Iterations get reset by spurious fractal change
-3. Animations
+Animations:
+1. Continuous zoom
+Animation finished -> schedule a new animation
 
 ? What happens if we differentiate the MB set function?
 
