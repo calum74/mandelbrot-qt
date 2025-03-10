@@ -153,7 +153,9 @@ void ViewerWidget::mousePressEvent(QMouseEvent *event) {
     start_y = press_y = y;
 
     release_can_start_zooming = !renderer.is_animating();
-    stopAnimations();
+
+    if(renderer.is_animating())
+      stopAnimations();
   }
 }
 
@@ -166,7 +168,6 @@ void ViewerWidget::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void ViewerWidget::doUpdate() {
-  std::cout << "Updating contents\n";
   QWidget::update();
 }
 

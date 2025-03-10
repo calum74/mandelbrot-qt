@@ -2,8 +2,11 @@
 
 Animations:
 1. Continuous zoom
-Animation finished -> schedule a new animation
-
+  Animation finished -> schedule a new animation
+  - Why aborted??
+2. Abort zoom -> 
+  Abort calculation and restart on the current zoom level.
+  
 ? What happens if we differentiate the MB set function?
 
 dx/di = 2z 

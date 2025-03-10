@@ -90,22 +90,6 @@ void fractals::AnimatedRenderer::smooth_zoom_to(
 }
 
 void fractals::AnimatedRenderer::begin_next_animation() {
-  if (!calculationFinished) {
-    // Report on current calculation
-    listener.calculation_started(view.get_coords().ln_r(),
-                                 view.get_coords().max_iterations);
-  }
-
-  // If calculation is too slow, abort any animations that are in flight.
-  if (calculated_points > 0 && view_min + 5 > view_max) {
-    // Don't animate if we're in a low range
-    // We're either in the middle of some black
-    // or escaped.
-    cancel_animations();
-    return;
-  }
-
-  // TODO
 }
 
 void fractals::AnimatedRenderer::cancel_animations() {
@@ -119,7 +103,6 @@ void fractals::AnimatedRenderer::set_cursor(int x, int y) {
 }
 
 void fractals::AnimatedRenderer::animate_to_here() {
-  cancel_animations();
   auto c = view.get_coords();
   c.r = 2.0;
   c.max_iterations = 500;
