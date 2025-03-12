@@ -7,8 +7,6 @@
 
 #include "AnimatedRenderer.hpp"
 #include "ColourMap.hpp"
-#include "Renderer.hpp"
-#include "Viewport.hpp"
 #include "controlpanel.h"
 #include "fractal.hpp"
 #include "registry.hpp"
