@@ -1,12 +1,24 @@
 # Task list
 
+- [ ] Delete old code (e.g. AsyncRenderer, Viewport)
+  - [ ] Clean up AnimatedRenderer
+
+Bugs:
+- Flickering whilst animating
+- Zoom in - last step zooms too far.
+
 Animations:
-1. Continuous zoom
-  Animation finished -> schedule a new animation
-  - Why aborted??
-2. Abort zoom -> 
-  Abort calculation and restart on the current zoom level.
-  
+- On continuous animation, we don't update the stats?
+  -> Stop calculating -> call update stats
+- Quality animation mode
+- When calculating, don't show partials?
+- Avoid black boxes
+- Zoom to here
+- Auto-depth option should work
+
+Context menu?
+
+
 ? What happens if we differentiate the MB set function?
 
 dx/di = 2z 

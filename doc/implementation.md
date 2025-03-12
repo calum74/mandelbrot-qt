@@ -63,12 +63,18 @@ Rendering the Mandelbrot set is an "embarrassingly parallel" problem, meaning th
 
 Algorithms typically segment the image into "tiles" which can be rendered independently. However, Mandelbrot-Qt takes a different approach by using a thread pool to process one pixel at a time. This might seem suboptimal, but the overheads of doing this are quite small relative to the computation required for each pixel. This also means that all threads are fully occupied, rather than waiting for the last tile to finish, and this algorithm scales very easily with the number of cores.
 
-## Colour map
+# Lessons learned
 
-Ordinal mapping. A potentially new idea. All points get sorted by their escape distance.
+* Zoom in around a point, not to the center of the screen
 
-# Things that I have learned
+* Auto-depth is super-useful
 
-1. I had no idea
-2. Zoom in on the current cursor position
-3. Writing directly to image buffers was a great idea.
+* Be able to adjust the colour gradient.
+
+* Auto-gradient is helpful
+
+* Shadows are easy and cool
+
+* Store the image as depths, not as pixels.
+
+* Animation is difficult but worth it.

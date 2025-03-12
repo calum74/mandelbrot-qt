@@ -374,7 +374,7 @@ void ViewerWidget::zoomOut() {
 
 void ViewerWidget::animateToHere() {
   renderer.animate_to_here();
-  calculate();
+  // calculate();
 }
 
 void ViewerWidget::zoomAtCursor() { renderer.zoom_at_cursor(); }

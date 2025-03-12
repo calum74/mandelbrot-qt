@@ -103,11 +103,7 @@ void fractals::AnimatedRenderer::set_cursor(int x, int y) {
 }
 
 void fractals::AnimatedRenderer::animate_to_here() {
-  auto c = view.get_coords();
-  c.r = 2.0;
-  c.max_iterations = 500;
-  zoomtopoint_limit = view.get_coords().ln_r();
-  view.set_coords(c, true);
+  view.animate_to_current_position();
 }
 
 void fractals::AnimatedRenderer::zoom_at_cursor() {
