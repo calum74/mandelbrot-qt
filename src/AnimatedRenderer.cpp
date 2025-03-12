@@ -1,5 +1,4 @@
 #include "AnimatedRenderer.hpp"
-#include "Renderer.hpp"
 #include "calculation_metrics.hpp"
 #include "mandelbrot.hpp"
 #include "registry.hpp"

@@ -1,11 +1,17 @@
 # Task list
 
+Next:
+1. Different zoom speeds
+
 - [ ] Delete old code (e.g. AsyncRenderer, Viewport)
   - [ ] Clean up AnimatedRenderer
+  - [ ] Renderer.cpp
+- [ ] Implement Radius class
 
 Bugs:
 - Flickering whilst animating
-- Zoom in - last step zooms too far.
+- Black blocks due to parallelism
+- Iterations aren't recalculated properly on zooming
 
 Animations:
 - On continuous animation, we don't update the stats?
@@ -13,7 +19,6 @@ Animations:
 - Quality animation mode
 - When calculating, don't show partials?
 - Avoid black boxes
-- Zoom to here
 - Auto-depth option should work
 
 Context menu?

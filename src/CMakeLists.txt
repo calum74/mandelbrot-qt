@@ -18,10 +18,6 @@ set(PROJECT_SOURCES
         addbookmark.h
         addbookmark.cpp
         addbookmark.ui
-        Renderer.hpp
-        Renderer.cpp
-        AsyncRenderer.hpp
-        AsyncRenderer.cpp
         AnimatedRenderer.hpp
         AnimatedRenderer.cpp
         ColourMapImpl.cpp
@@ -29,8 +25,6 @@ set(PROJECT_SOURCES
         ColourMapImpl.hpp
         ViewerWidget.h
         ViewerWidget.cpp
-        Viewport.hpp
-        Viewport.cpp
         Fractals.cpp
         gotodialog.h
         gotodialog.cpp

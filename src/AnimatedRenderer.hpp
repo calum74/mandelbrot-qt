@@ -1,8 +1,6 @@
 #pragma once
 #include "ColourMap.hpp"
 #include "rgb.hpp"
-#include "Renderer.hpp"
-#include "Viewport.hpp"
 #include "registry.hpp"
 #include "view_listener.hpp"
 #include "view_animation.hpp"
