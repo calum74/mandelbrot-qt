@@ -1,11 +1,10 @@
 # Task list
 
 Next:
-1. Different zoom speeds
+1. When zooming, make sure we update depth
+2. Quality zoom
 
-- [ ] Delete old code (e.g. AsyncRenderer, Viewport)
-  - [ ] Clean up AnimatedRenderer
-  - [ ] Renderer.cpp
+
 - [ ] Implement Radius class
 
 Bugs:

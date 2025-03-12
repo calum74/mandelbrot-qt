@@ -119,8 +119,8 @@ void fractals::AnimatedRenderer::set_speed_estimate(double secondsPerPixel) {
 
 void fractals::AnimatedRenderer::set_animation_speed(
     std::chrono::duration<double> speed, bool fixedSpeed) {
-  fixZoomSpeed = fixedSpeed;
-  fixZoomDuration = speed;
+  view.wait_for_completion = !fixedSpeed;
+  view.animate_step_duration = speed;
 }
 
 bool fractals::AnimatedRenderer::is_animating() const { return view.is_animating(); }
