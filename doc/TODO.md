@@ -1,9 +1,10 @@
 # Task list
 
 The old bug is back: animate to here performs a zoom of the wrong image
+Quality zoom should wait for calculation unless time limit reached.
+
 
 1. Single-step zoom incorrectly uses quality mode???
-
 Next:
 2. Quality zoom
   - Single step

@@ -16,8 +16,6 @@ fractals::AnimatedRenderer::AnimatedRenderer(fractals::view_listener &listener)
       registry{fractals::make_registry()}, view(*this) {
 
   register_fractals(*registry);
-  single_zoom_duration = 250ms; // 50ms;
-  continuous_zoom_duration = 750ms;
 
   view.set_threading(4);
 
@@ -53,38 +51,6 @@ void fractals::AnimatedRenderer::values_changed() { listener.values_changed(); }
 void fractals::AnimatedRenderer::smooth_zoom_to(
     int x, int y, bool lockCenter,
     std::optional<std::chrono::duration<double>> requested_duration) {
-  zooming = true;
-  calculationFinished = false;
-  zoomTimeout = false;
-
-  zoom_x = x;
-  zoom_y = y;
-
-  zoom_start = std::chrono::system_clock::now();
-  // Add a 10% buffer to reduce stuttering
-  zoom_duration = std::chrono::milliseconds(
-      int(estimatedSecondsPerPixel * 1000 * view.width() * view.height() *
-          1.10)); // Stupid stupid std::chrono
-
-  // Stop the zoom duration getting too out of hand
-  if (zoom_duration < fixZoomDuration)
-    zoom_duration = fixZoomDuration;
-
-  if (fixZoomSpeed)
-    zoom_duration = fixZoomDuration; // Override for speed
-
-  if (requested_duration && fixZoomSpeed) {
-    zoom_duration = *requested_duration;
-  }
-
-  rendered_zoom_ratio = 1.0;
-  calculated_points = 0;
-  view_min = view_max = 0;
-
-  if (lockCenter)
-    view.animate_to_center(zoom_duration, !fixZoomSpeed);
-  else
-    view.animate_to(x, y, zoom_duration, !fixZoomSpeed);
 }
 
 void fractals::AnimatedRenderer::begin_next_animation() {}
@@ -111,10 +77,6 @@ void fractals::AnimatedRenderer::smooth_zoom_in() {
   view.smooth_zoom_at_cursor(move_x, move_y);
 }
 
-void fractals::AnimatedRenderer::set_speed_estimate(double secondsPerPixel) {
-  estimatedSecondsPerPixel = secondsPerPixel;
-}
-
 void fractals::AnimatedRenderer::set_animation_speed(
     std::chrono::duration<double> speed, bool fixedSpeed) {
   view.wait_for_completion = !fixedSpeed;
@@ -123,25 +85,6 @@ void fractals::AnimatedRenderer::set_animation_speed(
 
 bool fractals::AnimatedRenderer::is_animating() const {
   return view.is_animating();
-}
-
-fractals::mapped_point
-fractals::AnimatedRenderer::map_point(const view_coords &c) const {
-
-  // Look at the zoom ratio
-  // Use zoom_x, zoom_y and rendered_zoom_ratio
-
-  auto original_coords = view.get_coords();
-
-  if (zooming) {
-
-    auto zoomed_coords = original_coords.zoom(
-        2.0 * rendered_zoom_ratio, view.width(), view.height(), zoom_x, zoom_y);
-
-    return zoomed_coords.map_point(view.width(), view.height(), c);
-  } else {
-    return original_coords.map_point(view.width(), view.height(), c);
-  }
 }
 
 void fractals::AnimatedRenderer::discovered_depth(
@@ -263,5 +206,5 @@ void fractals::AnimatedRenderer::calculation_started(radius r,
 }
 
 void fractals::AnimatedRenderer::auto_navigate() {
-  // TODO
+  view.navigate_randomly();
 }

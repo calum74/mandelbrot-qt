@@ -187,7 +187,6 @@ void ViewerWidget::calculation_finished(
     const fractals::calculation_metrics &metrics) {
 
   renderer.update_iterations(metrics);
-  setSpeedEstimate(metrics.seconds_per_point);
 
   if (metrics.fully_evaluated)
     completed(&metrics);
@@ -378,10 +377,6 @@ void ViewerWidget::animateToHere() {
 }
 
 void ViewerWidget::zoomAtCursor() { renderer.zoom_at_cursor(); }
-
-void ViewerWidget::setSpeedEstimate(double secondsPerPixel) {
-  renderer.set_speed_estimate(secondsPerPixel);
-}
 
 void ViewerWidget::renderingFinishedSlot() {
   // Is a resize pending?

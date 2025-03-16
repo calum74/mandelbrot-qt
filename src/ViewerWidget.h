@@ -33,8 +33,6 @@ class ViewerWidget : public QWidget, fractals::view_listener {
 
   std::atomic<int> pending_redraw;
 
-  void setSpeedEstimate(double secondsPerPixel);
-
   ControlPanel controlPanel;
   void doUpdate();
 

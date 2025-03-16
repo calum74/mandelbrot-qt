@@ -35,7 +35,6 @@ public:
   void animate_to_here();
   void zoom_at_cursor();
   void smooth_zoom_in();
-  void set_speed_estimate(double seconds_per_pixel);
   void discovered_depth(const calculation_metrics &metrics);
 
   // fixedSpeed means that we don't wait for rendering to complete
@@ -74,22 +73,7 @@ public: // !! Ideally private
   mapped_point map_point(const view_coords &c) const;
 
 private:
-  bool zooming = false;
-  std::atomic<bool> calculationFinished = false;
-  std::atomic<bool> zoomTimeout = false;
-  std::chrono::time_point<std::chrono::system_clock> zoom_start;
-  std::chrono::duration<double> zoom_duration;
-  std::optional<std::chrono::duration<double>> continuous_zoom_duration, single_zoom_duration;
-  int zoom_x, zoom_y;
-  double zoomtopoint_limit;
-  double rendered_zoom_ratio;
-  int calculated_points;
-  int view_min, view_max;
 
-  double estimatedSecondsPerPixel = 0;
-
-  bool fixZoomSpeed = false;
-  std::chrono::duration<double> fixZoomDuration;
 
   void background_render_finished();
   void begin_next_animation();
