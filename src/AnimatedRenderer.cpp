@@ -30,9 +30,6 @@ void fractals::AnimatedRenderer::calculation_finished(
     const calculation_metrics &metrics) {
 
   // Update the iterations etc.
-  std::cout << "  Finished - setting new range to " << metrics.discovered_depth
-            << std::endl;
-
   if (metrics.discovered_depth > 0 && metrics.discovered_depth > 250) {
     view.set_max_iterations(metrics.discovered_depth * 2);
     colourMap->maybeUpdateRange(metrics.min_depth, metrics.discovered_depth);
@@ -43,7 +40,6 @@ void fractals::AnimatedRenderer::calculation_finished(
 
 void fractals::AnimatedRenderer::animation_finished(
     const calculation_metrics &) {
-  std::cout << "Animation completed\n";
 }
 
 void fractals::AnimatedRenderer::values_changed() { listener.values_changed(); }
@@ -149,11 +145,7 @@ void fractals::AnimatedRenderer::load(const view_parameters &params) {
   }
 
   view_coords new_coords = params;
-  std::cout << "1: Setting the new coords to " << new_coords.ln_r()
-            << std::endl;
   view.set_coords(new_coords, true);
-  std::cout << "2: Setting the new coords to " << new_coords.ln_r()
-            << std::endl;
 }
 
 void fractals::AnimatedRenderer::save(view_parameters &params) const {
