@@ -1,9 +1,15 @@
 # Task list
 
-Next:
-1. When zooming, make sure we update depth
-2. Quality zoom
+The old bug is back: animate to here performs a zoom of the wrong image
 
+1. Single-step zoom incorrectly uses quality mode???
+
+Next:
+2. Quality zoom
+  - Single step
+  - Animate to 
+  - Navigate at
+3. Random zoom
 
 - [ ] Implement Radius class
 
