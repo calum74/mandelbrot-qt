@@ -1,24 +1,11 @@
 #pragma once
 #include "ColourMap.hpp"
-#include "rgb.hpp"
 #include "registry.hpp"
 #include "view_listener.hpp"
 #include "view_animation.hpp"
 
-#include <atomic>
-#include <chrono>
-#include <optional>
-
 namespace fractals {
-class mapped_point;
 
-/*
-Logic for creating animations.
-
-Manages two additional pixel buffers for the previous image and the current
-image being calculated.
-
-*/
 class AnimatedRenderer : view_listener {
 public:
   AnimatedRenderer(fractals::view_listener &listener2);
@@ -71,9 +58,6 @@ public: // !! Ideally private
   std::unique_ptr<fractals::ColourMap> colourMap;
 
 private:
-
-
-
 
   void calculation_started(radius r, int max_iterations) override;
   void calculation_finished(const calculation_metrics &) override;
