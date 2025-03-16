@@ -70,13 +70,10 @@ public: // !! Ideally private
   std::unique_ptr<fractals::Registry> registry;
   std::unique_ptr<fractals::ColourMap> colourMap;
 
-  mapped_point map_point(const view_coords &c) const;
-
 private:
 
 
-  void background_render_finished();
-  void begin_next_animation();
+
 
   void calculation_started(radius r, int max_iterations) override;
   void calculation_finished(const calculation_metrics &) override;

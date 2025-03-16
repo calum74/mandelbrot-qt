@@ -53,8 +53,6 @@ void fractals::AnimatedRenderer::smooth_zoom_to(
     std::optional<std::chrono::duration<double>> requested_duration) {
 }
 
-void fractals::AnimatedRenderer::begin_next_animation() {}
-
 void fractals::AnimatedRenderer::cancel_animations() {
   view.stop_current_animation_and_set_as_current();
 }
