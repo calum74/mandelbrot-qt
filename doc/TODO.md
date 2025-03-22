@@ -1,30 +1,25 @@
 # Task list
 
 The old bug is back: animate to here performs a zoom of the wrong image
-Quality zoom should wait for calculation unless time limit reached.
-
-
-1. Single-step zoom incorrectly uses quality mode???
-Next:
-2. Quality zoom
-  - Single step
-  - Animate to 
-  - Navigate at
-3. Random zoom
 
 - [ ] Implement Radius class
+- [ ] In quality animation, still perform a wait for calculation, unless we exceed the time limit
+- [ ] Quality animation can go too fast
+
+
+- [ ] Random animation gets lost
+- [ ] Do a better job of de-noising partially evaluated images for shading
+- [ ] Shading in low/res/whilst animating looks shit
 
 Bugs:
 - Flickering whilst animating
-- Black blocks due to parallelism
-- Iterations aren't recalculated properly on zooming
+  - Due to read/write barriers??
+
+- [ ] Black blocks due to parallelism
+  -> Interpolate on each layer instead
 
 Animations:
-- On continuous animation, we don't update the stats?
-  -> Stop calculating -> call update stats
-- Quality animation mode
-- When calculating, don't show partials?
-- Avoid black boxes
+- When calculating, don't show partial evaluation
 - Auto-depth option should work
 
 Context menu?

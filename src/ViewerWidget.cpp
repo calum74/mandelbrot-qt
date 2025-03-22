@@ -46,7 +46,7 @@ void ViewerWidget::paintEvent(QPaintEvent *event) { draw(); }
 
 void ViewerWidget::calculate() {
   // !! Delete this??
-  startCalculating(renderer.ln_r(), renderer.iterations());
+  startCalculating(renderer.radius(), renderer.iterations());
 
   assert(image.width() > 0);
   renderer.calculate_async();
@@ -179,8 +179,8 @@ void ViewerWidget::values_changed() {
   }
 }
 
-void ViewerWidget::calculation_started(double logRadius, int iterations) {
-  startCalculating(logRadius, iterations);
+void ViewerWidget::calculation_started(fractals::radius radius, int iterations) {
+  startCalculating(radius, iterations);
 }
 
 void ViewerWidget::calculation_finished(

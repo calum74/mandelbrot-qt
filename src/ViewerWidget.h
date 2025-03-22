@@ -60,7 +60,7 @@ public:
   void doResize(int w, int h);
   void updateColourControls();
 
-  void calculation_started(double ln_r, int max_iterations) override;
+  void calculation_started(fractals::radius radius, int max_iterations) override;
   void values_changed() override;
   void calculation_finished(const fractals::calculation_metrics &) override;
   void animation_finished(const fractals::calculation_metrics &) override;
@@ -105,7 +105,7 @@ public slots:
   void shadingParametersChanged(const fractals::shader_parameters *params);
 
 signals:
-  void startCalculating(double width, int maxIterations);
+  void startCalculating(fractals::radius radius, int maxIterations);
   void completed(const fractals::calculation_metrics *
                      metrics); // References silently fail with Qt signals/slots
   void renderingFinishedSignal();

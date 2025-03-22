@@ -110,8 +110,8 @@ void fractals::AnimatedRenderer::update_iterations(
   view.update_iterations(metrics);
 }
 
-double fractals::AnimatedRenderer::ln_r() const {
-  return view.get_coords().ln_r();
+fractals::radius fractals::AnimatedRenderer::radius() const {
+  return view.get_coords().radius();
 }
 
 int fractals::AnimatedRenderer::iterations() const {
@@ -190,7 +190,7 @@ void fractals::AnimatedRenderer::get_depth_range(double &a, double &b,
   c = metrics.max_depth;
 }
 
-void fractals::AnimatedRenderer::calculation_started(radius r,
+void fractals::AnimatedRenderer::calculation_started(fractals::radius r,
                                                      int max_iterations) {
   listener.calculation_started(r, max_iterations);
 }

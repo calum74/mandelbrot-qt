@@ -33,7 +33,7 @@ public:
   void enable_auto_gradient();
   void disable_auto_gradient();
 
-  double ln_r() const;
+  fractals::radius radius() const;
   int iterations() const;
   void scroll(int x, int y);
   void resize(int w, int h);
@@ -59,7 +59,7 @@ public: // !! Ideally private
 
 private:
 
-  void calculation_started(radius r, int max_iterations) override;
+  void calculation_started(fractals::radius r, int max_iterations) override;
   void calculation_finished(const calculation_metrics &) override;
   void animation_finished(const calculation_metrics &) override;
 

@@ -140,12 +140,10 @@ void MainWindow::changeFractal(ChangeFractalAction *src,
   ui->centralwidget->changeFractal(fractal);
 }
 
-void MainWindow::startCalculating(double d, int iterations) {
+void MainWindow::startCalculating(fractals::radius d, int iterations) {
   std::stringstream ss;
-  ss << "Calculating radius " << std::setprecision(2);
-  fractals::log_radius(ss, d);
+  ss << "Calculating radius " << std::setprecision(2) << d;
   ss << " to " << iterations << " iterations";
-
   ui->statusbar->showMessage(ss.str().c_str());
 }
 
@@ -154,8 +152,7 @@ void MainWindow::completed(const fractals::calculation_metrics *metrics) {
 #ifndef NDEBUG
   ss << "DEBUG BUILD ";
 #endif
-  ss << "Radius " << std::setprecision(2);
-  fractals::log_radius(ss, metrics->log_radius);
+  ss << "Radius " << std::setprecision(2) << metrics->radius;
   ss << " completed in " << std::fixed << metrics->render_time_seconds
      << " seconds, depth " << (int)metrics->min_depth << "-"
      << (int)metrics->max_depth;
