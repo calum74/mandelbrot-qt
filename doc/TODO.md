@@ -1,25 +1,33 @@
 # Task list
 
-The old bug is back: animate to here performs a zoom of the wrong image
+Bugs: animation stopped for no reason
 
-- [ ] Implement Radius class
+
+Next steps:
+- [ ] Don't shade until fully evaluated
+  - Single step zoom zooms unshader
+  - When cancel zoom, re-rendering it often briefly displays unshaded
+Bugs: don't unshade if when waiting to calculate.
+
+
+
+- [ ] Black blocks due to parallelism
+  -> Interpolate on each layer instead
 - [ ] In quality animation, still perform a wait for calculation, unless we exceed the time limit
 - [ ] Quality animation can go too fast
 
 
+The old bug is back: animate to here performs a zoom of the wrong image
+
 - [ ] Random animation gets lost
-- [ ] Do a better job of de-noising partially evaluated images for shading
-- [ ] Shading in low/res/whilst animating looks shit
 
 Bugs:
 - Flickering whilst animating
   - Due to read/write barriers??
 
-- [ ] Black blocks due to parallelism
-  -> Interpolate on each layer instead
 
 Animations:
-- When calculating, don't show partial evaluation
+- When calculating, don't show partially evaluated layers evaluation
 - Auto-depth option should work
 
 Context menu?
@@ -36,7 +44,6 @@ E.g. fn wait = duration -> sleep(duration)
 
   duration = 123;  // A local variable
   my_duration = 123  //
-
 
 Idea: Most images have rotational symmetry, so if we can figure out the rotational symmetry, then we can render multiple points at the same time.
 

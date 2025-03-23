@@ -411,6 +411,9 @@
    <property name="checked">
     <bool>true</bool>
    </property>
+   <property name="shortcut">
+    <string>A</string>
+   </property>
    <property name="text">
     <string>Shading</string>
    </property>

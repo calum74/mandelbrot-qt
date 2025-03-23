@@ -198,3 +198,7 @@ void fractals::AnimatedRenderer::calculation_started(fractals::radius r,
 void fractals::AnimatedRenderer::auto_navigate() {
   view.navigate_randomly();
 }
+
+bool fractals::AnimatedRenderer::fully_calculated() const { 
+  return view.fully_calculated();
+}

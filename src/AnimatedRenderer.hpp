@@ -52,6 +52,7 @@ public:
   void enable_auto_depth(bool enabled);
   void set_threading(int);
   void get_depth_range(double&, double&, double&) const;
+  bool fully_calculated() const;
 
 public: // !! Ideally private
   std::unique_ptr<fractals::Registry> registry;

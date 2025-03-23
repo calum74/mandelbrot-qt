@@ -60,6 +60,7 @@ void ViewerWidget::draw() {
 
   std::uint32_t *image_data = (std::uint32_t *)image.bits();
   auto &values = renderer.view.values();
+  bool fully_calculated = renderer.fully_calculated();
 
   for (int j = 0; j < image.height(); ++j) {
     for (int i = 0; i < image.width(); ++i) {
@@ -70,8 +71,7 @@ void ViewerWidget::draw() {
       auto &p3 = j + delta < image.height()
                      ? values(i, j + delta)
                      : values(i, j - delta);
-      constexpr bool alwaysShade = true;
-      if ((pixel.error == 0 && p2.error == 0 && p3.error == 0) || alwaysShade) {
+      if (fully_calculated) {
         double dx = i + delta < image.width()
                         ? p2.value - values(i, j).value
                         : values(i, j).value - p2.value;
