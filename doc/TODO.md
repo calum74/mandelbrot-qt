@@ -1,21 +1,11 @@
 # Task list
 
-
 Next steps:
 - [ ] The old bug is back: animate to here performs a zoom of the wrong image
   If we haven't finished calculating the old image, it zooms into that one instead.
 
-
 Glitches:
-- When cancel zoom, re-rendering it often briefly displays unshaded
-don't unshade if when waiting to calculate.
-
 - [ ] Random animation gets lost
-
-- Refactor shader/colourer algorithms into mandelbrot
-  ColourMapImpl -> shader_impl
-
-Bugs:
 - Flickering whilst animating
   - Due to read/write barriers??
 
