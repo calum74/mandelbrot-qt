@@ -6,9 +6,9 @@ namespace fractals {
 struct view_parameters;
 struct shader_parameters;
 
-class ColourMap {
+class shader {
 public:
-  virtual ~ColourMap() = default;
+  virtual ~shader() = default;
   virtual void randomize() = 0;
   virtual void resetGradient() = 0;
   virtual void setRange(double min, double max) = 0;
@@ -22,5 +22,5 @@ public:
   virtual void getParameters(shader_parameters &params) = 0;
 };
 
-std::unique_ptr<ColourMap> make_colourmap();
+std::unique_ptr<shader> make_colourmap();
 } // namespace fractals

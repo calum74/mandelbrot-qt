@@ -2,19 +2,19 @@
 #include "shader.hpp"
 #include "view_parameters.hpp"
 
-fractals::ColourMapImpl::ColourMapImpl() {
+fractals::shader_impl::shader_impl() {
   resetGradient();
   create_colours();
   update_light_source();
 }
 
-void fractals::ColourMapImpl::resetGradient() {
+void fractals::shader_impl::resetGradient() {
   params.colour_gradient = 30;
   params.colour_offset = 0;
   gradients.clear();
 }
 
-fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
+fractals::RGB fractals::shader_impl::operator()(double d, double dx,
                                                   double dy) const {
   if (d == 0)
     return make_rgb(0, 0, 0);
@@ -32,7 +32,7 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d, double dx,
   return get_colour_from_index(colours, colour_index.value, brightness);
 }
 
-fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
+fractals::RGB fractals::shader_impl::operator()(double d) const {
   if (d == 0)
     return make_rgb(0, 0, 0);
 
@@ -42,12 +42,12 @@ fractals::RGB fractals::ColourMapImpl::operator()(double d) const {
   return get_colour_from_index(colours, colour_index.value, 1.0);
 }
 
-void fractals::ColourMapImpl::setRange(double min, double max) {
+void fractals::shader_impl::setRange(double min, double max) {
   params.colour_gradient = (max - min) / 5.0;
   gradients.clear();
 }
 
-void fractals::ColourMapImpl::maybeUpdateRange(double min, double max) {
+void fractals::shader_impl::maybeUpdateRange(double min, double max) {
 
   if (!params.auto_gradient)
     return;
@@ -56,16 +56,16 @@ void fractals::ColourMapImpl::maybeUpdateRange(double min, double max) {
                  params.colour_offset);
 }
 
-void fractals::ColourMapImpl::randomize() {
+void fractals::shader_impl::randomize() {
   params.colour_scheme++;
   create_colours();
 }
 
-void fractals::ColourMapImpl::create_colours() {
+void fractals::shader_impl::create_colours() {
   colours = generate_colours(numColours, params.colour_scheme);
 }
 
-void fractals::ColourMapImpl::load(const view_parameters &vp) {
+void fractals::shader_impl::load(const view_parameters &vp) {
   params.colour_scheme = vp.shader.colour_scheme;
   params.colour_gradient = vp.shader.colour_gradient;
   if (params.colour_gradient < 1.0)
@@ -74,19 +74,19 @@ void fractals::ColourMapImpl::load(const view_parameters &vp) {
   create_colours();
 }
 
-void fractals::ColourMapImpl::save(view_parameters &vp) const {
+void fractals::shader_impl::save(view_parameters &vp) const {
   vp.shader = params;
 }
 
-void fractals::ColourMapImpl::getParameters(shader_parameters &vp) {
+void fractals::shader_impl::getParameters(shader_parameters &vp) {
   vp = params;
 }
 
-std::unique_ptr<fractals::ColourMap> fractals::make_colourmap() {
-  return std::make_unique<ColourMapImpl>();
+std::unique_ptr<fractals::shader> fractals::make_colourmap() {
+  return std::make_unique<shader_impl>();
 }
 
-void fractals::ColourMapImpl::setParameters(const shader_parameters &vp) {
+void fractals::shader_impl::setParameters(const shader_parameters &vp) {
   if (params.colour_scheme != vp.colour_scheme) {
     params.colour_scheme = vp.colour_scheme;
     create_colours();
@@ -105,7 +105,7 @@ void fractals::ColourMapImpl::setParameters(const shader_parameters &vp) {
   update_light_source();
 }
 
-void fractals::ColourMapImpl::update_light_source() {
+void fractals::shader_impl::update_light_source() {
   // Recalculate the source based on spherical coordinates
   light_source = spherical_to_cartesian(params.source_direction_radians,
                                         params.source_elevation_radians);

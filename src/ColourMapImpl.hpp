@@ -5,9 +5,9 @@
 
 namespace fractals {
 
-class ColourMapImpl : public ColourMap {
+class shader_impl : public shader {
 public:
-  ColourMapImpl();
+  shader_impl();
   RGB operator()(double d, double dx, double dy) const override;
   RGB operator()(double d) const override;
   void randomize() override;

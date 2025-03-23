@@ -56,7 +56,7 @@ public:
 
 public: // !! Ideally private
   std::unique_ptr<fractals::Registry> registry;
-  std::unique_ptr<fractals::ColourMap> colourMap;
+  std::unique_ptr<fractals::shader> colourMap;
 
 private:
 
