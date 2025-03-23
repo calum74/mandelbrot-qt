@@ -2,8 +2,6 @@
 
 
 Next steps:
-- [ ] Black blocks due to parallelism
-  -> Interpolate on each layer instead
 - [ ] The old bug is back: animate to here performs a zoom of the wrong image
 
 Glitches:
