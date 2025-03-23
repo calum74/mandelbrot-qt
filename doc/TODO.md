@@ -1,34 +1,32 @@
 # Task list
 
-Bugs: animation stopped for no reason
-
 
 Next steps:
-- [ ] Don't shade until fully evaluated
-  - Single step zoom zooms unshader
-  - When cancel zoom, re-rendering it often briefly displays unshaded
-Bugs: don't unshade if when waiting to calculate.
-
-
-
 - [ ] Black blocks due to parallelism
   -> Interpolate on each layer instead
-- [ ] In quality animation, still perform a wait for calculation, unless we exceed the time limit
-- [ ] Quality animation can go too fast
+- [ ] The old bug is back: animate to here performs a zoom of the wrong image
 
-
-The old bug is back: animate to here performs a zoom of the wrong image
+Glitches:
+- When cancel zoom, re-rendering it often briefly displays unshaded
+don't unshade if when waiting to calculate.
 
 - [ ] Random animation gets lost
+
+- Refactor shader/colourer algorithms into mandelbrot
 
 Bugs:
 - Flickering whilst animating
   - Due to read/write barriers??
 
+# Release 1 checklist
 
-Animations:
-- When calculating, don't show partially evaluated layers evaluation
-- Auto-depth option should work
+1. Black squares when navigating
+2. Animate to here zooms the wrong image
+3. Navigate gets lost
+4. Sync bookmarks correctly
+5. Curate bookmarks
+
+# Future ideas
 
 Context menu?
 
@@ -51,41 +49,21 @@ As we zoom, the shadows change. This seems very unrealistic. How can we change t
 
 Implement "discovered depth" again.
 
-Go home -> reset the iterations as well. Why is this not just reset?
-
-Implement a "radius" type which is just ln_r;
-
 - Implement a "shaded_view" which just combines the colourmap with a view
 - Implement an "animated_view" which orchestrates the animation events.
 - Implement a "simple view" which just performs the calculations
 
-```
-class radius
-{
-  double ln_r;
-};
-```
-
-
 Today:
 - Display stars instead of blackness for the minibrots?
-- Quality zoom in sometimes does not update the final image on zoom
 
 Bugs:
-- Black regions when dragging. Can we fill it in better?
-- Odd segmentation fault
-1. Autonavigate stops
-  Probably tried to navigate before finished rendering
-2. Shows wrong background when zooming in
 
 Animation:
 - Animation should reset the colour gradient
 
 Refactoring:
-- Can we refactor AsyncRenderer & AnimatedRenderer further?
 - Put colourmap into mandelbrot?
   -> Only after shading done?
-- Reduce need to call `convert<>` all the time.
 - Colourmap and shadermap
 - [ ] Split into library and fractals
 - Remove shown bookmarks
@@ -94,11 +72,7 @@ Papercuts:
 - Navigate randomly stops prematurely
 - When we go home, reset the gradient, particularly for a zoom in
 
-
 Some problems:
-1. Nice refactoring of pixmaps etc.
-  a. Different calculation strategies
-  b. Colours vs values
 2. MB finding via Newton-Raphson
   - Pick a point
   - Find its closest return
@@ -124,11 +98,8 @@ Some problems:
 
 Zooming:
 - [ ] Animation bug - actually the frame buffer hasn't been transferred properly.
-- Bookmarks flags can appear in the wrong place when starting a zoom in
-- [ ] Finally fix the animation bug as well
 - [ ] Animate to here still carries on zooming mysteriously
   It only happens when there is still a rendering going on?
-- [ ] Zoom in goes too far
 - [ ] Override zoom
   - [ ] Zoom step is always fast
   - [ ] Continuous zoom is always smooth
@@ -136,12 +107,9 @@ Zooming:
 - [ ] When resizing window, copy pixels across
 When we break off an animation, we lose where we were heading :-(
 - Keep a record of the final zoom depth so we can just use that by default
-- Zoom in goes too far
-Navigate randomly now randomly stops
 
 Scrolling:
 - Bug where sometimes the gradient is set too low???
-- Load bookmark -> where to set the gradient?? & reset
 
 Bookmarks:
 - [ ] Ensure they are synced between Windows
@@ -152,7 +120,6 @@ Bookmarks:
 Advanced mode:
 - [ ] Show additional fractals
 - [ ] Show number of iterations skipped
-
 
 Problems:
 - Use openmp
@@ -195,9 +162,6 @@ Improvements:
   - Depth 0-0 looks silly
 - On open, resume previous place visited?
 - [ ] "1 CPU core, "4 CPU cores", "All CPU cores"
-- [ ] Rename "oversampling" to "High definition"
-- [ ] Better gradient enhancements
-- [ ] Shading
 - [ ] Import/export bookmarks?
 - [ ] Dynamic length of number?
 
@@ -208,11 +172,8 @@ Ideas:
   - Only for low epslions.
 - [ ] Class OrbitConfiguration which contains all of the parameters for the orbit
 
-# Mandelbrot explorer
-Where mathematics meets art
 
-
-Classification project:
+# Classification project:
 a. Basic shape
   a1. mandelbrot
   a2. island
@@ -251,7 +212,6 @@ Paper cuts:
 Refactoring:
 - [ ] Store radius in engineering format
 - [ ] Hexadecimal number format
-
 
 Then: Windows installed MSIX package
 
