@@ -6,7 +6,7 @@
 #include <QWidget>
 
 #include "AnimatedRenderer.hpp"
-#include "ColourMap.hpp"
+#include "shader.hpp"
 #include "controlpanel.h"
 #include "fractal.hpp"
 #include "registry.hpp"

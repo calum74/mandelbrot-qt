@@ -20,9 +20,6 @@ set(PROJECT_SOURCES
         addbookmark.ui
         AnimatedRenderer.hpp
         AnimatedRenderer.cpp
-        ColourMapImpl.cpp
-        ColourMap.hpp
-        ColourMapImpl.hpp
         ViewerWidget.h
         ViewerWidget.cpp
         Fractals.cpp

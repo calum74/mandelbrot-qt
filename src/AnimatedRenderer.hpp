@@ -1,5 +1,5 @@
 #pragma once
-#include "ColourMap.hpp"
+#include "shader.hpp"
 #include "registry.hpp"
 #include "view_listener.hpp"
 #include "view_animation.hpp"

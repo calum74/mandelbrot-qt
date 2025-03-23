@@ -12,7 +12,7 @@ using namespace std::literals::chrono_literals;
 void register_fractals(fractals::Registry &r);
 
 fractals::AnimatedRenderer::AnimatedRenderer(fractals::view_listener &listener)
-    : listener(listener), colourMap{fractals::make_colourmap()},
+    : listener(listener), colourMap{fractals::make_shader()},
       registry{fractals::make_registry()}, view(*this) {
 
   register_fractals(*registry);
