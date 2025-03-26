@@ -1,18 +1,17 @@
 # Task list
 
 Next steps:
-- [ ] The old bug is back: animate to here performs a zoom of the wrong image
-  If we haven't finished calculating the old image, it zooms into that one instead.
 
 Glitches:
-- [ ] Random animation gets lost
+- [ ] Still glitching whilst rendering
+- [ ] Random navigation gets lost
 - Flickering whilst animating
   - Due to read/write barriers??
+- Report JSON errors better (not just a seg fault)
 
 # Release 1 checklist
 
 1. Black squares when navigating
-2. Animate to here zooms the wrong image
 3. Navigate gets lost
 4. Sync bookmarks correctly
 5. Curate bookmarks
