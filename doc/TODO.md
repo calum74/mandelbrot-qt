@@ -2,8 +2,15 @@
 
 Next steps:
 
+struct point { int x, y, iteration };
+
+std::vector<point> get_orbit(point);
+
+
 Glitches:
 - [ ] Still glitching whilst rendering
+  Maybe the error is wrong when interpolation fails
+
 - [ ] Random navigation gets lost
 - Flickering whilst animating
   - Due to read/write barriers??
@@ -17,6 +24,11 @@ Glitches:
 5. Curate bookmarks
 
 # Future ideas
+
+Show orbits
+-> Gives us a center of rotation??
+-> Gives us an order of rotation??
+
 
 Context menu?
 
@@ -39,28 +51,13 @@ As we zoom, the shadows change. This seems very unrealistic. How can we change t
 
 Implement "discovered depth" again.
 
-- Implement a "shaded_view" which just combines the colourmap with a view
-- Implement an "animated_view" which orchestrates the animation events.
 - Implement a "simple view" which just performs the calculations
 
-Today:
 - Display stars instead of blackness for the minibrots?
-
-Bugs:
-
-Animation:
-- Animation should reset the colour gradient
-
-Refactoring:
-- Put colourmap into mandelbrot?
-  -> Only after shading done?
-- Colourmap and shadermap
-- [ ] Split into library and fractals
-- Remove shown bookmarks
 
 Papercuts:
 - Navigate randomly stops prematurely
-- When we go home, reset the gradient, particularly for a zoom in
+- When we go home, reset the colour gradient, particularly for a zoom in
 
 Some problems:
 2. MB finding via Newton-Raphson
@@ -72,28 +69,10 @@ Some problems:
 4. Make it easier to add new fractals
   a. Developer mode
 
-- [ ] Refactor Async/AnimatedRenderer
-  - `animated_pixmap<T>` 
-
-  - `abstract_animator` that can zoom anything.
-
-  - Calculated that only outputs depths
-  - Interpolator (on the depths)
-  - Shader that turns depths into colours
-  - Animator that performs zooms.
-  - Window that displays it
-
 - [ ] Better API for adding new fractals
-- [ ] fractals -> fractools
+- [ ] fractals -> fractools or anything else
 
 Zooming:
-- [ ] Animation bug - actually the frame buffer hasn't been transferred properly.
-- [ ] Animate to here still carries on zooming mysteriously
-  It only happens when there is still a rendering going on?
-- [ ] Override zoom
-  - [ ] Zoom step is always fast
-  - [ ] Continuous zoom is always smooth
-- [ ] Smooth zoom out
 - [ ] When resizing window, copy pixels across
 When we break off an animation, we lose where we were heading :-(
 - Keep a record of the final zoom depth so we can just use that by default
@@ -114,21 +93,16 @@ Advanced mode:
 Problems:
 - Use openmp
 Goals for this week:
-- [ ] Sort bookmarks
 - [ ] Invert y axis
 - [ ] Detect loops
-- [ ] Adaptive colour map
 
 Bugs:
 - [ ] Multiple toplevels don't sync bookmarks
   Menus not updated properly
-- [ ] Display the time without setprecision(2)??
 - [ ] Bugs in New Year fractal. (imprecision of some kind)
-- [x] Glitches in Magnus Opus Ex
 - [ ] Suddenly a nasty judder whilst rendering.
 - [ ] Scrolling disrupts depth calculations. Still not perfect
 - [ ] Smooth zoom stops now if there's not enough pixels to update the depth
-- [ ] Some of the bookmarks moved due to imprecision bug
 
 Maths:
 - [ ] Karatsuba multiplication
@@ -206,13 +180,6 @@ Refactoring:
 Then: Windows installed MSIX package
 
 - [ ] Zoom out smoothly as well?
-
-3. Implement bookmarks using json
-  Zoom to a bookmark
-
-Autocolourmap:
-- 2 modes: auto and manual
-
 # Other
 
 - [ ] Rendering glitches on power 3 mandelbrot
@@ -220,29 +187,18 @@ Autocolourmap:
 - [ ] Get a deeper series by looking more closely at the divergence criteria
 - [ ] Get a deeper orbit by adding more terms?
 
-Bookmarks.json file.
-- Store the radius in engineering form.
 
 Features:
 
 - [ ] Better center and mandelbrot finder
-- [ ] Auto-enhance colours
-  How to make this a smooth/auto experience?
 
 - [ ] fractals:: namespace is stupid
 
-
-
 - [ ] Split up orbit.hpp
 
-- [ ] Make it nicer to adapt Mandelbrot to Mandeldrop
-
-- [x] Surely we should colour "around" a point rather than just below/right
-
-- [ ] Update all the other fractals to use new data types
 - [ ] Rendering sequence to literally map integers to coords and sizes.
   Make it an O(1) operation.
-
+  A bit slow!
 
 - [ ] Understand reference orbits better
   - What is the "orbit utilization"
@@ -265,33 +221,17 @@ Optimization:
 - [ ] Visualize skipped iterations. Could be a clue into where to place the reference orbit
 
 ## Implement a bookmarks feature.
-Have a saved library of interesting fractals to look at.
-
-- [ ] Auto-enhance image if it's too dim - the range is unsuitable
-
-- [ ] Load file to change the menu to show current bookmark
 
 Short term goals:
 - [ ] MSIX installer
-
-Ideas:
-- [ ] Instant recolour
-- [ ] Performance improvements
 
 Blockers:
 - [ ] Windows installer
 - [ ] Building Qt from source on Windows still does not work
 
-Bugs:
-- [ ] Still some zoom inaccuracy on Mandeldrop around 1e-20
-
-Colouring:
-- [x] Find a new default seed
-
 Enhancements:
 - [ ] Display the gradient somewhere
 - [ ] Create benchmarks
-- [ ] Make sure to not recalculate calculated pixels (e.g. scroll)
 - [ ] Progress bar somewhere (but why?)
 
 Documentation and tidy:
@@ -314,14 +254,6 @@ Documentation and tidy:
 # Long term tasks
 
 - Tidy up the installer text and license
-- [ ] Progress bar
-
-High precision tidy:
-- Express size in bits
-- Configure integer size as well
-
-Less important tasks:
-- [ ] Errors in pixels affect the output, so store them in a separate array
 
 Bugs:
 - When opening 'Go to' window, ensure focus is on the ok button
@@ -329,8 +261,6 @@ Bugs:
 Testing:
 - [ ] Orbits tests
 - [ ] High precision tests
-
-Game: Count mini-brots
 
 Refactoring:
 - [ ] Ability to iterate all points simultaneously so that the black can shrink.
@@ -341,9 +271,5 @@ Version 2.0:
 - [ ] Center finding
 
 Version 3.0:
-- [ ] Load/save position
-  - Save palette
-  - Save algorithm
-- [ ] Export to image
 - [ ] Generate movie
 - [ ] Edit colour palette

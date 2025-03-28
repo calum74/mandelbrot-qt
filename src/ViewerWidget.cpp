@@ -451,3 +451,5 @@ void ViewerWidget::animation_finished(
     const fractals::calculation_metrics &metrics) {
   // TODO
 }
+
+void ViewerWidget::showOrbits(bool checked) {}

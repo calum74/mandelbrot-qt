@@ -92,6 +92,8 @@ MainWindow::MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks0,
           &MainWindow::addBookmark);
   connect(ui->centralwidget, &ViewerWidget::shadingChanged, this,
           &MainWindow::shadingChanged);
+  connect(ui->actionShow_orbits, &QAction::triggered, ui->centralwidget,
+          &ViewerWidget::showOrbits);
 
   zoomSpeedActionGroup.setExclusionPolicy(
       QActionGroup::ExclusionPolicy::Exclusive);

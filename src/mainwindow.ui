@@ -66,6 +66,8 @@
     <addaction name="separator"/>
     <addaction name="actionOversampling"/>
     <addaction name="actionControl_panel"/>
+    <addaction name="separator"/>
+    <addaction name="actionShow_orbits"/>
    </widget>
    <widget class="QMenu" name="menuFractal">
     <property name="title">
@@ -411,16 +413,24 @@
    <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="shortcut">
-    <string>A</string>
-   </property>
    <property name="text">
     <string>Shading</string>
+   </property>
+   <property name="shortcut">
+    <string>A</string>
    </property>
   </action>
   <action name="actionControl_panel">
    <property name="text">
     <string>Colour controls...</string>
+   </property>
+  </action>
+  <action name="actionShow_orbits">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show orbits</string>
    </property>
   </action>
  </widget>

@@ -104,6 +104,8 @@ public slots:
 
   void shadingParametersChanged(const fractals::shader_parameters *params);
 
+  void showOrbits(bool checked);
+
 signals:
   void startCalculating(fractals::radius radius, int maxIterations);
   void completed(const fractals::calculation_metrics *
