@@ -3,6 +3,7 @@
 #include "registry.hpp"
 #include "view_listener.hpp"
 #include "view_animation.hpp"
+#include "fractal_calculation.hpp"
 
 namespace fractals {
 
@@ -53,6 +54,8 @@ public:
   void set_threading(int);
   void get_depth_range(double&, double&, double&) const;
   bool fully_calculated() const;
+
+  void get_orbit(int x, int y, fractals::displayed_orbit&) const;
 
 public: // !! Ideally private
   std::unique_ptr<fractals::Registry> registry;

@@ -36,6 +36,9 @@ class ViewerWidget : public QWidget, fractals::view_listener {
   ControlPanel controlPanel;
   void doUpdate();
 
+  bool show_orbits = false;
+  fractals::displayed_orbit current_orbit;
+
 public:
   explicit ViewerWidget(QWidget *parent = nullptr);
 

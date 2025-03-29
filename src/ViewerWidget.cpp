@@ -140,7 +140,14 @@ void ViewerWidget::mouseMoveEvent(QMouseEvent *event) {
   }
   move_x = x;
   move_y = y;
+
   renderer.set_cursor(move_x, move_y);
+
+  if(show_orbits)
+  {
+    renderer.get_orbit(x,y, current_orbit);
+    QWidget::update();
+  }
 }
 
 void ViewerWidget::autoZoom() { renderer.auto_navigate(); }
@@ -452,4 +459,17 @@ void ViewerWidget::animation_finished(
   // TODO
 }
 
-void ViewerWidget::showOrbits(bool checked) {}
+void ViewerWidget::showOrbits(bool checked) {
+  show_orbits = checked;
+
+  if(show_orbits)
+  {
+    renderer.get_orbit(move_x, move_y, current_orbit);
+  }
+  else
+  {
+    current_orbit.clear();
+  }
+
+  QWidget::update();
+}

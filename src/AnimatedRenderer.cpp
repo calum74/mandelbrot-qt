@@ -202,3 +202,8 @@ void fractals::AnimatedRenderer::auto_navigate() {
 bool fractals::AnimatedRenderer::fully_calculated() const { 
   return view.fully_calculated();
 }
+
+void fractals::AnimatedRenderer::get_orbit(int x, int y, displayed_orbit&orbit) const
+{
+  view.get_orbit(x, y, orbit);
+}

@@ -1,3 +1,12 @@
 [
-
+    {
+        "Algorithm": "Mandelbox (power 5)",
+        "Colour": 0,
+        "Gradient": 30.0,
+        "Im": "-0.09889129736985200001729015860930566210440",
+        "Iterations": 174412,
+        "Name": "User/Unsorted/Power 5/Minibrot",
+        "Radius": "9.532e-39",
+        "Re": "0.70999541513605345446704055594828528505359"
+    }
 ]
