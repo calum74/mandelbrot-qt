@@ -205,5 +205,6 @@ bool fractals::AnimatedRenderer::fully_calculated() const {
 
 void fractals::AnimatedRenderer::get_orbit(int x, int y, displayed_orbit&orbit) const
 {
-  view.get_orbit(x, y, orbit);
+  std::atomic<bool> stop;
+  view.get_orbit(x, y, orbit, stop);
 }

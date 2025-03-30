@@ -8,5 +8,15 @@
         "Name": "User/Unsorted/Power 5/Minibrot",
         "Radius": "9.532e-39",
         "Re": "0.70999541513605345446704055594828528505359"
+    },
+    {
+        "Algorithm": "Mandelbrot set",
+        "Colour": 156,
+        "Gradient": 1465.65,
+        "Im": "-0.3791489952459302018940238080431377",
+        "Iterations": 84561,
+        "Name": "User/Unsorted/Sunflower (update)",
+        "Radius": "2.694e-31",
+        "Re": "0.3832801100705716211224108952221652"
     }
 ]

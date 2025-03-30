@@ -2,6 +2,14 @@
 
 Next steps:
 
+Showing orbits is a bit tricky.
+1. We need to figure out when the reference orbit is "close" to the origin.
+  - Look at the low-precision distance
+  - Then look at the high-precision distance
+  - Then calculate a delta
+  - How to calculate this without causing extra impacts.
+
+
 struct point { int x, y, iteration };
 
 std::vector<point> get_orbit(point);
