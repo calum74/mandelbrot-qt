@@ -95,6 +95,9 @@ MainWindow::MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks0,
   connect(ui->actionShow_orbits, &QAction::triggered, ui->centralwidget,
           &ViewerWidget::showOrbits);
 
+  connect(ui->menuBookmarks_2, &QMenu::aboutToShow, this,
+          &MainWindow::reloadBookmarks);
+
   zoomSpeedActionGroup.setExclusionPolicy(
       QActionGroup::ExclusionPolicy::Exclusive);
   zoomSpeedActionGroup.addAction(ui->actionQuality_animation);
@@ -110,14 +113,16 @@ MainWindow::MainWindow(const std::shared_ptr<SharedBookmarks> &bookmarks0,
   QIcon icon(":/new/prefix1/icon.ico");
   QApplication::setWindowIcon(icon);
 
+  initialBookmarksMenuSize = ui->menuBookmarks_2->actions().size();
+
   if (!bookmarks) {
     bookmarks = std::make_shared<SharedBookmarks>();
     loadBookmarks(QFile(":/new/prefix1/bookmarks.json"), false, true);
     loadBookmarks(getBookmarksFile(), true, false);
   } else {
     loadBookmarks(QFile(":/new/prefix1/bookmarks.json"), false, false);
-    for (auto &bm : bookmarks->bookmarks)
-      doAddBookmark(bm, false, false);
+    for (auto &bm : bookmarks->userAddedBookmarks)
+      addBookmarkToList(bm, false, false);
   }
 
   fractalsActionGroup.setExclusionPolicy(
@@ -214,8 +219,7 @@ Bookmark::Bookmark(const fractals::view_parameters &params) : params(params) {
 
 void Bookmark::triggered(bool checked) { selected(&params); }
 
-void MainWindow::doAddBookmark(const fractals::view_parameters &params,
-                               bool isUser, bool isBuiltin) {
+void MainWindow::addBookmarkToMenu(const fractals::view_parameters &params) {
   // Split the name of the parameter
   std::string_view name = params.title;
   QMenu *menu = ui->menuBookmarks_2;
@@ -241,8 +245,12 @@ void MainWindow::doAddBookmark(const fractals::view_parameters &params,
   connect(bookmark, &Bookmark::selected, ui->centralwidget,
           &ViewerWidget::openBookmark);
   menu->addAction(bookmark);
+}
+
+void MainWindow::addBookmarkToList(const fractals::view_parameters &params,
+                                   bool isUser, bool isBuiltin) {
   if (isUser)
-    bookmarks->bookmarks.push_back(params);
+    bookmarks->userAddedBookmarks.push_back(params);
   if (isBuiltin)
     bookmarks->builtinBookmarks.push_back(params);
 }
@@ -253,7 +261,7 @@ void MainWindow::addBookmark() {
     fractals::view_parameters params;
     ui->centralwidget->getCoords(params);
     params.title = dialog.getName().toStdString();
-    doAddBookmark(params, true, false);
+    addBookmarkToList(params, true, false);
     saveBookmarks();
   }
 }
@@ -267,7 +275,7 @@ void MainWindow::loadBookmarks(QFile &&file, bool isUser, bool isBuiltin) {
     // Turn it into JSON
     for (auto &item : data) {
       auto params = read_json(item);
-      doAddBookmark(params, isUser, isBuiltin);
+      addBookmarkToList(params, isUser, isBuiltin);
     }
   }
 }
@@ -278,7 +286,7 @@ void MainWindow::saveBookmarks() {
   QFile file = getBookmarksFile();
   if (file.open(QIODevice::WriteOnly)) {
     nlohmann::json js = nlohmann::json::array();
-    for (const auto &bookmark : bookmarks->bookmarks) {
+    for (const auto &bookmark : bookmarks->userAddedBookmarks) {
       js.push_back(write_json(bookmark));
     }
     auto contents = js.dump(4);
@@ -298,4 +306,17 @@ void MainWindow::closeEvent(QCloseEvent *) {
 
 void MainWindow::shadingChanged(bool checked) {
   ui->actionShading->setChecked(checked);
+}
+
+void MainWindow::reloadBookmarks() {
+  // Reconstruct the bookmarks menu
+  auto menu = ui->menuBookmarks_2;
+  auto actions = menu->actions();
+  for (int i = initialBookmarksMenuSize; i < actions.size(); ++i)
+    menu->removeAction(actions[i]);
+
+  for (auto &b : bookmarks->builtinBookmarks)
+    addBookmarkToMenu(b);
+  for (auto &b : bookmarks->userAddedBookmarks)
+    addBookmarkToMenu(b);
 }

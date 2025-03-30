@@ -1,24 +1,6 @@
 # Task list
 
-Next steps:
-
-Showing orbits is a bit tricky.
-1. We need to figure out when the reference orbit is "close" to the origin.
-  - Look at the low-precision distance
-  - Then look at the high-precision distance
-  - Then calculate a delta
-  - How to calculate this without causing extra impacts.
-
-
-struct point { int x, y, iteration };
-
-std::vector<point> get_orbit(point);
-
-
 Glitches:
-- [ ] Still glitching whilst rendering
-  Maybe the error is wrong when interpolation fails
-
 - [ ] Random navigation gets lost
 - Flickering whilst animating
   - Due to read/write barriers??
@@ -26,54 +8,16 @@ Glitches:
 
 # Release 1 checklist
 
-1. Black squares when navigating
 3. Navigate gets lost
 4. Sync bookmarks correctly
 5. Curate bookmarks
 
 # Future ideas
 
-Show orbits
--> Gives us a center of rotation??
--> Gives us an order of rotation??
-
-
-Context menu?
-
-
-? What happens if we differentiate the MB set function?
-
-dx/di = 2z 
-
-Could we have a programming language where all variables are types?
-
-type duration: int
-E.g. fn wait = duration -> sleep(duration)
-
-  duration = 123;  // A local variable
-  my_duration = 123  //
-
-Idea: Most images have rotational symmetry, so if we can figure out the rotational symmetry, then we can render multiple points at the same time.
-
-As we zoom, the shadows change. This seems very unrealistic. How can we change this??
-
-Implement "discovered depth" again.
-
-- Implement a "simple view" which just performs the calculations
-
-- Display stars instead of blackness for the minibrots?
-
 Papercuts:
 - Navigate randomly stops prematurely
 - When we go home, reset the colour gradient, particularly for a zoom in
 
-Some problems:
-2. MB finding via Newton-Raphson
-  - Pick a point
-  - Find its closest return
-  - Pick 2 adjacent points
-  - Use the gradient to find the minimum??
-  - When finding the brot, surely we need to find the center of 2 local orbits
 4. Make it easier to add new fractals
   a. Developer mode
 
@@ -84,9 +28,6 @@ Zooming:
 - [ ] When resizing window, copy pixels across
 When we break off an animation, we lose where we were heading :-(
 - Keep a record of the final zoom depth so we can just use that by default
-
-Scrolling:
-- Bug where sometimes the gradient is set too low???
 
 Bookmarks:
 - [ ] Ensure they are synced between Windows
@@ -127,7 +68,7 @@ Improvements:
 - [ ] Eta/ progress indicator.
 - [ ] Smoother zoom out??
 - [ ] GPL license
-- [ ] Esc to stop animations
+- [ ] Esc to stop animationse
 - When we scroll, we'll sometimes lose pixels
 - Sometimes shows finished calculation when it's actually calculating something new
   - Ensure that "calculating" takes priority
@@ -138,10 +79,6 @@ Improvements:
 - [ ] Dynamic length of number?
 
 Ideas: 
-- If the Taylor series is valid, we can find a delta which makes the orbit coincide with the starting point.
-- Using Newton Raphson.
-- Can we approximate "32 steps" using perturbation theory?
-  - Only for low epslions.
 - [ ] Class OrbitConfiguration which contains all of the parameters for the orbit
 
 
@@ -207,21 +144,6 @@ Features:
 - [ ] Rendering sequence to literally map integers to coords and sizes.
   Make it an O(1) operation.
   A bit slow!
-
-- [ ] Understand reference orbits better
-  - What is the "orbit utilization"
-  - What percentage of iterations are skipped
-  - When is it cheaper to compute a new reference orbit?
-  - Can we create a reference of a reference?
-  - Can other reference orbit "split" from the old one?
-
-- [ ] Can we "skip forward" n iterations? Is there a closed form for that??? Can we approximate the "skip forward" action using its own Taylor series??
-  - What about skipping epsilon forward?
-
-Basically it's the depth of range that causes big problems. Computing up to the minimum is usually fine.
-
-- [ ] Refactor mandelbrot parameters, for example use real_number.
-Maybe there's a hard-coded way to express the delta range? So we can scale all deltas by M, e.g. bias them all by 500.
 
 Optimization:
 - [ ] Be less strict about rejecting invalid iteration counts
