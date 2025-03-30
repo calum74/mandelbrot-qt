@@ -88,6 +88,35 @@ void ViewerWidget::draw() {
   }
 
   painter.drawImage(this->rect(), image);
+
+  if(current_orbit.size()>0)
+  {
+    QPen pen1;
+    pen1.setColor(QColorConstants::White);
+    painter.setPen(pen1);
+    auto *prev_point = &current_orbit[0];
+
+    for(auto &p : current_orbit)
+    {
+      painter.drawLine(prev_point->x, prev_point->y, p.x, p.y);
+      prev_point = &p;
+    }
+
+    QPen pen;
+    pen.setColor(QColorConstants::Red);
+    pen.setWidth(4);
+    pen.setCapStyle(Qt::RoundCap);
+    painter.setPen(pen);
+    for(auto &point : current_orbit)
+    {
+      painter.drawPoint(point.x, point.y);
+    }
+    if(current_orbit.size()>1)
+    {
+      auto &p = current_orbit[1];
+      painter.drawText(p.x, p.y, std::to_string(p.iteration).c_str());
+    }
+  }
 }
 
 void ViewerWidget::doResize(int w, int h) {
