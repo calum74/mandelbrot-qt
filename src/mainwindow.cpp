@@ -149,6 +149,9 @@ void MainWindow::changeFractal(ChangeFractalAction *src,
 
 void MainWindow::startCalculating(fractals::radius d, int iterations) {
   std::stringstream ss;
+#ifndef NDEBUG
+  ss << "DEBUG BUILD ";
+#endif
   ss << "Calculating radius " << std::setprecision(2) << d;
   ss << " to " << iterations << " iterations";
   ui->statusbar->showMessage(ss.str().c_str());
