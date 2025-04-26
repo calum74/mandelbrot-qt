@@ -75,3 +75,4 @@ CMakeLists.txt.user*
 build
 build.dir
 .vs
+/out/install/x64-Release/bin/qt.conf
