@@ -1,19 +1,20 @@
 # Task list
 
 Glitches:
+- Occasional large black blocks at full size mandelbrot
 - [ ] Random navigation gets lost
 - Flickering whilst animating
+- Sometimes dots appear due to moving reference orbit.
   - Due to read/write barriers??
 - Report JSON errors better (not just a seg fault)
 
 # Release 1 checklist
 
 3. Navigate gets lost
-4. Sync bookmarks correctly
-5. Curate bookmarks
 
 # Future ideas
 
+- Build properly on Windows and Windows ARM
 Papercuts:
 - Navigate randomly stops prematurely
 - When we go home, reset the colour gradient, particularly for a zoom in

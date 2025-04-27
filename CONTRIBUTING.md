@@ -64,6 +64,12 @@ On Windows/Mac:
 
 Install Qt from https://www.qt.io/download-qt-installer-oss. If you install QtCreator then it should be able to just open your project (`CMakeLists.txt`) and build it.
 
+Set the prefix path to something like:
+
+```
+cmake -DCMAKE_PREFIX_PATH=C:\Qt\6.8.3\msvc2022_arm64\lib\cmake\Qt6  -DCMAKE_BUILD_TYPE=Release
+```
+
 If CMake fails, try running the specific generator for your platform, e.g. `C:\Qt\6.8.1\msvc2022_64\bin\qt-cmake`, or `/usr/local/Qt-6.10.0/bin/qt-cmake ../mandelbrot-qt -DCMAKE_BUILD_TYPE=Release` for example.
 
 On Mac:
