@@ -215,7 +215,7 @@ void ViewerWidget::values_changed() {
   }
 }
 
-void ViewerWidget::calculation_started(fractals::radius radius, int iterations) {
+void ViewerWidget::calculation_started(numbers::radius radius, int iterations) {
   startCalculating(radius, iterations);
 }
 

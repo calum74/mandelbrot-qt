@@ -1,5 +1,21 @@
 # Task list
 
+Karatsuba multiplication
+
+- Move to namespace "cg" more things
+- rename real_number to "real_number_generator" or something
+Better conversion API based on concepts & traits
+- high_exponent_real does not depend on high_precision_real and does not include it
+number_traits
+
+numbers library
+- namespace 
+- number_cast_t::number_cast() is wrong as we need to prefix numbers::number_cast which is stupid
+
+- Button to "fix iterations"?
+
+
+
 Glitches:
 - Occasional large black blocks at full size mandelbrot
 - [ ] Random navigation gets lost
@@ -11,6 +27,10 @@ Glitches:
 # Release 1 checklist
 
 3. Navigate gets lost
+
+# API for adding fractals
+
+
 
 # Future ideas
 

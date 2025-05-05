@@ -147,7 +147,7 @@ void MainWindow::changeFractal(ChangeFractalAction *src,
   ui->centralwidget->changeFractal(fractal);
 }
 
-void MainWindow::startCalculating(fractals::radius d, int iterations) {
+void MainWindow::startCalculating(numbers::radius d, int iterations) {
   std::stringstream ss;
 #ifndef NDEBUG
   ss << "DEBUG BUILD ";

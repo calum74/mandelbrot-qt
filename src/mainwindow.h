@@ -34,7 +34,7 @@ public:
   void closeEvent(QCloseEvent *) override;
 
 public slots:
-  void startCalculating(fractals::radius r, int i);
+  void startCalculating(numbers::radius r, int i);
   void completed(const fractals::calculation_metrics *metrics);
   void openGoToDialog();
   void changeFractal(class ChangeFractalAction *src,

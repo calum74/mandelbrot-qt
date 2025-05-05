@@ -63,7 +63,7 @@ public:
   void doResize(int w, int h);
   void updateColourControls();
 
-  void calculation_started(fractals::radius radius, int max_iterations) override;
+  void calculation_started(numbers::radius radius, int max_iterations) override;
   void values_changed() override;
   void calculation_finished(const fractals::calculation_metrics &) override;
   void animation_finished(const fractals::calculation_metrics &) override;
@@ -110,7 +110,7 @@ public slots:
   void showOrbits(bool checked);
 
 signals:
-  void startCalculating(fractals::radius radius, int maxIterations);
+  void startCalculating(numbers::radius radius, int maxIterations);
   void completed(const fractals::calculation_metrics *
                      metrics); // References silently fail with Qt signals/slots
   void renderingFinishedSignal();
